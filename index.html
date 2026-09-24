@@ -65,6 +65,22 @@
   .craftRule{ font-size:12px; color:var(--mute); margin:3px 0 8px; }
   .craftSep{ font-size:12px; color:var(--mute); padding:9px 2px 4px; letter-spacing:.3px; }
   .tipLine{ font-size:12px; color:var(--mute); margin-top:10px; line-height:1.45; }
+  /* 대기소(S30): 8칸, 상자 대신 등급색 밑줄 */
+  .resRow{ margin:0 0 9px; }
+  .resHead{ display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 8px; font-size:12px; color:var(--mute); }
+  .resHead b{ font-family:var(--f-head); font-weight:400; font-size:14px; color:var(--khaki); letter-spacing:.4px; }
+  .resHead b.full{ color:#ec7a62; }
+  .resCells{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:2px 8px; margin-top:3px; }
+  .resCells .resC{ background:none !important; box-shadow:none !important; clip-path:none; text-shadow:none; border-radius:0; transform:none;
+    border-bottom:2px solid var(--rc,var(--line2)); padding:5px 2px 3px; min-height:26px; font-size:12px; font-weight:600; color:var(--ink);
+    text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .resCells .resC.empty{ border-bottom:1px dashed var(--line2); cursor:default; }
+  .resCells .resC.on{ background:linear-gradient(0deg,rgba(194,178,122,.22),rgba(194,178,122,0)) !important; color:#fff; }
+  .resAct{ display:flex; align-items:center; gap:8px; margin-top:6px; font-size:12px; color:var(--dim); flex-wrap:wrap; }
+  .resAct .nm{ flex:1 1 120px; min-width:0; }
+  .resAct button{ font-size:12px; padding:7px 12px; }
+  .invHead{ display:flex; align-items:center; gap:8px; margin:12px 0 5px; }
+  .invHead .linkBtn{ margin-left:auto; font-size:12px; }
   .tpRow{ display:flex; align-items:center; gap:8px; margin-top:10px; font-size:13px; color:#aeb6bf; }
   #prevBox{ font-size:12.5px !important; line-height:1.55; padding:7px 10px; }
   /* 접는 칸: 밑줄 제목 한 줄 */
@@ -302,8 +318,14 @@
         <button id="bookBtn" class="linkBtn" onclick="openBook()">📖 조합식 보기</button>
       </div>
       <div class="craftRule">흔함 2종 → 안흔함 · 그 위부터는 3종 → 1개</div>
+      <div class="resRow" id="resRow">
+        <div class="resHead"><span>📦 대기소 <b id="resN">0/8</b></span><span>칸이 꽉 차면 여기로 · 싸우진 않고 조합 재료로 쓰여요</span></div>
+        <div class="resCells" id="resCells"></div>
+        <div class="resAct hidden" id="resAct"></div>
+      </div>
       <div id="craftList"><span style="font-size:13px;color:#aeb6bf;">조합할 재료를 모으세요.</span></div>
-      <div class="secT" style="margin:12px 0 5px;">🎒 보유 유닛</div>
+      <div class="invHead"><span class="secT" style="margin:0;">🎒 보유 유닛</span>
+        <button id="sellUnusedBtn" class="linkBtn" onclick="sellUnusedAsk()" title="목표 조합에 안 쓰는 남는 유닛을 한 번에 팔아요">🧹 안 쓰는 유닛 팔기</button></div>
       <div id="invBox" style="display:flex;flex-wrap:wrap;gap:4px;font-size:12px;"><span style="color:#aeb6bf;">없음</span></div>
       <div class="tipLine">지도에서 유닛을 누르면 아래에 정보·판매 버튼이 떠요 · 끌어다 놓으면 자리 이동</div>
     </div>
@@ -615,11 +637,11 @@ const DOCTRINE={
     m:{dmg:1.18,startGold:-10,waveReward:0.9}},
   '경제특화':{icon:'💰',color:'#f2cc60',good:'웨이브 보상 +35% · 처치 골드 +15%',bad:'전 유닛 공격력 −8%',
     m:{waveReward:1.35,killGold:1.15,dmg:0.92}},
-  '정예소수':{icon:'⭐',color:'#bc8cff',good:'시작 지원이 <b>희귀</b> 1기 · 강화 비용 −25%',bad:'소환 15G',
+  '정예소수':{icon:'⭐',color:'#bc8cff',good:'시작 지원이 <b>희귀</b> 1기 · 강화 비용 −25% (공격력 강화 버튼)',bad:'소환 15G',
     m:{startTier:'rare',upgCost:0.75,summonCost:1.5}},
   '물량전':{icon:'🎖️',color:'#7ee787',good:'소환 6G · 시작 골드 +20 · 수용한계 +3',bad:'전 유닛 공격력 −12%',
     m:{summonCost:0.6,startGold:20,capAdd:3,dmg:0.88}},
-  '기술개발':{icon:'🔬',color:'#79c0ff',good:'강화 비용 −40%',bad:'시작 골드 −10 · 10웨이브까지 적 체력 +10%',
+  '기술개발':{icon:'🔬',color:'#79c0ff',good:'강화 비용 −40% (공격력 강화 버튼)',bad:'시작 골드 −10 · 10웨이브까지 적 체력 +10%',
     m:{upgCost:0.6,startGold:-10,earlyHp:1.1}},
 };
 let chosenDoctrine='화력특화';
@@ -627,7 +649,7 @@ let chosenDoctrine='화력특화';
 // 항법 카드 — 5·10·15·20·25웨이브 보스 클리어 시 3장 중 1택
 const NAVCARDS=[
   {id:'march', icon:'🥾',name:'강행군',   good:'웨이브 보상 +40%',      bad:'이후 적 체력 +12%',   m:{waveReward:1.4,enemyHp:1.12}},
-  {id:'supply',icon:'📦',name:'보급 강화', good:'소환 비용 −30%',        bad:'적 이동속도 +10%',    m:{summonCost:0.7,enemySpd:1.1}},
+  {id:'supply',icon:'📦',name:'보급 강화', good:'소환 1회 가격 −30% (조합과 무관)', bad:'적 이동속도 +10%',    m:{summonCost:0.7,enemySpd:1.1}},
   {id:'elite', icon:'💀',name:'정예 침투', good:'보스 처치 골드 ×2',      bad:'특수 좀비 비율 ↑',    m:{bossGold:2,eliteBias:0.10}},
   {id:'safe',  icon:'🛡️',name:'안정 행군', good:'적 체력 −12%',          bad:'점수 −25%',          m:{enemyHp:0.88,score:0.75}},
   {id:'trench',icon:'🕳️',name:'참호 구축', good:'수용 한계 +4',          bad:'웨이브 보상 −15%',    m:{capAdd:4,waveReward:0.85}},
@@ -668,7 +690,8 @@ function newGame(diff){const d=DIFF[diff];return{diff,dcfg:d,gold:START_GOLD,wav
   enemies:[],shots:[],floats:[],fx:[],selected:null,queue:[],queueW:[],waveDone:0,rewardQueue:[],spawnT:0,waveActive:false,
   over:false,won:false,started:false,t:0,invSig:'',opSig:'',
   capPen:0,missionFails:0,warned:{},warnMute:{},warnShown:0,strikeN:0,strikeCd:0,strikes:[],aiming:false,aimPos:null,rewardNag:null,rewardPop:false,
-  t0:Date.now(),recId:null,seen:{},strikeGold:0,missionTries:0,autoClaimed:0,deck:'',lostBy:''};} // S28 내 기록용 집계
+  t0:Date.now(),recId:null,seen:{},strikeGold:0,missionTries:0,autoClaimed:0,deck:'',lostBy:'',
+  reserve:[],resSel:null,resTip:0,sellAsk:null};} // S30 대기소·안 쓰는 유닛 팔기 (저장 안 함) // S28 내 기록용 집계
 
 // 흔함 환산 가치
 function cval(n){if(!RECIPE[n])return 1;return RECIPE[n].reduce((a,x)=>a+cval(x),0);}
@@ -771,8 +794,11 @@ function summon(quiet){
   const free=G.freeSummons>0,cost=summonCost();
   if(!free&&G.gold<cost){if(!quiet)log('골드가 부족합니다.','#ff7b72');return false;}
   const empty=SLOTS.filter(s=>!s.tower);
-  if(empty.length===0){if(!quiet)log('빈 자리가 없습니다. 조합하세요!','#ff7b72');return false;}
+  if(empty.length===0&&!resRoom()){if(!quiet)log(RES_FULL_MSG,'#ff7b72');return false;}
   if(free)G.freeSummons--;else G.gold-=cost;
+  if(empty.length===0){const nm=drawCommon();resAdd(nm,free?0:cost); // S30: 칸이 꽉 차면 대기소로
+    if(!quiet){const rc=RARITY[U[nm].t];log(`소환: <b style="color:${rc.color}">[${rc.name}] ${nm}</b> → 📦 대기소`);}
+    SFX.summon();G.invSig='';updateUI();return true;}
   // 스폰(적 출발지)에 가까운 빈 칸 우선 — 가까운 5칸 중 랜덤(살짝 분산)
   empty.sort((a,b)=>spawnDist(a)-spawnDist(b));
   const pick=empty[Math.floor(rnd()*Math.min(5,empty.length))];
@@ -808,9 +834,10 @@ function chooseWisp(name){
   if(!G||G.over)return;
   if(G.tp<WISP_TP){log('특성포인트가 부족합니다.','#ff7b72');return;}
   const empty=SLOTS.filter(s=>!s.tower);
-  if(empty.length===0){log('빈 자리가 없습니다.','#ff7b72');return;}
-  G.tp-=WISP_TP;const slot=empty[Math.floor(rnd()*empty.length)];
-  slot.tower=mkTower(name,slot);
+  if(empty.length===0&&!resRoom()){log(RES_FULL_MSG,'#ff7b72');return;}
+  G.tp-=WISP_TP;
+  if(empty.length===0)resAdd(name); // S30: 칸이 꽉 차면 대기소로
+  else{const slot=empty[Math.floor(rnd()*empty.length)];slot.tower=mkTower(name,slot);}
   log(`✨ 선택흔함: <b style="color:#9aa5b1">${name}</b> (TP -${WISP_TP})`,'#d2a8ff');
   document.getElementById('wispMenu').classList.add('hidden');G.invSig='';updateUI();}
 
@@ -872,10 +899,10 @@ function renderReward(){
 function claimReward(name){
   if(!G.pendingReward)return;
   const empty=SLOTS.find(s=>!s.tower);
-  if(!empty){log('빈 자리가 없습니다. 자리를 비우고 받으세요.','#ff7b72');return;}
-  empty.tower=mkTower(name,empty);
-  const rc=RARITY[U[name].t];log(`🎁 보상 수령: <b style="color:${rc.color}">${name}</b>`,rc.color);
-  G.pendingReward=G.rewardQueue.shift()||null;G.selected=empty;G.invSig='';renderReward();
+  if(!empty&&!resRoom()){log(RES_FULL_MSG,'#ff7b72');return;}
+  if(empty)empty.tower=mkTower(name,empty);else resAdd(name); // S30: 칸이 꽉 차면 대기소로
+  const rc=RARITY[U[name].t];log(`🎁 보상 수령: <b style="color:${rc.color}">${name}</b>${empty?'':' → 📦 대기소'}`,rc.color);
+  G.pendingReward=G.rewardQueue.shift()||null;G.selected=empty||null;G.invSig='';renderReward();
   if(G.rewardPop){if(G.pendingReward)renderRewardPop();else closeRewardPop();}
 }
 // ===== S27 받을 보상 챙기기: 개수 표시 → 3개 이상 쌓이면 웨이브 시작 때 창 열기 → 그래도 2웨이브 방치하면 추천 유닛 자동 수령 =====
@@ -887,9 +914,9 @@ function recommendPick(tier){const pool=Object.keys(U).filter(n=>U[n].t===tier);
     if(!hasAir&&u.air)v+=5e5;return v+(u.dmg||0)/Math.max(u.cd||1000,1)*1000*(u.splash?1.5:1);};
   return pool.slice().sort((a,b)=>score(b)-score(a))[0];}
 function renderRewardPop(){const body=document.getElementById('rewardPopBody');if(!body||!G.pendingReward)return;
-  const tier=G.pendingReward,rc=RARITY[tier],rec=recommendPick(tier),n=pendingCount(),empty=SLOTS.some(s=>!s.tower);
+  const tier=G.pendingReward,rc=RARITY[tier],rec=recommendPick(tier),n=pendingCount(),empty=SLOTS.some(s=>!s.tower)||resRoom();
   document.getElementById('rewardPopMsg').innerHTML=`선택권 <b style="color:#f2cc60">${n}개</b>가 기다리고 있어요. 하나씩 골라 받으세요.`
-    +(empty?'':' <b style="color:#ff7b72">빈 자리가 없어요 — 유닛을 합치거나 팔아서 자리를 비워 주세요.</b>')
+    +(empty?'':' <b style="color:#ff7b72">칸과 대기소가 모두 찼어요 — 유닛을 합치거나 팔아서 비워 주세요.</b>')
     +`<br><span style="font-size:11px;">그냥 두면 2웨이브 뒤 ⭐추천 유닛으로 자동 수령됩니다.</span>`;
   body.innerHTML=`<div style="color:${rc.color};font-weight:700;margin-bottom:6px;">${rc.name} 유닛 선택권</div><div style="display:flex;flex-wrap:wrap;gap:6px;">`
     +Object.keys(U).filter(nm=>U[nm].t===tier).map(nm=>`<button onclick="claimReward('${nm}')" style="flex:1 1 30%;background:#161b22;border:none;border-left:3px solid ${nm===rec?'#f2cc60':rc.color};border-radius:3px;font-size:12px;padding:8px;text-align:left;">${nm===rec?'⭐ ':''}${nm}</button>`).join('')+`</div>`;}
@@ -899,10 +926,10 @@ function openRewardPop(){if(!G||G.over||!G.pendingReward)return;
 function closeRewardPop(){const el=document.getElementById('rewardPop');if(el)el.classList.add('hidden');
   if(!G)return;G.rewardPop=false;if(G._rpPaused){G.paused=false;G._rpPaused=false;}updateUI();}
 function autoClaimRewards(){let n=0;
-  while(G.pendingReward&&SLOTS.some(s=>!s.tower)){const pick=recommendPick(G.pendingReward);if(!pick)break;claimReward(pick);n++;}
+  while(G.pendingReward&&(SLOTS.some(s=>!s.tower)||resRoom())){const pick=recommendPick(G.pendingReward);if(!pick)break;claimReward(pick);n++;}
   G.autoClaimed+=n;
   if(n)log(`🎁 보상 자동 수령 — 오래 쌓인 선택권 ${n}개를 추천 유닛으로 받았습니다`,'#f2cc60');
-  else if(G.pendingReward)log('🎁 보상 자동 수령 실패 — 빈 자리가 없습니다. 자리를 비워 주세요.','#ff7b72');}
+  else if(G.pendingReward)log('🎁 보상 자동 수령 실패 — 칸과 대기소가 모두 찼습니다. 조합하거나 팔아서 비워 주세요.','#ff7b72');}
 function rewardNagCheck(){if(!G||G.over)return;const n=pendingCount();
   if(n<3){G.rewardNag=null;return;}
   if(G.rewardNag==null){G.rewardNag=G.wave;if(!G.paused)openRewardPop();return;}
@@ -1013,7 +1040,9 @@ function renderOps(){
       :`<div style="margin-top:5px;font-size:11px;color:#6e7681;">🧭 항법 — 5웨이브 보스 클리어 시 선택</div>`);
 }
 
-function inventory(){const m={};SLOTS.forEach(s=>{if(s.tower&&!s.tower.locked)m[s.tower.name]=(m[s.tower.name]||0)+1;});return m;}
+function inventory(){const m={};SLOTS.forEach(s=>{if(s.tower&&!s.tower.locked)m[s.tower.name]=(m[s.tower.name]||0)+1;});
+  for(const t of resList())if(!t.locked)m[t.name]=(m[t.name]||0)+1; // S30: 대기소도 조합 재료
+  return m;}
 function needCount(recipe){const m={};recipe.forEach(n=>m[n]=(m[n]||0)+1);return m;}
 function canCraft(result){const inv=inventory(),need=needCount(RECIPE[result]);
   return Object.entries(need).every(([n,c])=>(inv[n]||0)>=c);}
@@ -1056,8 +1085,8 @@ function craftDeep(target){
   for(const [ing,c] of Object.entries(need)){if(!ensureN(ing,c)){okAll=false;break;}}
   const slot=okAll?craftSilent(target):null;
   if(slot){const rc=RARITY[U[target].t];
-    log(`⚙️ 한방 조합! <b style="color:${rc.color}">[${rc.name}] ${target}</b> 완성${G._newDiscovers?' 📖<i>해금!</i>':''}`,rc.color);
-    G.selected=slot;}
+    log(`⚙️ 한방 조합! <b style="color:${rc.color}">[${rc.name}] ${target}</b> 완성${G._newDiscovers?' 📖<i>해금!</i>':''}${slot.res?' → 📦 대기소':''}`,rc.color);
+    G.selected=slot.res?null:slot;}
   else log('조합에 실패했습니다(빈 칸 부족?).','#ff7b72');
   G.invSig='';updateUI();
 }
@@ -1066,9 +1095,12 @@ function craftSilent(result){
   if(!canCraft(result))return null;
   const need=needCount(RECIPE[result]);
   for(const [n,c] of Object.entries(need)){let rem=c;
-    for(const s of SLOTS){if(rem>0&&s.tower&&s.tower.name===n&&!s.tower.locked){s.tower=null;rem--;}}}
-  const empty=SLOTS.find(s=>!s.tower);if(!empty)return null;
-  empty.tower=mkTower(result,empty);
+    for(const s of SLOTS){if(rem>0&&s.tower&&s.tower.name===n&&!s.tower.locked){s.tower=null;rem--;}}
+    if(rem>0)resTake(n,rem);} // S30: 칸의 재료를 먼저 쓰고 모자라면 대기소에서
+  const empty=SLOTS.find(s=>!s.tower);let where=empty;
+  if(empty)empty.tower=mkTower(result,empty);
+  else if(resAdd(result))where=RES_SPOT; // 칸이 꽉 찼으면 결과는 대기소로
+  else return null;
   if(!G.discovered[result])G._newDiscovers=(G._newDiscovers||0)+1;
   G.discovered[result]=true;
   G.crafts++;questProgress('craft',1);
@@ -1077,7 +1109,7 @@ function craftSilent(result){
   if(TIER_ORDER.indexOf(U[result].t)>=4){
     G.celebrate={name:result,tier:RARITY[U[result].t].name,color:RARITY[U[result].t].color,t0:G.t};
     SFX.legend();}
-  return empty;
+  return where;
 }
 function craft(result){
   if(!canCraft(result)){log('재료가 부족합니다.','#ff7b72');return;}
@@ -1086,8 +1118,9 @@ function craft(result){
   const slot=craftSilent(result);
   const rc=RARITY[U[result].t];
   log(`⚙️ 조합 완성! <b style="color:${rc.color}">[${rc.name}] ${result}</b>${G._newDiscovers?' 📖<i>조합식 해금!</i>':''}`,rc.color);
-  if(slot){G.floats.push({x:slot.x,y:slot.y-20,txt:'✨',life:600});SFX.craft();}
-  G.selected=slot||null;G.invSig='';updateUI();
+  if(slot&&slot.res)log('📦 칸이 꽉 차서 결과를 대기소로 보냈어요.','#c2b27a');
+  if(slot){if(!slot.res)G.floats.push({x:slot.x,y:slot.y-20,txt:'✨',life:600});SFX.craft();}
+  G.selected=(slot&&!slot.res)?slot:null;G.invSig='';updateUI();
 }
 // 히든·비밀 등급만 가림 대상 (그 외 등급은 항상 전체 공개)
 function isSecret(name){return U[name]&&U[name].t==='hidden';}
@@ -1101,12 +1134,93 @@ function sellSelected(){
   if(!G.selected||!G.selected.tower)return;
   const t=G.selected.tower,tierIdx=TIER_ORDER.indexOf(t.t);
   if(t.locked){log('🔒 잠긴 유닛은 판매할 수 없어요. 먼저 잠금을 푸세요.','#ff7b72');return;}
-  // 판매가는 실제 지불한 소환비 기준(S25) — 할인 작전/카드로 소환비가 내려가도 소환→판매 차익이 안 나게
-  const base=t.paid>0?t.paid:(t.paid===0?summonCost()*0.5:summonCost());
-  const refund=Math.round(base*0.6*Math.pow(2.2,tierIdx));
+  const refund=sellPrice(t);
   G.gold+=refund;log(`판매: ${t.name} (+${refund}골드)`,'#f2cc60');
   G.selected.tower=null;G.selected=null;G.invSig='';updateUI();
 }
+// 판매가는 실제 지불한 소환비 기준(S25) — 할인 작전/카드로 소환비가 내려가도 소환→판매 차익이 안 나게 (칸·대기소·한꺼번에 팔기 공용)
+function sellPrice(t){const base=t.paid>0?t.paid:(t.paid===0?summonCost()*0.5:summonCost());
+  return Math.round(base*0.6*Math.pow(2.2,TIER_ORDER.indexOf(t.t)));}
+// ===== 대기소(S30): 칸이 꽉 차면 새 유닛을 8칸 대기소에 보관 — 싸우지 않고 수용한계에도 안 들어가지만 조합 재료로 쓰임 =====
+const RES_MAX=8,RES_SPOT={res:true},RES_FULL_MSG='칸과 대기소가 모두 찼습니다 — 조합하거나 팔아서 비우세요';
+function resList(){return G&&G.reserve?G.reserve:[];}
+function resRoom(){return !!(G&&G.reserve)&&G.reserve.length<RES_MAX;}
+function resAdd(name,paid){if(!resRoom())return false;if(G.seen)G.seen[name]=1;
+  G.reserve.push({name,t:U[name].t,paid,locked:false,res:true});
+  if(!G.resTip){G.resTip=1;log('📦 칸이 꽉 차서 대기소로 보냈어요. 대기소 유닛도 조합 재료로 쓰여요.','#c2b27a');}
+  G.invSig='';G._resSig='';return true;}
+function resTake(name,n){const r=resList();for(let i=r.length-1;i>=0&&n>0;i--)if(r[i].name===name&&!r[i].locked){r.splice(i,1);n--;}
+  G.resSel=null;G._resSig='';return n;}
+function resPick(i){if(!G||G.over)return;G.resSel=(G.resSel===i||!resList()[i])?null:i;G._resSig='';updateUI();}
+function resPlace(){if(!G||G.over)return;const i=G.resSel,t=resList()[i];if(!t)return;
+  const empty=SLOTS.filter(s=>!s.tower);
+  if(!empty.length){log('빈 칸이 없어요 — 조합하거나 팔아서 칸을 비운 뒤 배치하세요.','#ff7b72');return;}
+  empty.sort((a,b)=>spawnDist(a)-spawnDist(b));const s=empty[0];
+  G.reserve.splice(i,1);G.resSel=null;s.tower=mkTower(t.name,s);s.tower.paid=t.paid;G.selected=s;
+  const rc=RARITY[t.t];log(`📦 대기소 → 배치: <b style="color:${rc.color}">${t.name}</b>`,'#c2b27a');
+  G.invSig='';G._resSig='';G._selSig='';updateUI();}
+function resSell(){if(!G||G.over)return;const i=G.resSel,t=resList()[i];if(!t)return;
+  const refund=sellPrice(t);G.gold+=refund;G.reserve.splice(i,1);G.resSel=null;
+  log(`판매(대기소): ${t.name} (+${refund}골드)`,'#f2cc60');G.invSig='';G._resSig='';updateUI();}
+function renderRes(){try{const box=document.getElementById('resCells');if(!box||!G)return;
+  const r=resList(),n=document.getElementById('resN'),act=document.getElementById('resAct');
+  if(n){n.textContent=r.length+'/'+RES_MAX;if(n.classList)n.classList.toggle('full',r.length>=RES_MAX);}
+  let h='';for(let i=0;i<RES_MAX;i++){const t=r[i];
+    if(!t){h+='<span class="resC empty"></span>';continue;}
+    const rc=RARITY[t.t];
+    h+=`<button class="resC${G.resSel===i?' on':''}" style="--rc:${rc.color}" onclick="resPick(${i})" title="${t.name} (${rc.name}) — 눌러서 배치·판매">${shortName(t.name)}</button>`;}
+  box.innerHTML=h;
+  if(!act)return;const t=r[G.resSel];
+  if(!t){act.classList.add('hidden');act.innerHTML='';return;}
+  const rc=RARITY[t.t],room=SLOTS.some(s=>!s.tower);
+  act.classList.remove('hidden');
+  act.innerHTML=`<span class="nm"><b style="color:${rc.color}">${t.name}</b> · ${rc.name}${room?'':' <span style="color:#ec7a62">(빈 칸 없음)</span>'}</span>
+    <button class="btn-summon" onclick="resPlace()">칸에 배치</button>
+    <button class="btn-sell" style="width:auto;" onclick="resSell()">판매 +${sellPrice(t)}</button>`;}catch(_){}}
+// ===== 안 쓰는 유닛 한 번에 팔기(S30): 목표 조합 전체 트리에 필요한 수량만 남기고, 목표보다 낮은 등급의 남는 유닛만 판매 =====
+function goalKeep(){const pool=inventory(),keep={};
+  const alloc=(nm,top)=>{if(!top&&(pool[nm]||0)>0){pool[nm]--;keep[nm]=(keep[nm]||0)+1;return;}
+    const r=RECIPE[nm];if(!r)return;for(const ing of r)alloc(ing,false);};
+  for(const g of G.goals)if(U[g])alloc(g,true); // 목표는 "새로 1개 더 만든다"로 계산 (보유 중간 재료 우선)
+  return keep;}
+function unusedPlan(){const gs=G.goals.filter(g=>U[g]);if(!gs.length)return {};
+  const inv=inventory(),keep=goalKeep(),minT=Math.min(...gs.map(g=>TIER_ORDER.indexOf(U[g].t))),plan={};
+  for(const nm in inv){if(TIER_ORDER.indexOf(U[nm].t)>=minT)continue; // 목표 등급 이상은 절대 안 팜
+    const ex=inv[nm]-(keep[nm]||0);if(ex>0)plan[nm]=ex;}
+  return plan;}
+function unusedUnits(plan){const out=[],left=Object.assign({},plan);
+  for(const t of resList())if(!t.locked&&left[t.name]>0){left[t.name]--;out.push({t,res:true});} // 싸우지 않는 대기소부터
+  for(const s of SLOTS)if(s.tower&&!s.tower.locked&&left[s.tower.name]>0){left[s.tower.name]--;out.push({t:s.tower,s});}
+  return out;}
+function sellRoleWarn(units){const before=roleCount(),lost={};
+  for(const u of units){if(u.res)continue;const uu=U[u.t.name];for(const [k] of ROLE_KEYS)if(uu[k])lost[k]=(lost[k]||0)+1;}
+  return ROLE_KEYS.filter(([k])=>before[k]&&lost[k]>=before[k]).map(([,label])=>`마지막 ${label} 유닛도 팔려요`).join(' · ');}
+function sellUnusedAsk(){if(!G||G.over||!G.started)return;
+  if(!G.goals.length){log('🎯 먼저 <b>목표 조합</b>을 정해 주세요 — 목표에 안 쓰는 유닛만 골라 팔아요. 📖 조합식에서 🎯를 누르세요.','#d29922');
+    try{if(typeof openBook==='function')openBook();}catch(_){}
+    return;}
+  const plan=unusedPlan(),units=unusedUnits(plan);
+  if(!units.length){log('🧹 팔 유닛이 없어요 — 지금 유닛은 모두 목표 조합에 쓰이거나 잠겨 있어요.','#aeb6bf');return;}
+  G.craftConfirm=null;G.sellAsk={plan,gold:units.reduce((a,u)=>a+sellPrice(u.t),0),n:units.length,warn:sellRoleWarn(units)};renderWarn();}
+function renderSellAsk(el){const a=G.sellAsk;el.classList.remove('hidden');
+  try{if(el.scrollIntoView)setTimeout(()=>{try{el.scrollIntoView({block:'nearest'});}catch(_){}},0);}catch(_){}
+  const names=Object.keys(a.plan).sort((x,y)=>TIER_ORDER.indexOf(U[y].t)-TIER_ORDER.indexOf(U[x].t));
+  el.innerHTML=`<div class="secT" style="color:#f2cc60;margin-bottom:4px;">🧹 안 쓰는 유닛 팔기 — ${a.n}기 · +${a.gold}골드</div>
+    <div style="font-size:12px;color:var(--ink);line-height:1.6;">${names.map(nm=>`<span style="color:${RARITY[U[nm].t].color}">${shortName(nm)} ×${a.plan[nm]}</span>`).join(' · ')}</div>
+    <div style="font-size:11.5px;color:var(--dim);margin-top:4px;">목표(${G.goals.map(shortName).join('·')})에 필요한 만큼은 남기고, 🔒잠근 유닛·목표 등급 이상은 팔지 않아요.</div>
+    ${a.warn?`<div style="font-size:12px;color:#ffb3ad;margin-top:4px;">⚠ ${a.warn}</div>`:''}
+    <div class="btn-row" style="margin-top:8px;"><button class="btn-sell" onclick="sellUnusedYes()" style="flex:1;">팔기 (+${a.gold}골드)</button>
+    <button onclick="sellUnusedNo()" style="flex:1;background:#30363d;">취소</button></div>`;}
+function sellUnusedYes(){const a=G&&G.sellAsk;if(!a)return 0;G.sellAsk=null;
+  const now=unusedPlan(),plan={};for(const nm in a.plan){const k=Math.min(a.plan[nm],now[nm]||0);if(k>0)plan[nm]=k;} // 확인 뒤 바뀐 게 있으면 더 적은 쪽
+  const units=unusedUnits(plan);let gold=0;
+  for(const u of units){gold+=sellPrice(u.t);
+    if(u.res){const i=G.reserve.indexOf(u.t);if(i>=0)G.reserve.splice(i,1);}
+    else{if(G.selected===u.s)G.selected=null;u.s.tower=null;}}
+  G.gold+=gold;G.resSel=null;
+  log(`🧹 안 쓰는 유닛 ${units.length}기 판매 (+${gold}골드)`,'#f2cc60');
+  G.invSig='';G._resSig='';G._selSig='';renderWarn();updateUI();return gold;}
+function sellUnusedNo(){if(G)G.sellAsk=null;renderWarn();}
 
 function buildWave(w){
   const q=[];
@@ -1363,7 +1477,7 @@ function defeatDiag(){
   else tip='전체 화력 부족 — 소환·조합·강화를 더 부지런히!';
   return `<br><span style="font-size:12px;color:#d29922">💡 붕괴 원인: ${tip}</span>`;
 }
-function gameOver(){G.over=true;saveScore();SFX.lose();
+function gameOver(){G.over=true;G.reserve=[];G.resSel=null;G.sellAsk=null;saveScore();SFX.lose(); // S30: 대기소 비움
   recSave('loss',G.lostBy||defeatDiag().replace(/<[^>]+>/g,'').replace(/^[\s\S]*붕괴 원인:\s*/,'').trim()); // S28 내 기록
   if(G.endless){saveEndless();showResult('🌀 무한 모드 종료',
     `난이도 <b>${G.diff}</b> · <b style="color:#a371f7">${G.wave}웨이브</b>까지 버텼습니다! (최고 ${getEndlessBest(G.diff)})${defeatDiag()}`,true);return;}
@@ -2370,6 +2484,8 @@ function updateUI(){
   if(selSig!==G._selSig){G._selSig=selSig;renderSelected();}
   const invSig2=Object.entries(inventory()).sort().map(([n,c])=>n+c).join('|');
   if(invSig2!==G.invSig){G.invSig=invSig2;renderCraft();renderInv();renderGoals();}
+  const resSig=resList().map(t=>t.name).join('|')+'#'+G.resSel+'#'+SLOTS.some(s=>!s.tower); // S30 대기소
+  if(resSig!==G._resSig){G._resSig=resSig;renderRes();}
   updateBar();
 }
 function renderSelected(){
@@ -2412,7 +2528,8 @@ function renderSelected(){
     <button onclick="toggleLock()" style="flex:1;background:${t.locked?'linear-gradient(135deg,#d29922,#9e6a03)':'#30363d'};">${t.locked?'🔒 잠금 해제':'🔓 잠금(재료 보호)'}</button></div>
     <div style="font-size:11px;color:#aeb6bf;margin-top:6px;text-align:center;">끌어서 이동 · 유닛 위에 놓으면 교체</div>`;
 }
-function fieldCount(n){let c=0;for(const s of SLOTS)if(s.tower&&s.tower.name===n&&!s.tower.locked)c++;return c;}
+function fieldCount(n){let c=0;for(const s of SLOTS)if(s.tower&&s.tower.name===n&&!s.tower.locked)c++;
+  for(const t of resList())if(t.name===n&&!t.locked)c++;return c;} // S30: 대기소 포함
 // 이 유닛이 재료로 들어가는 모든 상위 조합 (재료 충족 무관 — 조합식 보여주기용)
 function upgradesFrom(name){return Object.keys(RECIPE).filter(r=>RECIPE[r].includes(name));}
 function renderInv(){
@@ -2473,10 +2590,10 @@ function confirmCraft(consumed,result,fn){
   const items=craftLossItems(consumed,result).filter(warnWorthy);
   if(!items.length)return true;
   for(const it of items)G.warned[it.k]=1;G.warnShown++;
-  G.craftConfirm={r:result,fn,msgs:items.map(x=>x.msg),keys:items.map(x=>x.k)};renderWarn();return false;
+  G.sellAsk=null;G.craftConfirm={r:result,fn,msgs:items.map(x=>x.msg),keys:items.map(x=>x.k)};renderWarn();return false;
 }
 function renderWarn(){const el=document.getElementById('warnBox');if(!el)return;const c=G&&G.craftConfirm;
-  if(!c||!c.r){el.classList.add('hidden');el.innerHTML='';return;}
+  if(!c||!c.r){if(G&&G.sellAsk){renderSellAsk(el);return;}el.classList.add('hidden');el.innerHTML='';return;}
   el.classList.remove('hidden');
   try{if(el.scrollIntoView)setTimeout(()=>{try{el.scrollIntoView({block:'nearest'});}catch(_){}},0);}catch(_){}
   el.innerHTML=`<div class="secT" style="color:#ff7b72;margin-bottom:4px;">⚠️ 조합 전 확인 — ${shortName(c.r)}</div>
