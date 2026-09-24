@@ -21,8 +21,10 @@
     --haz:repeating-linear-gradient(-45deg,#e0a526 0 7px,#16170f 7px 14px);
     --chamfer:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px); }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  html,body { margin:0; padding:0; background:var(--bg); color:var(--ink); overflow-x:hidden;
-    font-family:var(--f-body); overscroll-behavior:none; -webkit-font-smoothing:antialiased; }
+  html,body { margin:0; padding:0; background:var(--bg); color:var(--ink);
+    font-family:var(--f-body); -webkit-font-smoothing:antialiased; }
+  /* 가로 넘침만 자르고 세로 스크롤은 살림 — body에 overflow-x:hidden을 주면 body가 따로 스크롤 상자가 돼 마우스 휠이 막힘 */
+  html{ overflow-x:hidden; overscroll-behavior-y:none; } body{ overflow-x:clip; }
   body{ background:radial-gradient(ellipse at 30% -10%,#20251a 0,rgba(17,19,13,0) 60%),var(--bg); min-height:100vh; }
   #wrap { display:flex; gap:16px; padding:14px; max-width:1220px; margin:0 auto; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
   #stage { position:relative; width:760px; max-width:100%; }
