@@ -209,6 +209,20 @@
   .bkDetail{background:var(--inset);border:0;border-left:2px solid var(--amber);border-radius:0;padding:8px 10px;margin:0 0 8px;font-size:12px;color:var(--ink);}
   .tag{font-size:10px; padding:1px 6px; border-radius:1px; color:#11130d; font-weight:800; letter-spacing:.3px;}
   .dtag{font-size:10px; padding:0 5px; border-radius:1px; font-weight:700; border:1px solid;}
+  /* S32 역할 표시: 상자 없이 색 밑줄 (주 역할=실선, 보조 역할=점선) */
+  .rtag{display:inline-block; margin-left:5px; font-size:10px; font-weight:800; letter-spacing:.3px; line-height:1.3; border-bottom:2px solid currentColor; white-space:nowrap;}
+  .rtag.sub{font-weight:600; border-bottom:1px dotted currentColor; opacity:.85;}
+  .roleCov{margin-top:7px; padding-top:5px; border-top:1px dashed var(--line); font-size:11px; color:var(--dim); line-height:1.8;}
+  .roleCov .rtag{margin-left:0; margin-right:6px;}
+  .roleCov .miss{color:var(--mute); margin-right:6px; font-size:10px;}
+  .roleRule{margin:4px 0 6px; padding:3px 0 3px 9px; border-left:2px solid var(--amber); font-size:12px; color:var(--ink); line-height:1.55;}
+  .roleRule summary{list-style:none; cursor:pointer; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .roleRule summary::-webkit-details-marker{display:none;}
+  .roleRule .more{font-size:11px; color:var(--mute); border-bottom:1px dotted var(--mute);}
+  .roleRule[open] .more{display:none;}
+  .roleChips{display:flex; flex-wrap:wrap; gap:0 12px; margin:2px 0 8px;}
+  .roleChips button{background:none; clip-path:none; box-shadow:none; border:0; border-bottom:2px solid transparent; border-radius:0; padding:5px 1px; font-size:12px; font-weight:700; color:var(--dim);}
+  .roleChips button.on{border-bottom-color:currentColor;}
   .dt-phys{color:#f0955e; border-color:#f0955e;} .dt-magic{color:#86b8d6; border-color:#86b8d6;} .dt-pierce{color:#e8c04e; border-color:#e8c04e;}
   .odds{display:flex; flex-direction:column; gap:4px; font-size:12px;}
   .odds .row{display:flex; justify-content:space-between; border-bottom:1px dotted var(--line); padding-bottom:2px;}
@@ -247,6 +261,7 @@
     .linkBtn{ min-height:44px; padding-top:8px; padding-bottom:8px; }
     details.fold > summary{ min-height:44px; }
     .bkCard{ min-height:48px; }
+    .roleRule summary{ min-height:44px; }
   }
   @media (prefers-reduced-motion:reduce){ button{ transition:none; } }
   .hidden{display:none !important;}
@@ -346,6 +361,7 @@
       <div class="invHead"><span class="secT" style="margin:0;">🎒 보유 유닛</span>
         <button id="sellUnusedBtn" class="linkBtn" onclick="sellUnusedAsk()" title="목표 조합에 안 쓰는 남는 유닛을 한 번에 팔아요">🧹 안 쓰는 유닛 팔기</button></div>
       <div id="invBox" style="display:flex;flex-wrap:wrap;gap:4px;font-size:12px;"><span style="color:#aeb6bf;">없음</span></div>
+      <div id="roleCov" class="roleCov"></div>
       <div class="tipLine">지도에서 유닛을 누르면 아래에 정보·판매 버튼이 떠요 · 끌어다 놓으면 자리 이동</div>
     </div>
     <div class="card hidden" id="selCard">
@@ -450,135 +466,224 @@ function dmgMult(dt,e){
 // 유닛 도감 — dt=데미지타입
 const U={
   // ===== 흔함 common (12) — 소환 전용 =====
-  'K2소총수':{t:'common',dt:'phys',dmg:11,range:95,cd:600},
-  'K3기관총사수':{t:'common',dt:'phys',dmg:7,range:88,cd:300,short:'K3기관총'},
-  '판처파우스트':{t:'common',dt:'pierce',dmg:20,range:98,cd:1150,bossBonus:1.2,short:'판처'},
-  '신궁사수':{t:'common',dt:'phys',dmg:14,range:128,cd:850,air:true,mode:'air'},
-  '척탄병':{t:'common',dt:'magic',dmg:12,range:90,cd:820,splash:28},
-  '통신병':{t:'common',dt:'phys',dmg:0,range:108,cd:9999,buff:{dmg:1.15,as:1.15}},
-  '의무병':{t:'common',dt:'phys',dmg:6,range:88,cd:1100,supply:1},
-  '수송병':{t:'common',dt:'phys',dmg:7,range:85,cd:900,gold:0.15},
-  '공병':{t:'common',dt:'phys',dmg:9,range:84,cd:800,slow:0.7},
-  '군견병':{t:'common',dt:'phys',dmg:8,range:76,cd:480,slow:0.85},
-  '경계병':{t:'common',dt:'phys',dmg:14,range:122,cd:880,mode:'strong'},
-  '정비병':{t:'common',dt:'phys',dmg:5,range:82,cd:1000,gold:0.1,supply:1},
+  'K2소총수':{t:'common',dt:'phys',dmg:11,range:95,cd:600,execute:0.06,role:'처형'},
+  'K3기관총사수':{t:'common',dt:'phys',dmg:7,range:88,cd:300,slow:0.85,short:'K3기관총',role:'감속'},
+  '판처파우스트':{t:'common',dt:'pierce',dmg:20,range:98,cd:1150,bossBonus:1.2,short:'판처',role:'보스'},
+  '신궁사수':{t:'common',dt:'phys',dmg:14,range:128,cd:850,air:true,mode:'air',role:'대공'},
+  '척탄병':{t:'common',dt:'magic',dmg:12,range:90,cd:820,splash:28,role:'광역'},
+  '통신병':{t:'common',dt:'phys',dmg:0,range:108,cd:9999,buff:{dmg:1.15,as:1.15},role:'강화'},
+  '의무병':{t:'common',dt:'phys',dmg:6,range:88,cd:1100,supply:1,role:'경제'},
+  '수송병':{t:'common',dt:'phys',dmg:7,range:85,cd:900,gold:0.15,role:'경제'},
+  '공병':{t:'common',dt:'phys',dmg:9,range:84,cd:800,slow:0.7,armBrk:0.08,role:'방깎',roles:['감속']},
+  '군견병':{t:'common',dt:'phys',dmg:8,range:76,cd:480,stun:300,stunP:0.15,role:'기절'},
+  '경계병':{t:'common',dt:'phys',dmg:14,range:122,cd:880,mode:'strong',curHpPct:0.008,role:'현재%'},
+  '정비병':{t:'common',dt:'phys',dmg:5,range:82,cd:1000,gold:0.1,supply:1,role:'경제'},
   // ===== 안흔함 uncommon (14) — 흔함 2종 =====
-  '저격수':{t:'uncommon',dt:'pierce',dmg:38,range:160,cd:900,mode:'strong',bossBonus:1.5},
-  '지정사수':{t:'uncommon',dt:'phys',dmg:32,range:145,cd:520,mode:'strong'},
-  'K3기관총반':{t:'uncommon',dt:'phys',dmg:13,range:100,cd:230,slow:0.9,short:'K3반'},
-  '박격포반':{t:'uncommon',dt:'magic',dmg:30,range:120,cd:1050,splash:48},
-  '발칸포반':{t:'uncommon',dt:'phys',dmg:26,range:134,cd:220,air:true,mode:'air',short:'발칸'},
-  '정찰드론':{t:'uncommon',dt:'phys',dmg:22,range:140,cd:520,air:true,gold:0.05},
-  '화염방사병':{t:'uncommon',dt:'magic',dmg:16,range:86,cd:340,dot:{dps:38,dur:1500},splash:34,short:'화염병'},
-  '미사일반':{t:'uncommon',dt:'pierce',dmg:56,range:155,cd:1150,bossBonus:1.5,short:'미사일'},
-  '정찰병':{t:'uncommon',dt:'phys',dmg:17,range:112,cd:680,debuff:1.2,gold:0.1},
-  '화생방병':{t:'uncommon',dt:'pierce',dmg:10,range:100,cd:880,dot:{dps:18,dur:3000}},
-  '의무지원반':{t:'uncommon',dt:'phys',dmg:8,range:104,cd:1000,supply:2,short:'의무반'},
-  '공병중대':{t:'uncommon',dt:'phys',dmg:16,range:96,cd:760,slow:0.65,short:'공병대'},
-  '통신중대':{t:'uncommon',dt:'phys',dmg:0,range:118,cd:9999,buff:{dmg:1.25,as:1.2},short:'통신대'},
-  '수색대':{t:'uncommon',dt:'phys',dmg:24,range:120,cd:440,debuff:1.15,short:'수색'},
+  '저격수':{t:'uncommon',dt:'pierce',dmg:38,range:160,cd:900,mode:'strong',bossBonus:1.5,curHpPct:0.015,role:'현재%',roles:['보스']},
+  '지정사수':{t:'uncommon',dt:'phys',dmg:32,range:145,cd:520,mode:'strong',maxHpPct:0.006,role:'최대%'},
+  'K3기관총반':{t:'uncommon',dt:'phys',dmg:13,range:100,cd:230,slow:0.8,short:'K3반',role:'감속'},
+  '박격포반':{t:'uncommon',dt:'magic',dmg:30,range:120,cd:1050,splash:48,role:'광역'},
+  '발칸포반':{t:'uncommon',dt:'phys',dmg:26,range:134,cd:220,air:true,mode:'air',short:'발칸',role:'대공'},
+  '정찰드론':{t:'uncommon',dt:'phys',dmg:22,range:140,cd:520,air:true,gold:0.05,slow:0.85,role:'감속',roles:['대공','경제']},
+  '화염방사병':{t:'uncommon',dt:'magic',dmg:16,range:86,cd:340,dot:{dps:38,dur:1500},splash:34,short:'화염병',role:'지속',roles:['광역']},
+  '미사일반':{t:'uncommon',dt:'pierce',dmg:56,range:155,cd:1150,bossBonus:1.5,short:'미사일',role:'보스'},
+  '정찰병':{t:'uncommon',dt:'phys',dmg:17,range:112,cd:680,debuff:1.2,gold:0.1,role:'증폭',roles:['경제']},
+  '화생방병':{t:'uncommon',dt:'pierce',dmg:10,range:100,cd:880,dot:{dps:18,dur:3000},role:'지속'},
+  '의무지원반':{t:'uncommon',dt:'phys',dmg:8,range:104,cd:1000,supply:2,short:'의무반',role:'경제'},
+  '공병중대':{t:'uncommon',dt:'phys',dmg:16,range:96,cd:760,slow:0.65,armBrk:0.12,short:'공병대',role:'방깎',roles:['감속']},
+  '통신중대':{t:'uncommon',dt:'phys',dmg:0,range:118,cd:9999,buff:{dmg:1.25,as:1.2},short:'통신대',role:'강화'},
+  '수색대':{t:'uncommon',dt:'phys',dmg:26,range:120,cd:440,stun:300,stunP:0.12,short:'수색',role:'기절'},
   // ===== 특별 special (12) — 안흔함 3종 =====
-  'K200 APC':{t:'special',dt:'phys',dmg:52,range:120,cd:560,splash:34,short:'K200'},
-  'K808 백호':{t:'special',dt:'phys',dmg:64,range:128,cd:680,splash:40,short:'K808'},
-  'KH179 견인포':{t:'special',dt:'magic',dmg:82,range:150,cd:1250,splash:64,short:'KH179'},
-  'K105A1 자주포':{t:'special',dt:'magic',dmg:70,range:160,cd:1050,splash:54,short:'K105'},
-  '비호':{t:'special',dt:'phys',dmg:34,range:135,cd:220,air:true,mode:'air'},
-  '천마':{t:'special',dt:'pierce',dmg:96,range:158,cd:900,air:true,bossBonus:1.3,short:'천마'},
-  '송골매':{t:'special',dt:'phys',dmg:46,range:165,cd:430,air:true,gold:0.05},
-  '500MD':{t:'special',dt:'magic',dmg:60,range:150,cd:620,air:true,splash:40},
-  '화룡 화염장갑차':{t:'special',dt:'magic',dmg:34,range:100,cd:420,dot:{dps:46,dur:1500},splash:46,short:'화룡'},
-  '제독차':{t:'special',dt:'pierce',dmg:24,range:116,cd:980,dot:{dps:48,dur:3000},splash:54},
-  '특공대':{t:'special',dt:'pierce',dmg:88,range:108,cd:520,bossBonus:1.8,short:'특공'},
-  '수리온':{t:'special',dt:'phys',dmg:40,range:140,cd:480,air:true,supply:1,short:'수리온'},
+  'K200 APC':{t:'special',dt:'phys',dmg:52,range:120,cd:560,splash:34,stun:300,stunP:0.15,short:'K200',role:'기절',roles:['광역']},
+  'K808 백호':{t:'special',dt:'phys',dmg:64,range:128,cd:680,splash:40,shred:true,armBrk:0.15,short:'K808',role:'방깎',roles:['광역']},
+  'KH179 견인포':{t:'special',dt:'magic',dmg:82,range:150,cd:1250,splash:64,short:'KH179',role:'광역'},
+  'K105A1 자주포':{t:'special',dt:'magic',dmg:70,range:160,cd:1050,splash:54,bossBonus:1.3,short:'K105',role:'보스',roles:['광역']},
+  '비호':{t:'special',dt:'phys',dmg:34,range:135,cd:220,air:true,mode:'air',role:'대공'},
+  '천마':{t:'special',dt:'pierce',dmg:96,range:158,cd:900,air:true,bossBonus:1.3,short:'천마',role:'대공',roles:['보스']},
+  '송골매':{t:'special',dt:'phys',dmg:46,range:165,cd:430,air:true,debuff:1.15,role:'증폭'},
+  '500MD':{t:'special',dt:'magic',dmg:60,range:150,cd:620,air:true,splash:40,role:'광역'},
+  '화룡 화염장갑차':{t:'special',dt:'magic',dmg:34,range:100,cd:420,dot:{dps:46,dur:1500},splash:46,short:'화룡',role:'지속',roles:['광역']},
+  '제독차':{t:'special',dt:'pierce',dmg:24,range:116,cd:980,dot:{dps:48,dur:3000},splash:54,slow:0.75,role:'감속',roles:['지속']},
+  '특공대':{t:'special',dt:'pierce',dmg:88,range:108,cd:520,bossBonus:1.8,execute:0.1,short:'특공',role:'처형',roles:['보스']},
+  '수리온':{t:'special',dt:'phys',dmg:40,range:140,cd:480,air:true,supply:2,short:'수리온',role:'경제'},
   // ===== 희귀 rare (10) — 특별 3종 =====
-  'K1A2 전차':{t:'rare',dt:'phys',dmg:185,range:124,cd:880,splash:30,bossBonus:1.3,short:'K1A2'},
-  'K21 보병전투차':{t:'rare',dt:'phys',dmg:78,range:122,cd:380,rampage:2,short:'K21'},
-  'K9 천둥':{t:'rare',dt:'magic',dmg:150,range:215,cd:1350,splash:70,short:'K9'},
-  '천호 방공복합':{t:'rare',dt:'phys',dmg:84,range:148,cd:330,air:true,slow:0.55,splash:42,short:'천호'},
-  'LAMD 요격체계':{t:'rare',dt:'magic',dmg:124,range:180,cd:850,air:true,splash:52,short:'LAMD'},
-  'AH-1S 코브라':{t:'rare',dt:'magic',dmg:120,range:175,cd:540,air:true,splash:48,short:'코브라'},
-  '특전여단':{t:'rare',dt:'pierce',dmg:155,range:114,cd:520,bossBonus:2.0,short:'특전'},
-  '현무-2':{t:'rare',dt:'magic',dmg:240,range:230,cd:1700,splash:60,bossBonus:1.3,short:'현무2'},
-  '무인수색차':{t:'rare',dt:'phys',dmg:96,range:150,cd:300,rampage:1,short:'무인차'},
-  '비호복합':{t:'rare',dt:'phys',dmg:70,range:150,cd:200,air:true,mode:'air',short:'비호복합'},
-  '현무-2A':{t:'rare',dt:'magic',dmg:210,range:235,cd:1500,splash:62,maxHpPct:0.02,short:'현무2A'},
-  'K30 비호Ⅱ':{t:'rare',dt:'phys',dmg:88,range:152,cd:210,air:true,shred:true,short:'비호2'},
+  'K1A2 전차':{t:'rare',dt:'phys',dmg:185,range:124,cd:880,splash:30,bossBonus:1.3,armBrk:0.1,short:'K1A2',role:'방깎',roles:['보스']},
+  'K21 보병전투차':{t:'rare',dt:'phys',dmg:78,range:122,cd:380,rampage:2,stun:250,stunP:0.1,short:'K21',role:'기절'},
+  'K9 천둥':{t:'rare',dt:'magic',dmg:150,range:215,cd:1350,splash:70,short:'K9',role:'광역'},
+  '천호 방공복합':{t:'rare',dt:'phys',dmg:84,range:148,cd:330,air:true,slow:0.55,splash:42,short:'천호',role:'감속',roles:['대공']},
+  'LAMD 요격체계':{t:'rare',dt:'magic',dmg:124,range:180,cd:850,air:true,splash:52,short:'LAMD',role:'대공',roles:['광역']},
+  'AH-1S 코브라':{t:'rare',dt:'magic',dmg:120,range:175,cd:540,air:true,splash:48,dot:{dps:50,dur:2000},short:'코브라',role:'지속',roles:['광역']},
+  '특전여단':{t:'rare',dt:'pierce',dmg:155,range:114,cd:520,bossBonus:2.0,execute:0.12,short:'특전',role:'처형',roles:['보스']},
+  '현무-2':{t:'rare',dt:'magic',dmg:240,range:230,cd:1700,splash:60,bossBonus:1.3,short:'현무2',role:'보스',roles:['광역']},
+  '무인수색차':{t:'rare',dt:'phys',dmg:96,range:150,cd:300,rampage:1,short:'무인차',role:'증폭'},
+  '비호복합':{t:'rare',dt:'phys',dmg:70,range:150,cd:200,air:true,mode:'air',short:'비호복합',role:'대공'},
+  '현무-2A':{t:'rare',dt:'magic',dmg:210,range:235,cd:1500,splash:62,maxHpPct:0.02,short:'현무2A',role:'최대%',roles:['광역']},
+  'K30 비호Ⅱ':{t:'rare',dt:'phys',dmg:88,range:152,cd:210,air:true,shred:true,short:'비호2',role:'대공',roles:['방깎']},
   // ===== 전설 legend (10) — 희귀 3종 · 특수능력 보유 =====
-  'K2 흑표':{t:'legend',dt:'phys',dmg:420,range:132,cd:820,splash:48,bossBonus:1.3,shred:true,short:'K2흑표'},
-  '천무 다연장':{t:'legend',dt:'magic',dmg:230,range:232,cd:1550,splash:96,maxHpPct:0.03,short:'천무'},
-  'AH-64E 아파치':{t:'legend',dt:'magic',dmg:175,range:170,cd:480,air:true,splash:58,shred:true,short:'아파치'},
-  '707특임대':{t:'legend',dt:'pierce',dmg:260,range:120,cd:480,bossBonus:3.0,execute:0.1,stun:500,short:'707'},
-  '현무-3':{t:'legend',dt:'magic',dmg:1050,range:250,cd:2150,splash:54,bossBonus:1.5,curHpPct:0.04,short:'현무3'},
-  'K10 탄약운반':{t:'legend',dt:'phys',dmg:140,range:170,cd:150,buff:{dmg:1.2,as:1.25},short:'K10'},
-  '드론봇중대':{t:'legend',dt:'phys',dmg:230,range:195,cd:230,air:true,splash:42,shred:true,short:'드론봇'},
-  '미사일여단':{t:'legend',dt:'pierce',dmg:340,range:205,cd:760,air:true,bossBonus:1.6,stun:450,short:'미여단'},
-  'K808A 천산':{t:'legend',dt:'phys',dmg:300,range:140,cd:600,splash:54,stun:400,short:'천산'},
-  '현궁 대전차':{t:'legend',dt:'pierce',dmg:520,range:200,cd:900,bossBonus:1.8,maxHpPct:0.03,short:'현궁'},
+  'K2 흑표':{t:'legend',dt:'phys',dmg:420,range:132,cd:820,splash:48,bossBonus:1.3,shred:true,armBrk:0.15,short:'K2흑표',role:'방깎',roles:['보스','광역']},
+  '천무 다연장':{t:'legend',dt:'magic',dmg:230,range:232,cd:1550,splash:96,maxHpPct:0.03,short:'천무',role:'광역',roles:['최대%']},
+  'AH-64E 아파치':{t:'legend',dt:'magic',dmg:175,range:170,cd:480,air:true,splash:58,shred:true,curHpPct:0.01,short:'아파치',role:'현재%',roles:['방깎']},
+  '707특임대':{t:'legend',dt:'pierce',dmg:260,range:120,cd:480,bossBonus:3.0,execute:0.1,stun:500,short:'707',role:'처형',roles:['보스','기절']},
+  '현무-3':{t:'legend',dt:'magic',dmg:1050,range:250,cd:2150,splash:54,bossBonus:1.5,curHpPct:0.04,short:'현무3',role:'보스',roles:['현재%']},
+  'K10 탄약운반':{t:'legend',dt:'phys',dmg:140,range:170,cd:150,buff:{dmg:1.2,as:1.25},short:'K10',role:'강화',roles:['경제']},
+  '드론봇중대':{t:'legend',dt:'phys',dmg:230,range:195,cd:230,air:true,splash:42,shred:true,slow:0.8,short:'드론봇',role:'감속',roles:['방깎']},
+  '미사일여단':{t:'legend',dt:'pierce',dmg:340,range:205,cd:760,air:true,bossBonus:1.6,stun:450,short:'미여단',role:'보스',roles:['기절']},
+  'K808A 천산':{t:'legend',dt:'phys',dmg:300,range:140,cd:600,splash:54,stun:400,short:'천산',role:'기절',roles:['광역']},
+  '현궁 대전차':{t:'legend',dt:'pierce',dmg:520,range:200,cd:900,bossBonus:1.8,maxHpPct:0.03,short:'현궁',role:'최대%',roles:['보스']},
   // ===== 신화 mythic (6) — 전설 3종 · 강력 특수능력 =====
-  '현무-5':{t:'mythic',dt:'magic',dmg:2900,range:999,cd:3800,splash:140,bossBonus:1.5,maxHpPct:0.05,stun:600,short:'현무5'},
-  '천광 레이저포대':{t:'mythic',dt:'pierce',dmg:430,range:215,cd:340,air:true,splash:74,bossBonus:1.3,stun:350,short:'천광'},
-  '드론봇 전투단':{t:'mythic',dt:'phys',dmg:360,range:200,cd:210,air:true,splash:46,shred:true,stun:300,short:'드론봇단'},
-  'ATACMS':{t:'mythic',dt:'magic',dmg:1500,range:280,cd:2400,splash:120,curHpPct:0.06,short:'ATACMS'},
-  'LAH 편대':{t:'mythic',dt:'phys',dmg:480,range:185,cd:300,air:true,splash:52,shred:true,short:'LAH'},
-  '천검 무인편대':{t:'mythic',dt:'magic',dmg:620,range:230,cd:380,air:true,splash:60,maxHpPct:0.03,stun:300,short:'천검'},
+  '현무-5':{t:'mythic',dt:'magic',dmg:2900,range:999,cd:3800,splash:140,bossBonus:1.5,maxHpPct:0.05,stun:600,short:'현무5',role:'최대%',roles:['기절','보스']},
+  '천광 레이저포대':{t:'mythic',dt:'pierce',dmg:430,range:215,cd:340,air:true,splash:74,bossBonus:1.3,stun:350,dot:{dps:120,dur:2000},short:'천광',role:'지속',roles:['대공','기절']},
+  '드론봇 전투단':{t:'mythic',dt:'phys',dmg:360,range:200,cd:210,air:true,splash:46,shred:true,slow:0.75,stun:300,short:'드론봇단',role:'감속',roles:['방깎','기절']},
+  'ATACMS':{t:'mythic',dt:'magic',dmg:1500,range:280,cd:2400,splash:120,curHpPct:0.06,short:'ATACMS',role:'현재%',roles:['광역']},
+  'LAH 편대':{t:'mythic',dt:'phys',dmg:480,range:185,cd:300,air:true,splash:52,shred:true,armBrk:0.15,short:'LAH',role:'방깎'},
+  '천검 무인편대':{t:'mythic',dt:'magic',dmg:620,range:230,cd:380,air:true,splash:60,maxHpPct:0.03,debuff:1.15,stun:300,short:'천검',role:'증폭',roles:['최대%','기절']},
   // ===== 최상위 조합 (4) — 신화 3종 조합의 정점 =====
-  '수도기계화사단':{t:'apex',dt:'phys',dmg:780,range:235,cd:560,splash:88,buff:{dmg:1.4,as:1.3},shred:true,stun:400,short:'수기사'},
-  '신속대응사단':{t:'apex',dt:'pierce',dmg:1800,range:150,cd:680,bossBonus:4,execute:0.15,stun:500,short:'신대사'},
-  '백두금강정찰':{t:'apex',dt:'phys',dmg:1500,range:240,cd:170,air:true,splash:50,debuff:1.3,shred:true,short:'백두금강'},
-  '드론봇 군단':{t:'apex',dt:'magic',dmg:1600,range:245,cd:300,air:true,splash:70,maxHpPct:0.04,stun:350,short:'드론군단'},
+  '수도기계화사단':{t:'apex',dt:'phys',dmg:780,range:235,cd:560,splash:88,buff:{dmg:1.4,as:1.3},shred:true,stun:400,short:'수기사',role:'강화',roles:['방깎','기절']},
+  '신속대응사단':{t:'apex',dt:'pierce',dmg:1800,range:150,cd:680,bossBonus:4,execute:0.15,stun:500,short:'신대사',role:'처형',roles:['보스','기절']},
+  '백두금강정찰':{t:'apex',dt:'phys',dmg:1500,range:240,cd:170,air:true,splash:50,debuff:1.3,shred:true,short:'백두금강',role:'증폭',roles:['방깎']},
+  '드론봇 군단':{t:'apex',dt:'magic',dmg:1600,range:245,cd:300,air:true,splash:70,slow:0.7,maxHpPct:0.04,stun:350,short:'드론군단',role:'감속',roles:['최대%','기절']},
   // ===== 히든 hidden (3) — 비밀 조합, 첫 재료만 노출 =====
-  '국군통수권':{t:'hidden',dt:'magic',dmg:5200,range:340,cd:1500,splash:90,bossBonus:2.5,maxHpPct:0.06,stun:800,short:'통수권'},
-  '비밀정보부':{t:'hidden',dt:'pierce',dmg:6000,range:280,cd:700,bossBonus:5,execute:0.25,curHpPct:0.08,stun:600,short:'정보부'},
-  '현무-Ω':{t:'hidden',dt:'magic',dmg:9000,range:360,cd:1600,splash:120,bossBonus:3,maxHpPct:0.1,stun:1000,short:'현무Ω'},
+  '국군통수권':{t:'hidden',dt:'magic',dmg:5200,range:340,cd:1500,splash:90,buff:{dmg:1.2,as:1.2},bossBonus:2.5,maxHpPct:0.06,stun:800,short:'통수권',role:'강화',roles:['최대%','기절']},
+  '비밀정보부':{t:'hidden',dt:'pierce',dmg:6000,range:280,cd:700,bossBonus:5,execute:0.25,curHpPct:0.08,stun:600,short:'정보부',role:'현재%',roles:['처형','보스']},
+  '현무-Ω':{t:'hidden',dt:'magic',dmg:9000,range:360,cd:1600,splash:120,bossBonus:3,maxHpPct:0.1,stun:1000,short:'현무Ω',role:'최대%',roles:['기절','보스']},
 };
 // ===== S31 등급 스킬: 희귀 1 · 전설 2 · 신화 3 · 초월 4 · 히든 5 =====
 // on: 'hit'=공격할 때 p 확률 · 'count'=n번 공격마다 · 'time'=공격 중 sec초마다
-// fx: stun(기절) bomb(폭발) barrage(연속 낙하) slow(둔화) shred(방어 약화) rally(아군 공속↑) aa(대공 폭발, 비행 2배) snipe(가장 튼튼한 1마리)
-// r=범위(px, 지도 기준) · k=그 순간 1타 공격력의 배수 · ms=기절 시간 · hits=낙하 발수 · mul=둔화 속도배율/공속배율 · dur=지속(ms)
 const SKILL_N={rare:1,legend:2,mythic:3,apex:4,hidden:5};
 function SK(nm,on,v,fx,o){const s={nm,on,fx};if(on==='hit')s.p=v;else if(on==='count')s.n=v;else s.sec=v;return Object.assign(s,o||{});}
-const SKILLS={
-  // 희귀 (1개)
-  'K1A2 전차':[SK('전차포 일제사격','count',8,'bomb',{r:55,k:1.0})],
-  'K21 보병전투차':[SK('하차 돌격','hit',0.10,'stun',{r:50,ms:400,k:0.6})],
-  'K9 천둥':[SK('포병 집중사격','hit',0.12,'bomb',{r:80,k:1.0})],
-  '천호 방공복합':[SK('대공 탄막','count',20,'aa',{r:70,k:1.5})],
-  'LAMD 요격체계':[SK('요격 탄막','hit',0.12,'aa',{r:70,k:1.0})],
-  'AH-1S 코브라':[SK('로켓 세례','count',12,'barrage',{r:30,k:0.4,hits:4})],
-  '특전여단':[SK('특전 섬광탄','hit',0.12,'stun',{r:50,ms:500,k:0.6})],
-  '현무-2':[SK('탄도탄 정밀타격','hit',0.15,'snipe',{k:1.5})],
-  '무인수색차':[SK('표적 지정 레이저','count',15,'shred',{r:60,k:0.5})],
-  '비호복합':[SK('대공 연사','count',25,'aa',{r:60,k:1.5})],
-  '현무-2A':[SK('탄도탄 집중','hit',0.15,'bomb',{r:70,k:0.9})],
-  'K30 비호Ⅱ':[SK('연막 제압','count',25,'slow',{r:70,mul:0.6,dur:2000,k:0.5})],
-  // 전설 (2개)
-  'K2 흑표':[SK('전차포 일제사격','count',8,'bomb',{r:60,k:1.0}),SK('기갑 돌파','hit',0.12,'stun',{r:55,ms:500})],
-  '천무 다연장':[SK('다연장 로켓 세례','count',6,'barrage',{r:40,k:0.2,hits:6}),SK('포병 집중사격','hit',0.08,'bomb',{r:90,k:0.8})],
-  'AH-64E 아파치':[SK('헬파이어 일제사격','count',12,'barrage',{r:30,k:0.4,hits:4}),SK('기관포 제압','hit',0.12,'slow',{r:60,mul:0.6,dur:1500})],
-  '707특임대':[SK('특임 섬광탄','hit',0.15,'stun',{r:60,ms:500}),SK('저격 일격','count',10,'snipe',{k:2.0})],
-  '현무-3':[SK('탄도탄 정밀타격','hit',0.20,'snipe',{k:1.5}),SK('충격파 탄두','hit',0.15,'stun',{r:70,ms:600,k:0.4})],
-  'K10 탄약운반':[SK('탄약 긴급보급','time',10,'rally',{r:120,mul:1.25,dur:4000}),SK('탄약고 유폭','count',50,'bomb',{r:60,k:3.0})],
-  '드론봇중대':[SK('자폭 드론 투하','count',20,'barrage',{r:35,k:0.6,hits:3}),SK('전파 교란','hit',0.08,'slow',{r:60,mul:0.6,dur:1500})],
-  '미사일여단':[SK('미사일 일제사격','count',8,'barrage',{r:30,k:0.3,hits:4}),SK('포병 집중사격','hit',0.10,'bomb',{r:100,k:0.8})],
-  'K808A 천산':[SK('기동 돌파','hit',0.15,'stun',{r:60,ms:500}),SK('천산 포격','count',10,'bomb',{r:70,k:1.2})],
-  '현궁 대전차':[SK('장갑 관통탄','hit',0.15,'shred',{r:50}),SK('정밀 유도 일격','count',8,'snipe',{k:1.5})],
-  // 신화 (3개)
-  '현무-5':[SK('충격파 탄두','hit',0.25,'stun',{r:120,ms:700}),SK('탄도탄 연속 발사','count',5,'bomb',{r:100,k:0.5}),SK('자탄 살포','count',7,'barrage',{r:40,k:0.15,hits:5})],
-  '천광 레이저포대':[SK('레이저 과부하','count',15,'bomb',{r:80,k:1.2}),SK('섬광 교란','hit',0.08,'stun',{r:60,ms:400}),SK('대공 레이저망','count',20,'aa',{r:90,k:1.2})],
-  '드론봇 전투단':[SK('자폭 드론 편대','count',25,'barrage',{r:35,k:0.5,hits:4}),SK('전파 교란','hit',0.06,'slow',{r:70,mul:0.55,dur:2000}),SK('드론 전술 연동','time',12,'rally',{r:120,mul:1.2,dur:4000})],
-  'ATACMS':[SK('집속탄 세례','hit',0.15,'barrage',{r:40,k:0.2,hits:6}),SK('전술 탄도탄','count',6,'bomb',{r:110,k:0.5}),SK('충격파 탄두','hit',0.15,'stun',{r:90,ms:600})],
-  'LAH 편대':[SK('공대지 로켓 세례','count',20,'barrage',{r:35,k:0.6,hits:4}),SK('정밀 유도 일격','hit',0.06,'snipe',{k:2.0}),SK('표적 지정','count',25,'shred',{r:60})],
-  '천검 무인편대':[SK('정밀 유도 일격','hit',0.06,'snipe',{k:2.0}),SK('편대 집중 폭격','count',18,'bomb',{r:80,k:1.2}),SK('연막 제압','hit',0.08,'slow',{r:70,mul:0.6,dur:1500})],
-  // 초월 (4개)
-  '수도기계화사단':[SK('기갑 돌파','hit',0.10,'stun',{r:70,ms:500}),SK('포병 집중사격','count',10,'bomb',{r:90,k:1.0}),SK('기갑 독려','time',12,'rally',{r:150,mul:1.2,dur:4000}),SK('장갑 파쇄','count',15,'shred',{r:80})],
-  '신속대응사단':[SK('강습 섬광탄','hit',0.12,'stun',{r:60,ms:600}),SK('저격 일격','count',8,'snipe',{k:1.5}),SK('헬기 로켓 지원','count',12,'barrage',{r:35,k:0.3,hits:4}),SK('신속 전개','time',15,'rally',{r:120,mul:1.2,dur:4000})],
-  '백두금강정찰':[SK('표적 지정','count',30,'shred',{r:80}),SK('정밀 폭격 유도','count',25,'bomb',{r:80,k:1.5}),SK('연막 제압','hit',0.04,'slow',{r:80,mul:0.6,dur:2000}),SK('정찰 정보 공유','time',12,'rally',{r:120,mul:1.2,dur:4000})],
-  '드론봇 군단':[SK('자폭 드론 군집','count',15,'barrage',{r:35,k:0.4,hits:5}),SK('전파 교란','hit',0.06,'stun',{r:60,ms:400}),SK('드론 집중 폭격','count',20,'bomb',{r:80,k:1.2}),SK('대공 드론망','count',25,'aa',{r:100,k:1.5})],
-  // 히든 (5개)
-  '국군통수권':[SK('전군 비상령','time',15,'rally',{r:200,mul:1.3,dur:5000}),SK('합동 화력 집중','count',5,'bomb',{r:110,k:0.6}),SK('다연장 로켓 세례','count',7,'barrage',{r:40,k:0.15,hits:6}),SK('충격파 탄두','hit',0.12,'stun',{r:100,ms:800}),SK('전군 표적 지정','count',10,'shred',{r:100})],
-  '비밀정보부':[SK('암살 저격','count',6,'snipe',{k:1.5}),SK('섬광 교란','hit',0.10,'stun',{r:70,ms:600}),SK('첩보 지원','time',15,'rally',{r:150,mul:1.25,dur:4000}),SK('신경 교란','hit',0.08,'slow',{r:80,mul:0.5,dur:2000}),SK('약점 폭로','count',12,'shred',{r:80})],
-  '현무-Ω':[SK('현무 궤도 포격','count',4,'bomb',{r:130,k:0.5}),SK('자탄 살포','count',6,'barrage',{r:45,k:0.15,hits:6}),SK('충격파 탄두','hit',0.15,'stun',{r:110,ms:800}),SK('전역 표적 지정','count',10,'shred',{r:110}),SK('탄도탄 정밀타격','hit',0.15,'snipe',{k:1.5})],
+// fx: stun(기절) bomb(폭발) barrage(연속 낙하) slow(감속) shred(방어력 감소) rally(아군 공속↑) aa(대공 폭발, 비행 2배) snipe(가장 튼튼한 1마리)
+//     S32 추가: mark(받는 피해 증가 표식) pct(체력 비례 폭발) exec(처형) burn(불붙이기) gold(골드 보급)
+// r=범위(px, 지도 기준) · k=그 순간 1타 공격력의 배수 · ms=기절 시간 · hits=낙하 발수 · mul=감속 속도배율/공속배율 · dur=지속(ms)
+// v=방깎·표식 세기 · mp/cp=최대·현재 체력 비례 · th=처형 기준 · bp=보스 우선 조준 · g=골드
+// S32: 같은 이름 스킬은 어디서나 같은 수치(SKD 한 곳에서 정의). 더 센 판은 Ⅱ·Ⅲ 이름으로 구분.
+const SKD={
+  // 기절
+  '하차 돌격':['hit',0.10,'stun',{r:50,ms:500,k:0.6}],
+  '기동 돌파':['hit',0.15,'stun',{r:60,ms:500}],
+  '기갑 돌파':['hit',0.10,'stun',{r:70,ms:500}],
+  '강습 섬광탄':['hit',0.12,'stun',{r:60,ms:600}],
+  '섬광 교란':['hit',0.08,'stun',{r:60,ms:400}],
+  '섬광 교란Ⅱ':['hit',0.10,'stun',{r:70,ms:600}],
+  '충격파 탄두':['hit',0.15,'stun',{r:80,ms:600,k:0.3}],
+  '충격파 탄두Ⅱ':['hit',0.20,'stun',{r:110,ms:700,k:0.3}],
+  '충격파 탄두Ⅲ':['hit',0.20,'stun',{r:120,ms:800,k:0.4}],
+  // 감속
+  '방공 제압탄':['count',20,'slow',{r:70,mul:0.6,dur:2000,k:1.0}],
+  '연막 제압':['hit',0.06,'slow',{r:80,mul:0.6,dur:2000}],
+  '전파 교란':['hit',0.08,'slow',{r:60,mul:0.6,dur:1500}],
+  '전파 교란Ⅱ':['hit',0.08,'slow',{r:70,mul:0.55,dur:2000}],
+  '전파 교란Ⅲ':['hit',0.10,'slow',{r:90,mul:0.5,dur:2000}],
+  // 방어력 감소
+  '철갑탄 일제사격':['count',8,'shred',{r:55,k:1.0,v:0.15}],
+  '장갑 파쇄':['count',15,'shred',{r:70,v:0.2}],
+  '장갑 파쇄Ⅱ':['count',12,'shred',{r:90,v:0.25}],
+  '약점 폭로':['count',12,'shred',{r:80,v:0.2}],
+  // 받는 피해 증가
+  '표적 지정 레이저':['count',15,'mark',{r:60,v:0.15,dur:4000,k:0.5}],
+  '표적 지정':['count',20,'mark',{r:70,v:0.15,dur:4000}],
+  '표적 지정Ⅱ':['count',20,'mark',{r:100,v:0.2,dur:5000}],
+  '전군 표적 지정':['count',10,'mark',{r:120,v:0.2,dur:5000}],
+  // 최대체력 비례
+  '관통 탄두':['hit',0.15,'pct',{r:70,mp:0.01,k:0.6}],
+  '관통 탄두Ⅱ':['hit',0.15,'pct',{r:90,mp:0.015,k:0.6}],
+  '관통 탄두Ⅲ':['hit',0.20,'pct',{r:110,mp:0.02,k:0.6}],
+  // 현재체력 비례 (가장 튼튼한 1마리)
+  '약점 저격':['count',8,'snipe',{k:1.0,cp:0.03}],
+  '약점 저격Ⅱ':['count',6,'snipe',{k:1.2,cp:0.04}],
+  '암살 저격':['count',6,'snipe',{k:1.5,cp:0.05}],
+  // 처형 (보스 제외)
+  '소탕 작전':['count',10,'exec',{r:60,th:0.15,k:0.6}],
+  '소탕 작전Ⅱ':['count',8,'exec',{r:80,th:0.2,k:0.6}],
+  '제거 명령':['count',8,'exec',{r:90,th:0.25,k:0.8}],
+  // 보스 특화 (보스 먼저 조준)
+  '탄도탄 정밀타격':['hit',0.15,'snipe',{k:1.5,bp:true}],
+  '탄도탄 정밀타격Ⅱ':['hit',0.20,'snipe',{k:1.8,bp:true}],
+  '탄도탄 정밀타격Ⅲ':['hit',0.20,'snipe',{k:2.5,bp:true}],
+  '정밀 유도 일격':['count',8,'snipe',{k:1.5}],
+  '저격 일격':['count',10,'snipe',{k:2.0}],
+  // 광역 화력
+  '전차포 일제사격':['count',8,'bomb',{r:55,k:1.0}],
+  '포병 집중사격':['hit',0.12,'bomb',{r:80,k:1.0}],
+  '포병 일제사격':['count',10,'bomb',{r:90,k:1.0}],
+  '천산 포격':['count',10,'bomb',{r:70,k:1.2}],
+  '편대 집중 폭격':['count',18,'bomb',{r:80,k:1.2}],
+  '정밀 폭격 유도':['count',25,'bomb',{r:80,k:1.5}],
+  '드론 집중 폭격':['count',20,'bomb',{r:80,k:1.2}],
+  '합동 화력 집중':['count',5,'bomb',{r:110,k:0.6}],
+  '현무 궤도 포격':['count',4,'bomb',{r:130,k:0.5}],
+  '다연장 로켓 세례':['count',6,'barrage',{r:40,k:0.2,hits:6}],
+  '자탄 살포':['count',7,'barrage',{r:40,k:0.15,hits:5}],
+  '자탄 살포Ⅱ':['count',6,'barrage',{r:45,k:0.15,hits:6}],
+  '헬파이어 일제사격':['count',12,'barrage',{r:30,k:0.4,hits:4}],
+  '미사일 일제사격':['count',8,'barrage',{r:30,k:0.3,hits:4}],
+  '자폭 드론 투하':['count',20,'barrage',{r:35,k:0.6,hits:3}],
+  '자폭 드론 편대':['count',25,'barrage',{r:35,k:0.5,hits:4}],
+  '자폭 드론 군집':['count',15,'barrage',{r:35,k:0.4,hits:5}],
+  '집속탄 세례':['hit',0.15,'barrage',{r:40,k:0.2,hits:6}],
+  '공대지 로켓 세례':['count',20,'barrage',{r:35,k:0.6,hits:4}],
+  // 대공
+  '요격 탄막':['hit',0.12,'aa',{r:70,k:1.0}],
+  '대공 연사':['count',25,'aa',{r:60,k:1.5}],
+  '대공 레이저망':['count',20,'aa',{r:90,k:1.2}],
+  '대공 드론망':['count',25,'aa',{r:100,k:1.5}],
+  // 지속피해 (초당 공격력 k배, dur 동안)
+  '소이 로켓 세례':['count',12,'burn',{r:40,k:0.5,dur:3000}],
+  '레이저 소각':['count',15,'burn',{r:80,k:0.6,dur:3000}],
+  // 아군 강화
+  '탄약 긴급보급':['time',10,'rally',{r:120,mul:1.25,dur:4000}],
+  '드론 전술 연동':['time',12,'rally',{r:120,mul:1.2,dur:4000}],
+  '기갑 독려':['time',12,'rally',{r:150,mul:1.2,dur:4000}],
+  '신속 전개':['time',15,'rally',{r:120,mul:1.2,dur:4000}],
+  '정찰 정보 공유':['time',12,'rally',{r:120,mul:1.2,dur:4000}],
+  '전군 비상령':['time',15,'rally',{r:200,mul:1.3,dur:5000}],
+  '첩보 지원':['time',15,'rally',{r:150,mul:1.25,dur:4000}],
+  // 경제 (g + 웨이브÷3 골드)
+  '보급 수송':['time',20,'gold',{g:4}],
 };
+function SKn(nm){const d=SKD[nm];return SK(nm,d[0],d[1],d[2],d[3]);}
+const SKILLS_BY={
+  // 희귀 (1개)
+  'K1A2 전차':['철갑탄 일제사격'],
+  'K21 보병전투차':['하차 돌격'],
+  'K9 천둥':['포병 집중사격'],
+  '천호 방공복합':['방공 제압탄'],
+  'LAMD 요격체계':['요격 탄막'],
+  'AH-1S 코브라':['소이 로켓 세례'],
+  '특전여단':['소탕 작전'],
+  '현무-2':['탄도탄 정밀타격'],
+  '무인수색차':['표적 지정 레이저'],
+  '비호복합':['대공 연사'],
+  '현무-2A':['관통 탄두'],
+  'K30 비호Ⅱ':['대공 연사'],
+  // 전설 (2개)
+  'K2 흑표':['전차포 일제사격','장갑 파쇄'],
+  '천무 다연장':['다연장 로켓 세례','자탄 살포'],
+  'AH-64E 아파치':['헬파이어 일제사격','약점 저격'],
+  '707특임대':['소탕 작전','저격 일격'],
+  '현무-3':['탄도탄 정밀타격Ⅱ','충격파 탄두'],
+  'K10 탄약운반':['탄약 긴급보급','보급 수송'],
+  '드론봇중대':['자폭 드론 투하','전파 교란'],
+  '미사일여단':['미사일 일제사격','탄도탄 정밀타격'],
+  'K808A 천산':['기동 돌파','천산 포격'],
+  '현궁 대전차':['관통 탄두','정밀 유도 일격'],
+  // 신화 (3개)
+  '현무-5':['관통 탄두Ⅱ','충격파 탄두Ⅱ','자탄 살포'],
+  '천광 레이저포대':['레이저 소각','섬광 교란','대공 레이저망'],
+  '드론봇 전투단':['자폭 드론 편대','전파 교란Ⅱ','드론 전술 연동'],
+  'ATACMS':['집속탄 세례','약점 저격Ⅱ','충격파 탄두'],
+  'LAH 편대':['공대지 로켓 세례','장갑 파쇄','철갑탄 일제사격'],
+  '천검 무인편대':['표적 지정','편대 집중 폭격','연막 제압'],
+  // 초월 (4개)
+  '수도기계화사단':['기갑 돌파','포병 일제사격','기갑 독려','장갑 파쇄Ⅱ'],
+  '신속대응사단':['소탕 작전Ⅱ','저격 일격','강습 섬광탄','신속 전개'],
+  '백두금강정찰':['표적 지정Ⅱ','정밀 폭격 유도','연막 제압','정찰 정보 공유'],
+  '드론봇 군단':['전파 교란Ⅲ','자폭 드론 군집','드론 집중 폭격','대공 드론망'],
+  // 히든 (5개)
+  '국군통수권':['전군 비상령','합동 화력 집중','다연장 로켓 세례','충격파 탄두Ⅲ','전군 표적 지정'],
+  '비밀정보부':['암살 저격','제거 명령','섬광 교란Ⅱ','첩보 지원','약점 폭로'],
+  '현무-Ω':['현무 궤도 포격','자탄 살포Ⅱ','충격파 탄두Ⅲ','관통 탄두Ⅲ','탄도탄 정밀타격Ⅲ'],
+};
+const SKILLS={};for(const n in SKILLS_BY)SKILLS[n]=SKILLS_BY[n].map(SKn);
 const RECIPE={
   // 흔함 2 → 안흔함 (각 흔함 2~3회 고르게)
   '저격수':['경계병','K2소총수'],'지정사수':['경계병','K3기관총사수'],'K3기관총반':['K3기관총사수','K2소총수'],
@@ -680,10 +785,10 @@ const ZTYPE={
 // S22 재조정: 실코드 시뮬 기반 (초보AI 쉬움~보통 100%·어려움 75% / 사람AI 어려움 100%·지옥 75%·신 38%)
 const DIFF={
   '쉬움':{hp:1.3,late:1.2,reward:1.15,cap:44}, // S27: 초반 완충 도입과 함께 중후반 압박으로 재조정
-  '보통':{hp:2.6,late:1.6,reward:1.0,cap:36},
-  '어려움':{hp:6.2,late:2.2,reward:0.9,cap:30},
-  '지옥':{hp:7.6,late:1.5,reward:0.85,cap:20},
-  '신':{hp:8.6,late:0.9,reward:0.8,cap:18},
+  '보통':{hp:3.12,late:1.6,reward:1.0,cap:36},
+  '어려움':{hp:8.37,late:2.2,reward:0.9,cap:30},
+  '지옥':{hp:12.92,late:1.5,reward:0.85,cap:20},
+  '신':{hp:10.75,late:0.9,reward:0.8,cap:18}, // S32: 역할·시너지로 강해진 만큼 좀비 체력 보정(보통×1.2·어려움×1.35·지옥×1.7·신×1.25)
 };
 // S27: 초반 완충 + 후반 압박 — 난이도 체력 배율은 1웨이브에 40%만 적용돼 8웨이브에 100%가 되고(초반 즉사 방지),
 // late 값이 있으면 16웨이브부터 30웨이브까지 추가로 조금씩 더 단단해짐(난이도 차이는 중후반에 체감)
@@ -1363,9 +1468,10 @@ function spawnZombie(type,opt){
 }
 function moveEnemy(e,dt){
   if(e.stunImmT>0)e.stunImmT-=dt;
-  if(e.stunT>0){e.stunT-=dt;if(e.stunT<=0&&e.boss)e.stunImmT=1500;return false;} // 스턴 중 이동 정지
+  if(e.stunT>0){e.stunT-=dt;if(e.stunT<=0)e.stunImmT=e.boss?1500:STUN_IMM_N;return false;} // 스턴 중 이동 정지 · S32 일반 좀비도 잠깐 면역
   if(e.shredT>0)e.shredT-=dt;
-  const spd=e.spd*(e.slowT>0?(e.slowMul||0.45):1)*(e.hasted?(e.hasteAuraSpd||1.4):1);e.slowT=Math.max(0,e.slowT-dt);
+  const spd=e.spd*(e.slowT>0?(e.slowMul||0.45):1)*(e.hasted?(e.hasteAuraSpd||1.4):1);
+  if(e.slw){for(const k in e.slw){e.slw[k].t-=dt;if(e.slw[k].t<=0)delete e.slw[k];}slowCalc(e);}else e.slowT=Math.max(0,e.slowT-dt);
   let remain=spd*dt/16,N=PATH.length,guard=0;
   while(remain>0&&guard++<64){
     const a=PATH[e.seg],b=PATH[(e.seg+1)%N],L=Math.hypot(b.x-a.x,b.y-a.y)||1,left=L*(1-e.p);
@@ -1398,7 +1504,7 @@ function update(dt){
     }
   }
   for(let i=G.enemies.length-1;i>=0;i--){const e=G.enemies[i];
-    if(e.dotT>0){e.dotT-=dt;e.hp-=e.dotDps*dt/1000;if(e.hp<=0){killEnemy(e,i,transport);continue;}}
+    if(e.dotT>0){e.dotT-=dt;e.hp-=e.dotDps*dt/1000*(e.slowT>0?SYN.slowAoe:1);if(e.hp<=0){killEnemy(e,i,transport);continue;}}
     // 보스 패턴: HP 50% 이하 광폭화(이속↑) · 최종보스는 주기적으로 좀비 소환 (미션 보스 제외)
     if(e.boss&&!e.mission){
       if(!e.enraged&&e.hp<=e.maxhp*0.5){e.enraged=true;e.spd*=1.45;
@@ -1432,7 +1538,7 @@ function update(dt){
       const dotUp=u.dot?{dps:u.dot.dps*upDmg,dur:u.dot.dur}:null; // 지속피해도 강화 반영
       G.shots.push({x:t.x,y:t.y,tx:target.x,ty:target.y,target,owner:t,dmg,dt:u.dt,
         splash:u.splash,slow:u.slow,dot:dotUp,bossBonus:u.bossBonus,execute:u.execute,
-        stun:u.stun,shred:u.shred,maxHpPct:u.maxHpPct,curHpPct:u.curHpPct,
+        stun:u.stunP?(skRand()<u.stunP?u.stun:0):u.stun,shred:u.shred,armBrk:u.armBrk,maxHpPct:u.maxHpPct,curHpPct:u.curHpPct,
         color:RARITY[u.t].color,life:1,transport});SFX.shoot();
       skillsOnAttack(t,u,target,dmg,transport);} // S31 등급 스킬
   }
@@ -1501,27 +1607,59 @@ function updateStrikes(dt,transport){
     G.fx.push({type:'boom',x:s.x,y:s.y,r:s.r,life:520,max:520,color:'#f0883e',dt:'phys'});SFX.boom();
     if(hitN)G.floats.push({x:s.x,y:s.y-20,txt:`💥 ×${hitN}`,life:700});}
 }
+// ===== S32 역할 규칙: 같은 효과는 겹치지 않음(가장 센 것만) + 종류별 합계 상한 =====
+const SLOW_CAP=0.6,BRK_CAP=0.25,AMP_CAP=0.25,EXEC_CAP=0.2,BOSS_PCT_SEC=0.05,STUN_IMM_N=600;
+// 시너지: ①기절한 적 받는 피해↑ ②느려진 적 광역·지속피해↑ ③방어 깎인 적 처형 기준↑ ④불타는 적 현재체력 비례↑
+const SYN={stun:1.1,slowAoe:1.1,brkExec:0.05,burnCur:1.3};
+function fxKey(s){return s.skey||(s.owner&&s.owner.name)||'_';}
+// 감속: 같은 출처(유닛·스킬 이름)는 가장 센 것 하나, 다른 출처끼리는 곱해지되 최대 SLOW_CAP(60%)까지. 보스는 효과 절반
+function slowCalc(e){let m=1,T=0;const w=e.slw;if(w)for(const k in w){const o=w[k];if(o.t>0){m*=o.m;if(o.t>T)T=o.t;}}
+  m=Math.max(1-SLOW_CAP,m);e.slowMul=e.boss?1-(1-m)*0.5:m;e.slowT=T;}
+function applySlow(e,mul,dur,key){if(!(mul<1))return;const w=e.slw||(e.slw={}),k=key||'_',o=w[k],live=o&&o.t>0;
+  if(!live||mul<=o.m)w[k]={m:mul,t:Math.max(live?o.t:0,dur||1000)};slowCalc(e);}
+// 방어력 감소(수치): 같은 출처는 센 것 하나, 합계 최대 BRK_CAP(25%). 보스 약화(shredT)는 +15%로 합산
+function applyBrk(e,key,v,dur){if(!(v>0))return;const w=e.brk||(e.brk={}),o=w[key],until=G.t+(dur||3000);
+  if(!o||o.until<=G.t||v>o.v)w[key]={v,until};else if(v===o.v)o.until=Math.max(o.until,until);}
+function brkOf(e){let a=(e.boss&&e.shredT>0)?0.15:0;const w=e.brk;if(w)for(const k in w){const o=w[k];if(o.until>G.t)a+=o.v;}return Math.min(BRK_CAP,a);}
+// 받는 피해 증가: 표적지정 유닛(같은 이름은 1번만) + 표식 스킬, 합계 최대 AMP_CAP(25%)
+function applyMark(e,key,v,dur){if(!(v>0))return;const w=e.mk||(e.mk={}),o=w[key],until=G.t+(dur||4000);
+  if(!o||o.until<=G.t||v>o.v)w[key]={v,until};else if(v===o.v)o.until=Math.max(o.until,until);}
+function ampOf(e){let a=0,seen=null;
+  for(const sl of SLOTS){const tt=sl.tower;if(!tt)continue;const d=U[tt.name].debuff;if(!d)continue;
+    if(Math.hypot(tt.x-e.x,tt.y-e.y)>U[tt.name].range)continue;
+    if(seen){if(seen.includes(tt.name))continue;seen.push(tt.name);}else seen=[tt.name];a+=d-1;}
+  const w=e.mk;if(w)for(const k in w){const o=w[k];if(o.until>G.t)a+=o.v;}
+  return Math.min(AMP_CAP,a);}
+// 체력 비례 피해: 보스는 절반 + 1초 동안 최대체력의 BOSS_PCT_SEC(5%)까지만
+function bossPct(e,raw){if(!e.boss)return raw;raw*=0.5;
+  if(e.pctW==null||G.t-e.pctW>=1000){e.pctW=G.t;e.pctSum=0;}
+  const v=Math.min(raw,Math.max(0,e.maxhp*BOSS_PCT_SEC-e.pctSum));e.pctSum+=v;return v;}
+// 지속피해: 더 센 불이 우선(약한 불이 센 불을 덮지 않음), 같은 세기는 시간 갱신
+function applyDot(e,dps,dur){if(!(dps>0))return;if(!(e.dotT>0)||dps>=e.dotDps){e.dotT=dur;e.dotDps=dps;}}
 function dealDamage(e,s){
-  // shred: 피해 입을 때 방어/마저 약화(중장갑→경장갑, high→low 강등) — 물리/마법류 전용
   // 약화(shred): 일반 좀비는 방어 등급 1단계 영구 강등, 보스는 4초간 받는 피해 +15% (S25: 보스에도 효과)
   if(s.shred){if(e.boss)e.shredT=4000;else{if(s.dt==='phys'&&e.armor==='heavy')e.armor='light';if(s.dt==='magic'&&e.mres==='high')e.mres='low';}}
+  if(s.armBrk)applyBrk(e,fxKey(s),s.armBrk,3000);
   let dmg=s.dmg*dmgMult(s.dt,e);
   if(e.boss&&s.bossBonus)dmg*=s.bossBonus;
-  if(e.boss&&e.shredT>0)dmg*=1.15;
-  for(const sl of SLOTS){const tt=sl.tower;if(tt&&U[tt.name].debuff&&Math.hypot(tt.x-e.x,tt.y-e.y)<=U[tt.name].range){dmg*=U[tt.name].debuff;break;}}
-  const pctK=e.boss?0.5:1;                     // 체력 비례 피해는 보스에 절반(S25)
-  if(s.maxHpPct)dmg+=e.maxhp*s.maxHpPct*pctK;   // 최대체력 비례 추가딜
-  if(s.curHpPct)dmg+=e.hp*s.curHpPct*pctK;       // 현재체력 비례 추가딜
+  const brk=brkOf(e);if(brk)dmg*=1+brk;          // 방어력 감소 (합계 상한)
+  const amp=ampOf(e);if(amp)dmg*=1+amp;          // 받는 피해 증가 (합계 상한)
+  if(e.stunT>0)dmg*=SYN.stun;                    // 시너지① 기절한 적
+  if(s.splash&&e.slowT>0)dmg*=SYN.slowAoe;       // 시너지② 느려진 적 + 광역
+  let pct=0;
+  if(s.maxHpPct)pct+=e.maxhp*s.maxHpPct;         // 최대체력 비례 추가딜
+  if(s.curHpPct)pct+=e.hp*s.curHpPct*(e.dotT>0?SYN.burnCur:1); // 현재체력 비례 (시너지④ 불타는 적)
+  if(pct)dmg+=bossPct(e,pct);
   // 방패병: 보호막이 피해 우선 흡수
   if(e.shield>0){const ab=Math.min(e.shield,dmg);e.shield-=ab;dmg-=ab;
     if(e.shield<=0&&!e._shieldBroke){e._shieldBroke=true;G.floats.push({x:e.x,y:e.y-18,txt:'🛡️깨짐',life:480});}}
-  if(s.execute&&!e.boss&&e.hp<=e.maxhp*s.execute)e.hp=0;else e.hp-=dmg;
-  // 둔화(S25): 값=이동속도 배율(0.55=45% 느려짐). 더 센 둔화 우선, 같은 세기는 시간 갱신, 보스는 효과 절반
-  if(s.slow){const mul=e.boss?1-(1-s.slow)*0.5:s.slow;if(!(e.slowT>0)||mul<=e.slowMul){e.slowMul=mul;e.slowT=1000;}}
-  // 스턴(S25): 보스는 지속 절반 + 풀린 뒤 1.5초 면역 → 영구 스턴 불가
+  // 처형: 보스 제외, 기준 최대 EXEC_CAP(20%) (시너지③ 방어 깎인 적 +5%p)
+  const ex=s.execute?Math.min(EXEC_CAP,s.execute+(brk>0?SYN.brkExec:0)):0;
+  if(ex&&!e.boss&&e.hp<=e.maxhp*ex)e.hp=0;else e.hp-=dmg;
+  if(s.slow)applySlow(e,s.slow,1000,fxKey(s));
+  // 스턴(S25): 보스는 지속 절반 + 풀린 뒤 1.5초 면역 → 영구 스턴 불가 (S32: 일반 좀비도 STUN_IMM_N(0.6초) 면역)
   if(s.stun)applyStun(e,s.stun);
-  // 지속피해(S25): 더 센 것이 우선(약한 불이 센 불을 덮지 않음), 같은 세기는 시간 갱신
-  if(s.dot&&(!(e.dotT>0)||s.dot.dps>=e.dotDps)){e.dotT=s.dot.dur;e.dotDps=s.dot.dps;}
+  if(s.dot)applyDot(e,s.dot.dps,s.dot.dur);
   G.floats.push({x:e.x,y:e.y-12,txt:Math.round(dmg),life:480,boss:e.boss});
   if(e.hp<=0){const idx=G.enemies.indexOf(e);if(idx>=0){
     if(s.owner&&U[s.owner.name].rampage)s.owner.bonus+=U[s.owner.name].rampage;
@@ -1535,9 +1673,8 @@ function hit(s){
 }
 // ===== S31 스킬 발동·효과 (기절·둔화 규칙은 일반 공격과 같은 함수 사용) =====
 // 기절: 보스는 시간 절반 + 풀린 뒤 1.5초 면역(moveEnemy) → 영구 기절 불가
-function applyStun(e,ms){if(!(ms>0))return;if(e.boss){if(!(e.stunImmT>0))e.stunT=Math.max(e.stunT||0,ms*0.5);}else e.stunT=Math.max(e.stunT||0,ms);}
-// 둔화: 더 센 둔화 우선, 보스는 효과 절반
-function applySlow(e,mul,dur){const m=e.boss?1-(1-mul)*0.5:mul;if(!(e.slowT>0)||m<=e.slowMul){e.slowMul=m;e.slowT=Math.max(e.slowT||0,dur||1000);}}
+function applyStun(e,ms){if(!(ms>0)||e.stunImmT>0)return;e.stunT=Math.max(e.stunT||0,e.boss?ms*0.5:ms);}
+// 감속(applySlow)은 위 S32 역할 규칙에 있음
 function applyShred(e){if(e.boss)e.shredT=4000;else{if(e.armor==='heavy')e.armor='light';if(e.mres==='high')e.mres='low';}}
 function skRand(){if(!G)return Math.random();if(!G.skRng)G.skRng=mkRng(((G.seed||1)^0x9e3779b9)>>>0);return G.skRng();}
 function skFx(f){if(G.fx.length<80)G.fx.push(f);}
@@ -1559,11 +1696,22 @@ function skillFire(t,u,s,target,dmg,transport){
   G.skStat=G.skStat||{};const st=G.skStat[s.fx]=(G.skStat[s.fx]||{n:0,dmg:0});st.n++;
   const cx=target.x,cy=target.y,col=RARITY[u.t].color;skName(t,s.nm);
   const hp0=()=>G.enemies.reduce((a,e)=>a+e.hp,0);
-  if(s.fx==='stun'||s.fx==='slow'||s.fx==='shred'){
+  if(s.fx==='stun'||s.fx==='slow'||s.fx==='shred'||s.fx==='mark'){
     const es=skInArea(u,cx,cy,s.r);
-    skFx({type:'ring',x:cx,y:cy,r:s.r,life:420,max:420,color:s.fx==='stun'?'#f2cc60':s.fx==='slow'?'#79c0ff':'#ff7b72'});
-    for(const e of es){if(s.fx==='stun')applyStun(e,s.ms);else if(s.fx==='slow')applySlow(e,s.mul,s.dur);else applyShred(e);}
+    skFx({type:'ring',x:cx,y:cy,r:s.r,life:420,max:420,color:s.fx==='stun'?'#f2cc60':s.fx==='slow'?'#79c0ff':s.fx==='mark'?'#d2a8ff':'#ff7b72'});
+    for(const e of es){if(s.fx==='stun')applyStun(e,s.ms);else if(s.fx==='slow')applySlow(e,s.mul,s.dur,s.nm);
+      else if(s.fx==='mark')applyMark(e,s.nm,s.v,s.dur);else{applyShred(e);if(s.v)applyBrk(e,s.nm,s.v,4000);}}
     if(s.k){const h=hp0();for(const e of es)skDmg(e,dmg*s.k,u,t,transport);st.dmg+=Math.max(0,h-hp0());}
+  }else if(s.fx==='pct'||s.fx==='exec'){ // S32 체력 비례 폭발 · 처형(보스 제외)
+    skFx({type:'ring',x:cx,y:cy,r:s.r,life:420,max:420,color:s.fx==='pct'?'#ffa657':'#f85149'});
+    skFx({type:'flash',x:cx,y:cy,r:s.r*0.6,life:160,max:160});
+    const ex=s.fx==='pct'?{maxHpPct:s.mp,curHpPct:s.cp}:{execute:s.th};
+    const h=hp0();for(const e of skInArea(u,cx,cy,s.r))skDmg(e,dmg*s.k,u,t,transport,ex);st.dmg+=Math.max(0,h-hp0());
+  }else if(s.fx==='burn'){ // S32 불붙이기: 초당 공격력 k배
+    skFx({type:'boom',x:cx,y:cy,r:s.r,life:420,max:420,color:'#f0883e',dt:u.dt});
+    for(const e of skInArea(u,cx,cy,s.r))applyDot(e,dmg*s.k,s.dur);
+  }else if(s.fx==='gold'){ // S32 골드 보급
+    const g=Math.round(s.g+(G.wave||0)/3);G.gold+=g;st.dmg+=g;G.floats.push({x:t.x,y:t.y-30,txt:`+${g}G`,life:900});
   }else if(s.fx==='bomb'||s.fx==='aa'){
     skFx({type:'flash',x:cx,y:cy,r:s.r,life:180,max:180});
     skFx({type:'boom',x:cx,y:cy,r:s.r,life:420,max:420,color:col,dt:u.dt});try{SFX.boom();}catch(_){}
@@ -1572,10 +1720,11 @@ function skillFire(t,u,s,target,dmg,transport){
     for(let j=0;j<(s.hits||3);j++){const a=skRand()*6.2832,d=skRand()*38;
       G.skq.push({t:120+j*110,target,x:cx,y:cy,ox:Math.cos(a)*d,oy:Math.sin(a)*d,r:s.r,dmg:dmg*s.k,u,owner:t,transport,col,st});}
   }else if(s.fx==='snipe'){let best=null,bh=-1;
-    for(const e of G.enemies){if(e.fly&&!u.air)continue;if(Math.hypot(e.x-t.x,e.y-t.y)>u.range)continue;if(e.hp>bh){bh=e.hp;best=e;}}
+    for(const e of G.enemies){if(e.fly&&!u.air)continue;if(Math.hypot(e.x-t.x,e.y-t.y)>u.range)continue;
+      const sc=e.hp+(s.bp&&e.boss?1e15:0);if(sc>bh){bh=sc;best=e;}}
     if(best){skFx({type:'line',x:t.x,y:t.y,x2:best.x,y2:best.y,life:240,max:240,color:'#f2cc60'});
       skFx({type:'flash',x:best.x,y:best.y,r:18,life:160,max:160});
-      const h=hp0();skDmg(best,dmg*s.k,u,t,transport,{bossBonus:u.bossBonus});st.dmg+=Math.max(0,h-hp0());}
+      const h=hp0();skDmg(best,dmg*s.k,u,t,transport,{bossBonus:u.bossBonus,curHpPct:s.cp,maxHpPct:s.mp});st.dmg+=Math.max(0,h-hp0());}
   }else if(s.fx==='rally'){skFx({type:'ring',x:t.x,y:t.y,r:s.r,life:520,max:520,color:'#7ee787'});
     for(const sl of SLOTS){const b=sl.tower;if(!b)continue;if(Math.hypot(b.x-t.x,b.y-t.y)<=s.r){
       if(!(b.rallyUntil>G.t)){b.rallyMul=s.mul;b.rallyUntil=G.t+s.dur;}else if(s.mul>=b.rallyMul){b.rallyMul=s.mul;b.rallyUntil=Math.max(b.rallyUntil,G.t+s.dur);}}}
@@ -1604,9 +1753,14 @@ function skillText(s){
   else if(s.fx==='aa')what=`${skAreaWord(s.r)} 폭발 · ${kk(s.k)} 피해 (비행 좀비는 2배)`;
   else if(s.fx==='barrage')what=`${s.hits}발 연속 낙하 · 한 발당 ${kk(s.k)} 피해`;
   else if(s.fx==='slow')what=`${skAreaWord(s.r)} 좀비 ${Math.round((1-s.mul)*100)}% 느리게 ${s.dur/1000}초${s.k?` + ${kk(s.k)} 피해`:''}`;
-  else if(s.fx==='shred')what=`${skAreaWord(s.r)} 좀비 방어 약화${s.k?` + ${kk(s.k)} 피해`:''} (보스는 4초간 받는 피해 +15%)`;
+  else if(s.fx==='shred')what=`${skAreaWord(s.r)} 좀비 방어 약화${s.v?` · 방어력 −${Math.round(s.v*100)}% 4초`:''}${s.k?` + ${kk(s.k)} 피해`:''} (보스는 4초간 받는 피해 +15%)`;
+  else if(s.fx==='mark')what=`${skAreaWord(s.r)} 좀비에 표식 · 받는 피해 +${Math.round(s.v*100)}% ${s.dur/1000}초${s.k?` + ${kk(s.k)} 피해`:''}`;
+  else if(s.fx==='pct')what=`${skAreaWord(s.r)} 폭발 · ${kk(s.k)} + 최대체력 ${+(s.mp*100).toFixed(1)}% 피해 (보스는 절반)`;
+  else if(s.fx==='exec')what=`${skAreaWord(s.r)} 체력 ${Math.round(s.th*100)}% 이하 좀비 즉시 처치 + ${kk(s.k)} 피해 (보스 제외)`;
+  else if(s.fx==='burn')what=`${skAreaWord(s.r)} 불붙이기 · ${s.dur/1000}초 동안 초당 ${kk(s.k)} 피해`;
+  else if(s.fx==='gold')what=`골드 +${s.g} (웨이브가 오를수록 더 많이)`;
   else if(s.fx==='rally')what=`주변 아군 공격속도 +${Math.round((s.mul-1)*100)}% ${s.dur/1000}초`;
-  else if(s.fx==='snipe')what=`사거리 안 가장 튼튼한 좀비 1마리 정밀타격 · ${kk(s.k)} 피해`;
+  else if(s.fx==='snipe')what=`사거리 안 ${s.bp?'보스 우선, 없으면 ':''}가장 튼튼한 좀비 1마리 정밀타격 · ${kk(s.k)} 피해${s.cp?` + 현재체력 ${Math.round(s.cp*100)}%`:''}${s.mp?` + 최대체력 ${Math.round(s.mp*100)}%`:''}`;
   return `${when} · ${what}`;}
 // 패배 원인 진단 — 붕괴 시점 트랙 위 좀비 구성으로 "무엇이 부족했는지" 알려줌
 function defeatDiag(){
@@ -2676,8 +2830,9 @@ function renderSelected(){
   const tierIdx=TIER_ORDER.indexOf(u.t);
   sel.innerHTML=`<div class="name" style="color:${rc.color}">${t.name}</div>
     <span class="tag" style="background:${rc.color}">${rc.name}</span>
-    <span class="dtag ${dtc}">${DT_NAME[u.dt]}</span>${upTxt}
+    <span class="dtag ${dtc}">${DT_NAME[u.dt]}</span>${roleTags(t.name)}${upTxt}
     <span style="font-size:11px;color:#aeb6bf">· 흔함 ${cval(t.name)}개 가치</span>
+    ${u.role&&ROLES[u.role]?`<div style="margin-top:4px;font-size:11px;color:${ROLES[u.role].c};">역할: <b>${u.role}</b> — ${ROLES[u.role].d}</div>`:''}
     <div style="margin-top:6px;">공격력 ${dmgTxt} · 사거리 ${u.range}<br>
     ${asTxt}${fx.length?' · '+fx.join('·'):''}</div>${skillListHtml(t.name)}${recipeHtml}`;
   btns.innerHTML=`<div class="btn-row"><button class="btn-sell" onclick="sellSelected()" ${t.locked?'disabled':''} style="flex:1;">판매 (+${Math.round(SUMMON_COST*0.6*Math.pow(2.2,tierIdx))})</button>
@@ -2689,6 +2844,7 @@ function fieldCount(n){let c=0;for(const s of SLOTS)if(s.tower&&s.tower.name===n
 // 이 유닛이 재료로 들어가는 모든 상위 조합 (재료 충족 무관 — 조합식 보여주기용)
 function upgradesFrom(name){return Object.keys(RECIPE).filter(r=>RECIPE[r].includes(name));}
 function renderInv(){
+  renderRoleCov();
   const el=document.getElementById('invBox');if(!el)return;
   const inv=inventory(),lk={};
   SLOTS.forEach(s=>{if(s.tower&&s.tower.locked)lk[s.tower.name]=(lk[s.tower.name]||0)+1;});
@@ -2809,10 +2965,45 @@ const DECKS=[
    good:'비행 웨이브·질주군주에 강하고 아군 전체 공속이 오름',bad:'단일 화력이 낮아 보스전이 길어짐 → 판처·미사일반으로 보스 보강'},
 ];
 // 유닛 능력 태그(S25): 선택 패널·조합 목록·갈림길 비교에 공용
+// ===== S32 역할: 유닛마다 주 역할 1개(+보조). 같은 효과는 겹치지 않으니 역할을 섞어야 강하다 =====
+const ROLES={
+  '기절':{c:'#f2cc60',d:'잠깐 멈춰 세워요 (보스는 절반, 풀린 직후 잠깐 면역)'},
+  '감속':{c:'#79c0ff',d:`걸음을 느리게 — 같은 기술끼리는 안 겹치고 합쳐도 최대 ${Math.round(SLOW_CAP*100)}%`},
+  '방깎':{c:'#f0955e',d:`방어력 깎기 — 받는 피해 증가, 합쳐도 최대 ${Math.round(BRK_CAP*100)}%`},
+  '증폭':{c:'#d2a8ff',d:`표적 지정 — 받는 피해 증가, 합쳐도 최대 ${Math.round(AMP_CAP*100)}%`},
+  '최대%':{c:'#ff7b72',d:'최대 체력 비례 피해 — 튼튼한 적에게 강함 (보스는 절반·초당 한도)'},
+  '현재%':{c:'#ffa198',d:'남은 체력 비례 피해 — 체력 많을 때 강함'},
+  '처형':{c:'#e6edf3',d:'체력이 조금 남은 적을 바로 처치 (보스는 안 됨)'},
+  '보스':{c:'#e3b341',d:'보스에게 추가 피해 · 보스 먼저 조준'},
+  '광역':{c:'#ffa657',d:'여러 마리를 한 번에 타격'},
+  '대공':{c:'#a5d6ff',d:'날아오는 적 공격'},
+  '강화':{c:'#7ee787',d:'주변 아군 공격력·공격 속도 증가'},
+  '경제':{c:'#c9d97a',d:'골드·보급으로 살림에 보탬'},
+  '지속':{c:'#56d364',d:'불·가스 지속 피해 — 가장 센 것 1개만 적용'},
+};
+const ROLE_ORDER=Object.keys(ROLES);
+const ROLE_RULE='같은 효과는 겹치지 않아요 — 역할을 섞으세요';
+const ROLE_SYN_TXT=`기절한 적 +${Math.round((SYN.stun-1)*100)}% 피해 · 느려진 적에게 광역·지속 +${Math.round((SYN.slowAoe-1)*100)}% · 방깎된 적은 처형 기준 +${Math.round(SYN.brkExec*100)}% · 불붙은 적에게 현재체력 피해 ${SYN.burnCur}배`;
+function roleTag(r,sub){const x=ROLES[r];return x?`<span class="rtag${sub?' sub':''}" style="color:${x.c}" title="${x.d}">${r}</span>`:'';}
+function roleTags(n,max){const u=U[n];if(!u||!u.role)return '';let h=roleTag(u.role);
+  for(const r of (u.roles||[]).filter(r=>r!==u.role).slice(0,max==null?3:max))h+=roleTag(r,1);return h;}
+function unitHasRole(n,r){const u=U[n];return !!(u&&(u.role===r||(u.roles||[]).includes(r)));}
+// 우리 편(지도+대기소) 역할 한 줄 — 없는 역할은 흐리게
+function renderRoleCov(){
+  const el=document.getElementById('roleCov');if(!el||!G)return;
+  const main={},any={};
+  const add=t=>{const u=t&&U[t.name];if(!u||!u.role)return;main[u.role]=(main[u.role]||0)+1;any[u.role]=1;(u.roles||[]).forEach(r=>any[r]=1);};
+  try{SLOTS.forEach(s=>add(s.tower));resList().forEach(add);}catch(_){}
+  const got=ROLE_ORDER.filter(r=>any[r]),miss=ROLE_ORDER.filter(r=>!any[r]);
+  el.innerHTML=`<b style="color:var(--khaki)">우리 편 역할 ${got.length}/${ROLE_ORDER.length}</b> `
+    +got.map(r=>roleTag(r,!main[r]).replace('</span>',main[r]>1?`×${main[r]}</span>`:'</span>')).join('')
+    +(miss.length?`<br><span class="miss">없음: ${miss.join(' · ')}</span>`:'')
+    +`<br><span class="miss">${ROLE_RULE}</span>`;
+}
 function unitTags(u){const fx=[];if(u.splash)fx.push('광역');if(u.slow)fx.push(`둔화${Math.round((1-u.slow)*100)}%`);if(u.dot)fx.push('지속피해');
   if(u.air)fx.push('대공');if(u.bossBonus)fx.push('보스특화');if(u.buff)fx.push('버프');if(u.debuff)fx.push('표적지정');
   if(u.execute)fx.push('처형');if(u.rampage)fx.push('성장');if(u.supply)fx.push('보급');if(u.gold)fx.push('골드');
-  if(u.stun)fx.push('스턴');if(u.shred)fx.push('약화');if(u.maxHpPct)fx.push('최대체력딜');if(u.curHpPct)fx.push('현재체력딜');return fx;}
+  if(u.stun)fx.push(u.stunP?`기절${Math.round(u.stunP*100)}%확률`:'스턴');if(u.shred)fx.push('약화');if(u.armBrk)fx.push(`방깎${Math.round(u.armBrk*100)}%`);if(u.maxHpPct)fx.push('최대체력딜');if(u.curHpPct)fx.push('현재체력딜');return fx;}
 function renderCraft(){
   const el=document.getElementById('craftList');
   // 만들 수 있는 것 + 1~2개만 더 모으면 되는 것까지 표시
@@ -2841,7 +3032,7 @@ function renderCraft(){
     })).join(' + ');
     // 갈림길(S25): 같은 재료로 두 결과가 나오면 표시 — 어느 쪽으로 진화할지 고르는 재미
     const twin=secret?null:Object.keys(RECIPE).find(o=>o!==r&&[...RECIPE[o]].sort().join('|')===[...RECIPE[r]].sort().join('|'));
-    const roleTxt=secret?'':`<span style="font-size:10px;color:#aeb6bf">${unitTags(U[r]).slice(0,4).join('·')}</span>`;
+    const roleTxt=secret?'':`${roleTags(r,1)} <span style="font-size:10px;color:#aeb6bf">${unitTags(U[r]).slice(0,3).join('·')}</span>`;
     const twinTxt=twin?`<div style="font-size:10px;color:#d29922;">⚖ 갈림길: 같은 재료로 <b>${shortName(twin)}</b>(${unitTags(U[twin]).slice(0,3).join('·')})도 가능</div>`:'';
     const d=document.createElement('div');d.className=ready?'craft ready':'craft later';
     d.innerHTML=`<div class="info"><b style="color:${rc.color}">${dispName}</b>
@@ -2891,6 +3082,8 @@ function openBook(){if(G&&G.paused){log('🧭 항법을 먼저 선택하세요.'
   bookOpenUnit=null;renderBook();document.getElementById('book').classList.remove('hidden');}
 function closeBook(){document.getElementById('book').classList.add('hidden');}
 function bookToggle(name){bookOpenUnit=(bookOpenUnit===name)?null:name;renderBook();}
+let bookRole=null; // S32: 도감 역할 거르기(null=전체)
+function setBookRole(r){bookRole=(r&&ROLES[r]&&bookRole!==r)?r:null;bookOpenUnit=null;renderBook();}
 function bookCraft(name){craftDeep(name);if(G.craftConfirm)closeBook();renderBook();} // 도감에서 바로 조합 후 갱신(경고가 뜨면 도감을 닫아 보여줌)
 function renderBook(){
   const body=document.getElementById('bookBody');let html='';
@@ -2898,16 +3091,26 @@ function renderBook(){
   const TN={uncommon:'안흔함',special:'특별',rare:'희귀',legend:'전설',mythic:'신화',apex:'초월',hidden:'히든'};
   html+=`<div style="background:#161b22;border:1px solid #232b36;border-radius:8px;padding:8px 11px;margin-bottom:8px;font-size:12px;color:#c9d1d9;">
     🟢 = 지금 만들 수 있음 · 유닛을 <b>탭</b>하면 단계별 조합 재료(희귀→특별→흔함)가 다 보여요 · <b style="color:#d29922">🎯</b> = 목표로 등록(최대 ${GOAL_MAX})</div>`;
+  // S32: 겹침 규칙 + 역할 거르기
+  html+=`<details class="roleRule"><summary><b>${ROLE_RULE}</b><span class="more">자세히</span></summary><span style="color:var(--dim);font-size:11px;">감속 합계 최대 ${Math.round(SLOW_CAP*100)}% · 방깎 최대 ${Math.round(BRK_CAP*100)}% · 받는 피해 증가 최대 ${Math.round(AMP_CAP*100)}% · 같은 이름 기술은 가장 센 것 1개만<br>함께 쓰면 더 세요: ${ROLE_SYN_TXT}</span></details>`;
+  html+=`<div class="roleChips"><button class="${bookRole?'':'on'}" style="color:var(--ink)" onclick="setBookRole(null)">전체</button>`
+    +ROLE_ORDER.map(r=>`<button class="${bookRole===r?'on':''}" style="color:${ROLES[r].c}" title="${ROLES[r].d}" onclick="setBookRole('${r}')">${r}</button>`).join('')+`</div>`;
+  if(bookRole){
+    html+=`<div style="font-size:12px;color:${ROLES[bookRole].c};margin-bottom:4px;">「${bookRole}」 — ${ROLES[bookRole].d}</div>`;
+    const cm=Object.keys(U).filter(n=>U[n].t==='common'&&unitHasRole(n,bookRole));
+    if(cm.length){const rc=RARITY.common;html+=`<div class="bkTier" style="color:${rc.color};margin-top:8px;">흔함 <span style="color:#6e7681;font-weight:400;font-size:11px;">— 뽑기로 나옴</span></div>`;
+      for(const n of cm)html+=`<div class="bkRow"><b style="color:${rc.color}">${shortName(n)}</b><span class="dtag ${dtClass(U[n].dt)}">${DT_NAME[U[n].dt]}</span>${roleTags(n)}</div>`;}
+  }
   // 추천 덱 3종 — 정답 하나가 아니라 역할이 다른 후보와 장단점
-  html+=`<div class="bkTier" style="color:#d29922;">🧭 추천 덱 3종 <span style="color:#6e7681;font-weight:400;font-size:11px;">— 역할이 다른 후보, 각각 장단점 있음</span></div>`;
-  DECKS.forEach((d,i)=>{const on=G&&d.core.every(c=>G.goals.includes(c));
+  if(!bookRole)html+=`<div class="bkTier" style="color:#d29922;">🧭 추천 덱 3종 <span style="color:#6e7681;font-weight:400;font-size:11px;">— 역할이 다른 후보, 각각 장단점 있음</span></div>`;
+  if(!bookRole)DECKS.forEach((d,i)=>{const on=G&&d.core.every(c=>G.goals.includes(c));
     html+=`<div class="bkDetail" style="border-left:3px solid ${d.color};margin-bottom:6px;">
       <div style="display:flex;align-items:center;gap:6px;"><b style="color:${d.color};flex:1;">${d.icon} ${d.name}</b>
         <button onclick="event.stopPropagation();setDeckGoals(${i})" style="background:${on?'#d29922':'#30363d'};font-size:10px;padding:4px 8px;">${on?'🎯 등록됨':'🎯 목표로 등록'}</button></div>
       <div style="color:#c9d1d9;margin-top:2px;">${d.role} — 핵심: ${d.core.map(c=>`<span style="color:${RARITY[U[c].t].color}">${shortName(c)}</span>`).join(' · ')}</div>
       <div style="color:#7ee787;font-size:11px;">＋ ${d.good}</div><div style="color:#ffb3ad;font-size:11px;">－ ${d.bad}</div></div>`;});
   for(const tier of tiers){
-    const items=Object.keys(RECIPE).filter(n=>U[n].t===tier);
+    const items=Object.keys(RECIPE).filter(n=>U[n].t===tier&&(!bookRole||(unitHasRole(n,bookRole)&&!(isSecret(n)&&!(G&&G.discovered[n])))));
     if(!items.length)continue;
     const rc=RARITY[tier];
     html+=`<div class="bkTier" style="color:${rc.color};margin-top:8px;">${TN[tier]||tier}</div>`;
@@ -2920,7 +3123,7 @@ function renderBook(){
       // 한 줄: [상태점] 이름  [등급칩]  [조합버튼(가능시)]
       html+=`<div class="bkCard ${open?'open':''}" style="border-left:3px solid ${rc.color};" onclick="bookToggle('${n}')">
         <span style="flex:1;"><span style="font-size:13px;">${dot}</span> <b style="color:${rc.color}">${nm}</b>
-          <span class="dtag ${dtClass(U[n].dt)}" style="margin-left:4px;">${DT_NAME[U[n].dt]}</span>${secret?'':skillBadge(n)}</span>
+          <span class="dtag ${dtClass(U[n].dt)}" style="margin-left:4px;">${DT_NAME[U[n].dt]}</span>${secret?'':roleTags(n,1)+skillBadge(n)}</span>
         ${!secret?`<button onclick="event.stopPropagation();toggleGoal('${n}')" title="목표 조합으로 등록/해제" style="background:${G&&G.goals.includes(n)?'#d29922':'#30363d'};font-size:11px;padding:5px 8px;">🎯</button>`:''}
         ${canDeep&&!secret?`<button onclick="event.stopPropagation();bookCraft('${n}')" style="background:${rc.color};color:#0d1117;font-size:11px;padding:5px 10px;">⚡ 조합</button>`:''}
       </div>`;
