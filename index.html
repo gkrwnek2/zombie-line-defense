@@ -162,9 +162,9 @@
   .skList .skRow span{color:#c9d1d9;}
   .craft .info{flex:1; min-width:0; line-height:1.4;} .craft .rcp{color:var(--dim); font-size:12px;}
   .craft button{flex:0 0 auto; min-width:78px; min-height:44px; padding:8px 12px; font-size:15px; font-family:var(--f-head); font-weight:400; letter-spacing:.5px; background:linear-gradient(180deg,#8367ad,#624b86);}
-  #book,#mission,#nav,#rec,#lab{position:absolute; inset:0; background:rgba(15,17,11,.96); border-radius:3px; padding:16px; overflow-y:auto; z-index:20;}
+  #book,#mission,#nav,#rec,#lab,#buffs{position:absolute; inset:0; background:rgba(15,17,11,.96); border-radius:3px; padding:16px; overflow-y:auto; z-index:20;}
   #stage h2{ font-family:var(--f-head); font-weight:400; letter-spacing:.5px; color:var(--ink); }
-  #book h2,#mission h2,#nav h2,#rec h2,#lab h2{ padding-bottom:6px; border-bottom:2px solid var(--olive); }
+  #book h2,#mission h2,#nav h2,#rec h2,#lab h2,#buffs h2{ padding-bottom:6px; border-bottom:2px solid var(--olive); }
   /* 작전 선택(시작화면) */
   .docGrid{display:grid; grid-template-columns:1fr 1fr; gap:5px; width:100%; max-width:340px;}
   .docGrid button{background:#262b1d; box-shadow:inset 0 0 0 1px var(--line2),inset 0 -2px 0 rgba(0,0,0,.3); font-size:12px; padding:8px 6px;}
@@ -223,10 +223,27 @@
   .labRes.lose{ border-color:#8a8f5a; color:var(--dim); animation:labLose .6s ease-out; }
   .labNote{ margin-top:8px; font-size:11px; color:var(--mute); }
   .labPity{ color:#c6e04a; font-weight:600; white-space:nowrap; }
-  /* S35 깎기·CC 게이지 — 자원판 아래 한 줄(점선으로 나눔) */
-  .brkLine{ grid-column:1/-1; margin:7px 9px 0; padding-top:5px; border-top:1px dashed var(--line); font-size:11px; line-height:1.4; color:var(--dim); }
+  /* S35b 버프·디버프 한 칸 — 판단 없이 합계만. 누르면 패널 (점선 위 한 줄, 상자 없음) */
+  .brkLine{ grid-column:1/-1; display:flex; align-items:center; gap:7px; margin:7px 9px 0; padding:5px 0 0; min-height:0; border:0; border-top:1px dashed var(--line);
+    border-radius:0; clip-path:none; background:none; box-shadow:none; text-shadow:none; font:500 11px/1.4 var(--f-body); color:var(--dim); text-align:left; white-space:nowrap; overflow:hidden; }
+  #panel .brkLine{ min-height:30px; }
+  .brkLine:active{ transform:none; box-shadow:none; }
+  .brkLine .bfT{ flex:0 0 auto; color:var(--khaki); font-weight:700; text-decoration:underline dotted; text-underline-offset:3px; }
+  .brkLine .bfS{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+  .brkLine .go{ flex:0 0 auto; color:var(--mute); font-size:14px; }
   .brkLine b{ font-family:var(--f-num); font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; }
-  .brkLine .ok{ color:#7ee787; } .brkLine .no{ color:#ff7b72; } .brkLine .sep{ color:var(--line2); padding:0 4px; }
+  .bfH{ margin:16px 0 0; padding-bottom:4px; border-bottom:2px solid var(--olive); font-family:var(--f-head); font-weight:400; font-size:16px; letter-spacing:.4px; color:var(--khaki); }
+  .bfH em{ font-style:normal; font-family:var(--f-body); font-size:11px; color:var(--mute); margin-left:6px; letter-spacing:0; }
+  .bfRow{ display:grid; grid-template-columns:minmax(0,1fr) auto; column-gap:10px; align-items:baseline; padding:7px 0; border-bottom:1px dashed var(--line2); font-size:13px; }
+  .bfRow .k{ color:var(--dim); min-width:0; } .bfRow .v{ text-align:right; color:var(--ink); white-space:nowrap; }
+  .bfRow .v b{ font-family:var(--f-num); font-weight:600; font-size:15px; font-variant-numeric:tabular-nums; }
+  .bfRow .v i{ font-style:normal; font-size:11px; color:var(--mute); }
+  .bfRow small{ grid-column:1/-1; margin-top:2px; font-size:11px; line-height:1.45; color:var(--mute); overflow-wrap:anywhere; }
+  .bfRow.zero .v{ color:var(--mute); }
+  .bfRow.tap{ cursor:pointer; -webkit-tap-highlight-color:transparent; } .bfRow.tap:active .k{ color:var(--ink); }
+  .bfRow .ar{ display:inline-block; width:10px; color:var(--khaki); font-size:11px; }
+  .bfRow.open .k{ color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
+  .bfRow .dup{ font-style:normal; color:#d29922; }
   @keyframes labWin{ 0%{ transform:scale(.8); opacity:0; text-shadow:0 0 14px #c6e04a; } 60%{ transform:scale(1.06); opacity:1; } 100%{ transform:scale(1); } }
   @keyframes labLose{ 0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-6px); } 40%{ transform:translateX(6px); } 60%{ transform:translateX(-4px); } 80%{ transform:translateX(3px); } }
   @keyframes uranPulse{ 50%{ color:#fff; text-shadow:0 0 8px #c6e04a; } }
@@ -278,14 +295,14 @@
     .card{ padding:11px 10px 12px; }
     h1{ font-size:20px; }
     .stat{ padding:0 6px; } .stat .v{ font-size:20px; }
-    #book,#mission,#nav,#rec,#lab,#overlay{ padding:12px; }
+    #book,#mission,#nav,#rec,#lab,#buffs,#overlay{ padding:12px; }
     .recDiff{ gap:2px 10px; }
     #overlay h2{ font-size:26px; }
     .docGrid,.diffGrid,.docDetail{ max-width:100%; }
   }
   /* S31: 폰·터치에서 누르는 곳은 전부 44px 이상 (PC 마우스 화면은 그대로) */
   @media (max-width:859.98px),(pointer:coarse){
-    #panel button,#sel button,#book button,#mission button,#nav button,#rec button,#lab button,#overlay button,#rewardPop button,#wispMenu button{ min-height:44px; }
+    #panel button,#sel button,#book button,#mission button,#nav button,#rec button,#lab button,#buffs button,#overlay button,#rewardPop button,#wispMenu button{ min-height:44px; }
     #panel #waveBtn,#panel #speedBtn,#panel #sfxBtn{ min-height:46px; } #panel #summonBtn{ min-height:52px; }
     #book button,#sel button{ min-width:44px; }
     .resCells{ gap:4px 8px; }
@@ -299,7 +316,7 @@
   @media (prefers-reduced-motion:reduce){ button{ transition:none; } }
   /* S35 휴대폰: 연구소는 화면 전체를 덮는 창으로(지도 칸 안에 갇혀 잘리던 문제 해결) */
   @media (max-width:859.98px){
-    #lab{ position:fixed; inset:0; z-index:60; border-radius:0; padding:14px 16px calc(18px + env(safe-area-inset-bottom)); -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
+    #lab,#buffs{ position:fixed; inset:0; z-index:60; border-radius:0; padding:14px 16px calc(18px + env(safe-area-inset-bottom)); -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
     #lab .labRow{ gap:10px; padding:10px 0; }
     #lab .labTxt b{ font-size:15.5px; } #lab .labTxt span{ font-size:12px; }
     #lab .labGo{ min-width:84px; min-height:52px; }
@@ -328,8 +345,18 @@
           <h2 style="margin:0;font-size:20px;">☢ 우라늄 연구소</h2>
           <button onclick="closeLab()" style="background:#30363d;font-size:13px;padding:6px 12px;">✕ 닫기</button>
         </div>
-        <p style="margin:0 0 8px;color:#a9b3bf;font-size:13px;">보스를 잡고 어려운 미션을 깨면 우라늄이 조금씩 쌓여요. 운에 맡겨 볼까요?</p>
+        <p style="margin:0 0 8px;color:#a9b3bf;font-size:13px;">보스를 잡을 때마다 우라늄이 1개씩 쌓여요(한 판 최대 6개). 운에 맡겨 볼까요?</p>
         <div id="labBody"></div>
+      </div>
+    </div>
+    <div id="buffs" class="hidden">
+      <div class="labInner">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <h2 style="margin:0;font-size:20px;">📊 버프·디버프</h2>
+          <button onclick="closeBuffs()" style="background:#30363d;font-size:13px;padding:6px 12px;">✕ 닫기</button>
+        </div>
+        <p style="margin:0 0 4px;color:#a9b3bf;font-size:13px;">지금 지도에 놓인 부대가 거는 효과의 합계예요. 효과는 각 부대 사거리 안에서 적용돼요.</p>
+        <div id="buffsBody"></div>
       </div>
     </div>
     <div id="mission" class="hidden">
@@ -377,7 +404,7 @@
         <div class="stat hp"><div class="v" id="hp">0</div><div class="l">혼잡/한계</div></div>
         <div class="stat wave"><div class="v" id="wave">0</div><div class="l">웨이브</div></div>
         <div class="stat score"><div class="v" id="score">0</div><div class="l">점수</div></div>
-        <div class="brkLine" id="brkLine"></div>
+        <button type="button" class="brkLine" id="brkLine" onclick="openBuffs()" title="지금 지도에 놓인 부대의 버프·디버프 합계"></button>
       </div>
       <div class="card" id="cmdBtns">
         <div class="btn-row">
@@ -1280,7 +1307,7 @@ function missionFail(){ // true를 돌려주면 게임이 끝난 것
 }
 function grantMissionReward(m){
   G.missionsDone=Math.max(G.missionsDone,m.idx+1);G.activeMission=null;
-  SFX.reward();uranGain(m.idx>=5?1:0,'6·7번째 미션 성공',m.x,m.y);
+  SFX.reward();
   if(m.reward.type==='summon'){G.freeSummons+=m.reward.n;
     log(`🎁 미션 보상: <b style="color:#f2cc60">흔함 뽑기권 ×${m.reward.n}</b> 획득!`,'#f2cc60');}
   else{grantPick(m.reward.tier);const rc=RARITY[m.reward.tier];
@@ -1428,7 +1455,7 @@ function sellSelected(){
 function sellPrice(t){const base=t.paid>0?t.paid:(t.paid===0?summonCost()*0.5:summonCost());
   if(U[t.name]&&U[t.name].junk)return 0; // S34 핵폐기물은 0골드
   return Math.round(base*0.6*Math.pow(2.2,tIdx(t.t)));}
-// ===== S34 ☢ 우라늄 연구소 → S35: 보스 1마리마다 +1 · 6·7번째 미션 성공 +1 (한 판 약 8~12개) → 도박·부품 =====
+// ===== S34 ☢ 우라늄 연구소 → S35b: 보스(최종보스 포함) 1마리마다 +1, 한 판 최대 6개(30웨이브 보스 6마리) → 도박·부품 =====
 // S35 도박 실패 보정: 같은 종류 도박이 실패할 때마다 다음 성공 확률 +10%p (최대 3번 = +30%p), 성공하면 0으로
 const LAB={rare:{cost:1,p:0.4},secret:{cost:2,p:0.3},part:{cost:3,p:1}},LAB_PITY=0.1,LAB_PITY_MAX=3;
 function labPity(k){return Math.min(LAB_PITY_MAX,(G&&G.labPity&&G.labPity[k])||0);}
@@ -1438,7 +1465,8 @@ const WASTE='핵폐기물',GHOST='코드네임 유령',PART_NEED=2,GHOST_KEY='zl
 function ghostStored(){try{return localStorage.getItem(GHOST_KEY)==='1';}catch(_){return false;}}
 function ghostSave(){try{localStorage.setItem(GHOST_KEY,'1');}catch(_){}}
 function secretKnown(r){return !!(G&&G.discovered&&G.discovered[r])||(r===GHOST&&ghostStored());}
-function uranGain(n,why,x,y){if(!G||!(n>0))return;G.uran=(G.uran||0)+n;G.uranGot=(G.uranGot||0)+n;G._uranT=G.t;
+const URAN_MAX=6; // S35b 한 판 최대 우라늄(무한 모드 포함)
+function uranGain(n,why,x,y){if(!G)return;n=Math.min(n,URAN_MAX-(G.uranGot||0));if(!(n>0))return;G.uran=(G.uran||0)+n;G.uranGot=(G.uranGot||0)+n;G._uranT=G.t;
   if(x!=null&&G.floats)G.floats.push({x,y:y-30,txt:`+${n}☢`,life:1200,sk:true});
   log(`☢ 우라늄 +${n} (${why}) — 지금 ${G.uran}개 · <b>☢ 연구소</b>에서 쓸 수 있어요`,'#c6e04a');}
 function labRoom(){return SLOTS.some(s=>!s.tower)||resRoom();}
@@ -1476,7 +1504,7 @@ function renderLab(){const el=document.getElementById('labBody');if(!el||!G)retu
       +`<button class="labGo" ${can?'':'disabled'} onclick="labBuy('${k}')">☢ ${L.cost}<small>${k==='part'?'항상 성공':'성공 '+Math.round(labP(k)*100)+'%'}</small></button></div>`;};
   const pity=k=>{const n=labPity(k);return n?` <b class="labPity">실패 보정 +${Math.round(n*LAB_PITY*100)}% 적용 중</b>`:'';};
   const last=G.labLast;
-  el.innerHTML=`<div class="labHave">가진 우라늄 <b>☢ ${u}</b><span>보스 1마리마다 +1 · 6·7번째 미션 성공 +1</span></div>`
+  el.innerHTML=`<div class="labHave">가진 우라늄 <b>☢ ${u}</b><span>보스 1마리마다 +1 · 한 판 최대 ${URAN_MAX}개 (지금까지 ${G.uranGot||0}개)</span></div>`
     +row('rare','희귀 도박','성공하면 희귀 유닛 1기 · 실패하면 핵폐기물'+pity('rare'))
     +row('secret','비밀 도박','성공하면 <b style="color:'+RARITY.secret.color+'">비밀 유닛</b> 4종 중 1기 — 여기서만 나와요 · 실패하면 핵폐기물'+pity('secret'))
     +row('part','초월 부품',`부품 ${G.parts||0}/${PART_NEED} — 다 모으면 초월 선택권`)
@@ -1622,18 +1650,84 @@ function deckPower(){const r={phys:0,magic:0,slow:1,stun:0},B={},M={},S={},T={};
   r.slowPct=Math.round(Math.min(SLOW_CAP,1-r.slow)*100);
   r.cc=Math.min(1,((r.slowPct/100)/SLOW_CAP+Math.min(r.stun,STUN_FULL)/STUN_FULL)/2);return r;}
 function brkPts(role){const p=deckPower();return role==='마방깎'?p.magic:p.phys;}
-// 자원판 아래 한 줄: "방깎 142 · 마방깎 40 /223 (필요 78) | 감속 45% 기절 3 → CC 충분"
+// S35b 버프·디버프: "부족·충분·필요" 같은 판단 없이, 지금 지도에 놓인 부대의 효과 합계만 보여줌
+// 전투와 같은 규칙 — 같은 이름(유닛·스킬)은 한 번만, 종류별 상한(방깎 223·받는 피해 25%·이감 60%·처형 20%·버프 상한)
 function buffKinds(){const n={};for(const s of SLOTS){const t=s.tower;if(t&&U[t.name]&&U[t.name].buff)n[t.name]=1;}return Object.keys(n).length;}
+function skWhen(k){return k.on==='hit'?`공격 때 ${Math.round(k.p*100)}% 확률`:k.on==='count'?`${k.n}번 공격마다`:`${k.sec}초마다`;}
+function fieldFx(){const M=(G&&G.mod)||{},r={brk:0,brkSk:0,mbrk:0,mbrkSk:0,amp:0,slow:1,exec:0,bdm:1,bas:1,rally:null,src:{}};
+  // 출처 목록: 같은 이름(유닛·스킬)이 또 나오면 효과는 더하지 않고 "중복" 개수만 셈 → 패널에서 펼쳐 보기
+  const MAP={},add=(key,id,label,val)=>{const m=MAP[key]||(MAP[key]={});if(m[id]){m[id].dup++;return false;}
+    const o={label,val,dup:1};m[id]=o;(r.src[key]||(r.src[key]=[])).push(o);return true;};
+  const pc=v=>Math.round((v-1)*100);
+  try{for(const sl of SLOTS){const t=sl.tower;if(!t)continue;const n=t.name,u=U[n];if(!u||u.junk)continue;const sn=shortName(n);
+    if(u.buff&&add('buff',n,sn,`공 +${pc(u.buff.dmg)}% 속 +${pc(u.buff.as)}%`)){r.bdm*=u.buff.dmg;r.bas*=u.buff.as;}   /* buffMult와 같은 규칙 */
+    if(u.debuff&&add('amp',n,sn,`+${pc(u.debuff)}%`))r.amp+=u.debuff-1;                                              /* ampOf와 같은 규칙 */
+    if(t.rallyUntil>G.t){if(!r.rally)r.rally={n:0,mul:1,left:0};r.rally.n++;r.rally.mul=Math.max(r.rally.mul,t.rallyMul||1);r.rally.left=Math.max(r.rally.left,t.rallyUntil-G.t);}
+    if(u.cd>=9999)continue; /* 공격하지 않는 부대는 맞힐 때 거는 효과가 없음 */
+    if(u.armBrk&&add('brk',n,sn,u.armBrk))r.brk+=u.armBrk;
+    if(u.mBrk&&add('mbrk',n,sn,u.mBrk))r.mbrk+=u.mBrk;
+    if(u.slow&&u.slow<1&&add('slow',n,sn,`${Math.round((1-u.slow)*100)}%`))r.slow*=u.slow;
+    if(u.stun)add('stun',n,sn,`${u.stunP?`공격 때 ${Math.round(u.stunP*100)}% 확률`:`공격마다(${(u.cd/1000).toFixed(1)}초에 1번)`} ${u.stun/1000}초`);
+    if(u.dot)add('dot',n,sn,'');
+    if(u.execute&&add('exec',n,sn,`${Math.round(u.execute*100)}%`))r.exec=Math.max(r.exec,u.execute);
+    if(u.maxHpPct||u.curHpPct)add('pct',n,sn,[u.maxHpPct?`최대 ${+(u.maxHpPct*100).toFixed(1)}%`:'',u.curHpPct?`현재 ${+(u.curHpPct*100).toFixed(1)}%`:''].filter(Boolean).join(' '));
+    for(const k of (SKILLS[n]||[])){const id='#'+k.nm,sl2=`${sn} '${k.nm}'`;
+      if(k.fx==='shred'&&k.v){if(add(k.m?'mbrk':'brk',id,sl2,k.v)){if(k.m)r.mbrkSk+=k.v;else r.brkSk+=k.v;}}
+      else if(k.fx==='slow'&&k.mul<1){if(add('slow',id,sl2,`${Math.round((1-k.mul)*100)}%`))r.slow*=k.mul;}
+      else if(k.fx==='stun')add('stun',id,sl2,`${skWhen(k)} ${k.ms/1000}초`);
+      else if(k.fx==='mark'&&k.v){if(add('amp',id,sl2,`+${Math.round(k.v*100)}%`))r.amp+=k.v;}
+      else if(k.fx==='burn')add('dot',id,sl2,'');
+      else if(k.fx==='exec'){if(add('exec',id,sl2,`${Math.round((k.th||0)*100)}%`))r.exec=Math.max(r.exec,k.th||0);}
+      else if(k.fx==='pct')add('pct',id,sl2,'');
+      else if(k.fx==='rally')add('rally',id,sl2,`+${pc(k.mul)}% ${k.dur/1000}초`);}}}catch(_){}
+  const cap=(v,add2,c)=>v>0?Math.min(c,v+(add2||0)):0; /* brkOf·mbrkOf와 같은 규칙(가산·상한) */
+  r.brkT=cap(r.brk+r.brkSk,M.brkAdd,BRK_CAP);r.mbrkT=cap(r.mbrk+r.mbrkSk,M.mbrkAdd,MBRK_CAP);
+  r.ampPct=Math.round(Math.min(AMP_CAP,r.amp)*100);r.slowPct=Math.round(Math.min(SLOW_CAP,1-r.slow)*100);
+  r.execPct=r.exec?Math.round(Math.min(EXEC_CAP,r.exec)*100):0;
+  const L=k=>(r.src[k]||[]);r.stun=L('stun');r.buffs=L('buff').map(o=>o.label);
+  r.ampN=L('amp').length;r.slowN=L('slow').length;r.dotN=L('dot').length;r.execN=L('exec').length;r.pctN=L('pct').length;r.rallyN=L('rally').length;
+  const amp=M.buffAmp||1;r.bf=buffCap(r.bdm,r.bas,amp);r.bfP=buffCap(r.bdm,r.bas,amp*(M.pierceBuff||1));
+  return r;}
+// 자원판 아래 한 칸: "📊 버프·디버프  방깎 42 · 공속 +30% ›" — 누르면 패널
 function brkTick(){try{const el=document.getElementById('brkLine');if(!el||!G)return;
-  const p=deckPower(),need=needPts(),nd=(G.dcfg&&G.dcfg.need)||0,dt=teamDt();
-  const mine=dt==='magic'?p.magic:dt==='phys'?p.phys:null;
-  const sig=[p.phys,p.magic,p.slowPct,p.stun,need,dt,buffKinds()].join(',');if(el._sig===sig)return;el._sig=sig;
-  const okB=nd<=0||mine==null||mine>=need,okC=nd<=0||p.cc>=nd;
-  const tag=(ok)=>nd<=0?'<span class="ok">없어도 OK</span>':ok?'<span class="ok">충분</span>':'<span class="no">부족</span>';
-  el.innerHTML=`방깎 <b>${p.phys}</b> · 마방깎 <b>${p.magic}</b>/${FULL_BRK}`
-    +(mine==null?` (방어무시 덱 → 강화 <b>${buffKinds()}</b>종${buffKinds()?'':' <span class="no">— 강화 유닛을 붙이세요</span>'})`:(nd>0?` (필요 ${need})`:''))+` → ${tag(okB)}`
-    +`<span class="sep">|</span>감속 <b>${p.slowPct}%</b> 기절 <b>${p.stun}</b> → CC ${tag(okC)}`;
+  const f=fieldFx(),bits=[];
+  if(f.brkT)bits.push(`방깎 <b>${f.brkT}</b>`);if(f.mbrkT)bits.push(`마방깎 <b>${f.mbrkT}</b>`);
+  if(f.bf.as>1.0001)bits.push(`공속 <b>+${Math.round((f.bf.as-1)*100)}%</b>`);
+  if(bits.length<3&&f.slowPct)bits.push(`이감 <b>${f.slowPct}%</b>`);
+  const html=`<span class="bfT">📊 버프·디버프</span><span class="bfS">${bits.length?bits.slice(0,3).join(' · '):'눌러서 효과 합계 보기'}</span><span class="go">›</span>`;
+  if(el._sig!==html){el.innerHTML=html;el._sig=html;}
+  const p=document.getElementById('buffs');if(p&&!p.classList.contains('hidden'))renderBuffs(); /* 열려 있으면 실시간 */
 }catch(_){}}
+let bfOpen={}; // 패널에서 펼친 줄(기본은 모두 접힘)
+function bfTog(k){bfOpen[k]=!bfOpen[k];const el=document.getElementById('buffsBody');if(el)el._sig=null;renderBuffs();}
+function renderBuffs(){const el=document.getElementById('buffsBody');if(!el||!G)return;const f=fieldFx(),M=G.mod||{};
+  const pc=v=>Math.round((v-1)*100),sg=v=>(v>=0?'+':'')+v;
+  // 출처 목록: "흑표 30 · 공병대 18" + 같은 이름이 또 있으면 "×2 (같은 이름 중복 — 1개만 적용)"
+  const list=(key,note)=>(f.src[key]||[]).map(o=>`${o.label}${o.val!==''?' '+o.val:''}${o.dup>1?` <em class="dup">×${o.dup} (같은 이름 중복 — 1개만 적용)</em>`:''}`).join(' · ')+(note?`<br>${note}`:'');
+  const row=(key,k,v,note,z)=>{const has=(f.src[key]||[]).length,op=has&&bfOpen[key];
+    return has?`<div class="bfRow tap${op?' open':''}" role="button" onclick="bfTog('${key}')"><span class="k">${k}</span><span class="v">${v} <span class="ar">${op?'▾':'▸'}</span></span>${op?`<small>${list(key,note)}</small>`:''}</div>`
+      :`<div class="bfRow zero"><span class="k">${k}</span><span class="v">${v}</span></div>`;};
+  const stat=(k,v,sub,z)=>`<div class="bfRow${z?' zero':''}"><span class="k">${k}</span><span class="v">${v}</span>${sub?`<small>${sub}</small>`:''}</div>`;
+  const skB=f.brkSk?`맞힐 때 ${f.brk}점 + 스킬 발동 때 ${f.brkSk}점`:'',skM=f.mbrkSk?`맞힐 때 ${f.mbrk}점 + 스킬 발동 때 ${f.mbrkSk}점`:'';
+  let h=`<h3 class="bfH">적에게 거는 효과<em>디버프</em></h3>`
+    +row('brk','방깎',`<b>${f.brkT}</b>점 <i>/ 최대 ${BRK_CAP}</i>`,skB)
+    +row('mbrk','마방깎',`<b>${f.mbrkT}</b>점 <i>/ 최대 ${MBRK_CAP}</i>`,skM)
+    +row('amp','받는 피해 증가',`<b>+${f.ampPct}%</b> <i>/ 최대 ${Math.round(AMP_CAP*100)}%</i>`,'')
+    +row('slow','이동속도 감소(이감)',`<b>${f.slowPct}%</b> <i>/ 최대 ${Math.round(SLOW_CAP*100)}%</i>`,'다른 부대끼리 곱해져요 · 보스는 절반만')
+    +row('stun','기절',`<b>${f.stun.length}</b>곳`,'보스는 절반 · 풀린 직후 잠깐 면역')
+    +row('dot','지속 피해(불·가스)',`<b>${f.dotN}</b>곳`,'가장 센 불 1개만 적용')
+    +row('exec','처형',f.execN?`체력 <b>${f.execPct}%</b> 이하`:'<b>0</b>곳',`보스 제외 · 방깎된 적은 +${Math.round(SYN.brkExec*100)}%p (최대 ${Math.round(EXEC_CAP*100)}%)`)
+    +row('pct','체력 비례 피해',`<b>${f.pctN}</b>곳`,'보스는 절반');
+  h+=`<h3 class="bfH">아군 강화<em>버프</em></h3>`
+    +row('buff','강화 부대',`공 <b>+${pc(f.bf.dm)}%</b> · 속 <b>+${pc(f.bf.as)}%</b>`,`방어무시 부대는 1.5배로 받음 → 공 +${pc(f.bfP.dm)}% · 속 +${pc(f.bfP.as)}%`)
+    +['phys','magic','pierce'].map(dt=>{const lv=(G.upg&&G.upg[dt])||0;
+      return stat(`강화 버튼 · ${DT_NAME[dt]}`,`<b>${lv}</b>단계`,lv?`공 +${Math.round(lv*UPG_DMG*100)}% · 속 +${Math.round(lv*UPG_AS*100)}%`:'',!lv);}).join('')
+    +((M.dmg||1)!==1||(M.as||1)!==1?stat('작전·항법 보정',`공 <b>${sg(pc(M.dmg||1))}%</b> · 속 <b>${sg(pc(M.as||1))}%</b>`,''):'')
+    +(f.rally&&!f.rallyN?stat('스킬 공속 강화',`<b>+${pc(f.rally.mul)}%</b> 발동 중`,`지금 ${f.rally.n}기에 적용 · 남은 ${Math.ceil(f.rally.left/1000)}초`):row('rally','스킬 공속 강화',f.rally?`<b>+${pc(f.rally.mul)}%</b> 발동 중`:'쉬는 중',f.rally?`지금 ${f.rally.n}기에 적용 · 남은 ${Math.ceil(f.rally.left/1000)}초`:''));
+  h+=`<p class="labNote">줄을 누르면 어느 부대에서 왔는지 보여요 · 같은 이름(유닛·스킬)끼리는 겹치지 않고, 다른 부대끼리 더해져요 · 효과는 각 부대 사거리 안에서 적용 · 공격속도는 모두 합쳐 최대 ×${AS_CAP}</p>`;
+  if(el._sig!==h){el.innerHTML=h;el._sig=h;}}
+function openBuffs(){if(!G)return;const el=document.getElementById('buffs');if(!el)return;bfOpen={};const b=document.getElementById('buffsBody');if(b)b._sig=null;renderBuffs();el.classList.remove('hidden');}
+function closeBuffs(){const el=document.getElementById('buffs');if(el)el.classList.add('hidden');}
 // S35 좀비 눌러 보기: 방어력·마법방어력(깎인 뒤)·속도가 얼마나 빨라졌는지 한 줄로
 function zTapAt(x,y){let best=null,bd=1e9;for(const e of (G.enemies||[])){const d=Math.hypot(e.x-x,e.y-y);if(d<(e.r||10)+16&&d<bd){bd=d;best=e;}}return best;}
 function zInfo(e){const z=ZTYPE[e.type],base=e.mission?0.4:(z?z.spd:e.spd)||1,sp=Math.round((e.spd/base-1)*100);
@@ -1704,8 +1798,9 @@ const BUFF_CAP=1.8; // 버프 중첩 상한 — 통신병 도배 스노볼 방�
 function buffMult(t){let dm=1,as=1;const seen={};
   for(const s of SLOTS){const b=s.tower;if(!b||b===t||seen[b.name])continue;const bu=U[b.name].buff;
     if(bu&&Math.hypot(b.x-t.x,b.y-t.y)<=U[b.name].range){seen[b.name]=1;dm*=bu.dmg;as*=bu.as;}} // S35 같은 유닛 이름은 안 겹침
-  const M=(G&&G.mod)||{},amp=buffAmpOf(t,M),cap=1+(BUFF_CAP-1)*amp;
-  return{dm:Math.min(1+(dm-1)*amp,cap),as:Math.min(1+(as-1)*amp,cap)};}
+  return buffCap(dm,as,buffAmpOf(t,(G&&G.mod)||{}));}
+// S35b 버프 배율 → 상한 적용 (전투·버프 패널 공용)
+function buffCap(dm,as,amp){const cap=1+(BUFF_CAP-1)*amp;return{dm:Math.min(1+(dm-1)*amp,cap),as:Math.min(1+(as-1)*amp,cap)};}
 // S35 방무 유닛은 강화(버프) 효과를 더 크게 받음 — 방무 덱의 짝은 '강화'
 function buffAmpOf(t,M){M=M||(G&&G.mod)||{};const u=t&&U[t.name];return (M.buffAmp||1)*(u&&u.dt==='pierce'?(M.pierceBuff||1):1);}
 function update(dt){
@@ -3075,7 +3170,7 @@ function updateUI(){
   hpEl.style.color=al>cap*0.75?'#ff7b72':al>cap*0.5?'#d29922':'#7ee787';
   document.getElementById('wave').textContent=G.endless?G.wave+'/∞':G.wave+'/'+MAX_WAVE;
   document.getElementById('score').textContent=G.score;
-  brkTick(); // S35 깎기·CC 게이지
+  brkTick(); // S35b 버프·디버프 한 칸(열려 있으면 패널도 갱신)
   document.getElementById('tp').textContent=G.tp;
   const sbtn=document.getElementById('summonBtn'),sc=summonCost();
   sbtn.disabled=G.freeSummons<=0&&G.gold<sc;
@@ -3351,7 +3446,6 @@ function hintUnits(r){return Object.keys(U).filter(n=>unitHasRole(n,r)&&!isSecre
 function hintThreats(){const t={};try{
   const q=[].concat(G.queue||[],G.nextQueue||[]);
   for(const k of q){const z=ZTYPE[k];if(z&&z.fly)t['대공']=1;if(k==='boss'||k==='final')t['보스']=1;if(z&&!z.boss&&(z.armP>=0.8||z.mresP>=0.8))t['방깎']=1;}
-  if(G.wave>=8&&needPts()>0){const br=brkRole();if(br&&brkPts(br)<needPts())t['방깎']=1;} // S35 깎기가 필요량보다 모자람
   for(const e of G.enemies||[]){if(e.mission)t['보스']=1;}
   if(G.activeMission)t['보스']=1;}catch(_){}return t;}
 function roleHint(trigger){try{
@@ -3360,27 +3454,25 @@ function roleHint(trigger){try{
   if(G.hintT!=null&&G.t-G.hintT<HINT_GAP)return null;
   const tm=teamRoleSet(),th=hintThreats(),br=brkRole();
   if(th['방깎']){delete th['방깎'];if(br)th[br]=1;} // 단단한 적: 우리 덱 속성에 맞는 깎기만
-  const isB=r=>r==='방깎'||r==='마방깎',lack=r=>isB(r)&&needPts()>0&&brkPts(r)<needPts();
-  const ok=r=>(!isB(r)||r===br)&&(!tm.any[r]||(th[r]&&lack(r)))&&(G.hintCnt[r]||0)<HINT_MAX&&!(G.hintSeen[r]!=null&&G.wave-G.hintSeen[r]<3)&&hintUnits(r).length;
+  const isB=r=>r==='방깎'||r==='마방깎';
+  const ok=r=>(!isB(r)||r===br)&&!tm.any[r]&&(G.hintCnt[r]||0)<HINT_MAX&&!(G.hintSeen[r]!=null&&G.wave-G.hintSeen[r]<3)&&hintUnits(r).length;
   let role=['대공','보스',br].find(r=>r&&th[r]&&ok(r)),threat=!!role;
   if(!role&&teamDt()==='pierce'&&G.wave>=3&&ok('강화')){role='강화';threat=true;} // S35 방무 덱 → 강화 유닛
   // 급하지 않은 알림은 더 드물게(마지막 알림 뒤 60초↑ ≈ 1.5웨이브)
   if(!role&&(tm.n>=4||G.wave>=2)&&!(G.hintT!=null&&G.t-G.hintT<HINT_GAP*3))role=HINT_ORDER.find(ok);
   if(!role)return null;
   const us=hintUnits(role).map(n=>`[${RARITY[U[n].t].name}] ${shortName(n)}`);
-  const why=threat?(role==='대공'?'곧 나는 적이 와요! ':role==='보스'?'곧 보스가 와요! ':role==='방깎'?"단단한 적이 와요 — 물리 위주 덱엔 '방깎'이 필요해요! ":role==='마방깎'?"단단한 적이 와요 — 마법 위주 덱엔 '마방깎'이 필요해요! ":role==='강화'?"방어무시 위주 덱은 '강화'(버프) 유닛과 함께일 때 가장 세요! ":'곧 단단한 적이 와요! '):'';
-  const msg=(isB(role)&&tm.any[role])
-    ?`💡 ${why}지금 <b>'${role}'</b> ${brkPts(role)}점 / 필요 ${needPts()}점 — <u>${us.join(' · ')}</u> 계열을 더 모아보세요`
-    :`💡 ${why}지금 우리 편에 <b>'${role}'</b>(${ROLE_SHORT[role]||''})${hintJosa(role)} 없어요 — <u>${us.join(' · ')}</u> 계열을 노려보세요`;
+  const why=threat?(role==='대공'?'곧 나는 적이 와요! ':role==='보스'?'곧 보스가 와요! ':role==='방깎'?"단단한 적이 와요 — 물리 위주 덱은 '방깎'과 잘 맞아요! ":role==='마방깎'?"단단한 적이 와요 — 마법 위주 덱은 '마방깎'과 잘 맞아요! ":role==='강화'?"방어무시 위주 덱은 '강화'(버프) 유닛과 함께일 때 가장 세요! ":'곧 단단한 적이 와요! '):'';
+  const msg=`💡 ${why}지금 우리 편에 <b>'${role}'</b>(${ROLE_SHORT[role]||''})${hintJosa(role)} 없어요 — <u>${us.join(' · ')}</u> 계열을 노려보세요`;
   G.hintSeen[role]=G.wave;G.hintCnt[role]=(G.hintCnt[role]||0)+1;G.hintT=G.t;
-  G.hint={role,msg,t:G.t,lack:isB(role)&&tm.any[role]};G.hintLog.push({role,wave:G.wave,trigger,t:G.t});
+  G.hint={role,msg,t:G.t};G.hintLog.push({role,wave:G.wave,trigger,t:G.t});
   // 기록창에는 남기되, 맨 위 한 줄(전투 소식)은 그대로 두고 알림 줄에만 크게 보여줌(같은 글 두 번 안 보이게)
   let ll=null,prev='';try{ll=document.getElementById('logLast');prev=ll?ll.innerHTML:'';}catch(_){}
   log(msg,'#e0a526');try{if(ll)ll.innerHTML=prev;}catch(_){}
   hintTick(true);return role;}catch(_){return null;}}
 function hintTick(force){try{const el=document.getElementById('hintLine');if(!el)return;
   let h=G&&G.hint;
-  if(h&&(!hintOn()||G.t-h.t>HINT_SHOW||(teamRoleSet().any[h.role]&&!(h.lack&&brkPts(h.role)<needPts())))){ /* S35 깎기 모자람 알림은 채울 때까지 유지 */G.hint=null;h=null;}
+  if(h&&(!hintOn()||G.t-h.t>HINT_SHOW||teamRoleSet().any[h.role])){G.hint=null;h=null;}
   const html=h?h.msg+' <span style="color:var(--mute)">· 눌러서 도감 보기</span>':'';
   if(force||el._hs!==html){el.innerHTML=html;el._hs=html;}}catch(_){}}
 function hintOpen(){try{const h=G&&G.hint;if(!h)return;openBook();bookRole=null;setBookRole(h.role);}catch(_){}}
