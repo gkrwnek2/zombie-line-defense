@@ -162,9 +162,9 @@
   .skList .skRow span{color:#c9d1d9;}
   .craft .info{flex:1; min-width:0; line-height:1.4;} .craft .rcp{color:var(--dim); font-size:12px;}
   .craft button{flex:0 0 auto; min-width:78px; min-height:44px; padding:8px 12px; font-size:15px; font-family:var(--f-head); font-weight:400; letter-spacing:.5px; background:linear-gradient(180deg,#8367ad,#624b86);}
-  #book,#mission,#nav,#rec{position:absolute; inset:0; background:rgba(15,17,11,.96); border-radius:3px; padding:16px; overflow-y:auto; z-index:20;}
+  #book,#mission,#nav,#rec,#lab{position:absolute; inset:0; background:rgba(15,17,11,.96); border-radius:3px; padding:16px; overflow-y:auto; z-index:20;}
   #stage h2{ font-family:var(--f-head); font-weight:400; letter-spacing:.5px; color:var(--ink); }
-  #book h2,#mission h2,#nav h2,#rec h2{ padding-bottom:6px; border-bottom:2px solid var(--olive); }
+  #book h2,#mission h2,#nav h2,#rec h2,#lab h2{ padding-bottom:6px; border-bottom:2px solid var(--olive); }
   /* 작전 선택(시작화면) */
   .docGrid{display:grid; grid-template-columns:1fr 1fr; gap:5px; width:100%; max-width:340px;}
   .docGrid button{background:#262b1d; box-shadow:inset 0 0 0 1px var(--line2),inset 0 -2px 0 rgba(0,0,0,.3); font-size:12px; padding:8px 6px;}
@@ -204,6 +204,28 @@
     border-radius:0; padding:6px 8px; font:11px/1.4 Consolas,monospace;}
   .recMe{font-size:12.5px !important; color:var(--khaki) !important; border-bottom:1px solid var(--olive2); padding-bottom:2px;}
   #bookInner{max-width:720px; margin:0 auto;}
+  /* S34 우라늄 연구소 — 줄은 밑줄로 나눔(상자 반복 없음) */
+  .labInner{max-width:560px; margin:0 auto;}
+  .uranTag{ font-family:var(--f-num); color:#c6e04a; letter-spacing:.3px; }
+  .uranTag.pulse{ animation:uranPulse .5s ease-in-out 3; }
+  #labBtn.uranHot{ color:#c6e04a; }
+  .labHave{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; padding:6px 0 10px; border-bottom:2px solid #c6e04a; font-size:14px; }
+  .labHave b{ font-family:var(--f-num); font-size:24px; color:#c6e04a; }
+  .labHave span{ font-size:11px; color:var(--dim); }
+  .labRow{ display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px dashed var(--line2); }
+  .labTxt{ flex:1; min-width:0; } .labTxt b{ display:block; font-family:var(--f-head); font-weight:400; font-size:17px; letter-spacing:.4px; color:var(--ink); }
+  .labTxt span{ font-size:12px; color:var(--dim); line-height:1.45; }
+  .labGo{ min-width:92px; min-height:48px; background:linear-gradient(135deg,#5b6b1f,#34400f); color:#eef7c8; font-family:var(--f-num); font-size:17px; border:1px solid #c6e04a; border-radius:2px; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.1; }
+  .labGo small{ font-family:var(--f-body); font-size:11px; color:#c6e04a; }
+  .labGo:disabled{ opacity:.4; }
+  .labRes{ margin:12px 0 4px; padding:6px 0 6px 10px; border-left:4px solid; font-size:15px; }
+  .labRes.win{ border-color:#c6e04a; color:#eef7c8; animation:labWin .7s ease-out; }
+  .labRes.lose{ border-color:#8a8f5a; color:var(--dim); animation:labLose .6s ease-out; }
+  .labNote{ margin-top:8px; font-size:11px; color:var(--mute); }
+  @keyframes labWin{ 0%{ transform:scale(.8); opacity:0; text-shadow:0 0 14px #c6e04a; } 60%{ transform:scale(1.06); opacity:1; } 100%{ transform:scale(1); } }
+  @keyframes labLose{ 0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-6px); } 40%{ transform:translateX(6px); } 60%{ transform:translateX(-4px); } 80%{ transform:translateX(3px); } }
+  @keyframes uranPulse{ 50%{ color:#fff; text-shadow:0 0 8px #c6e04a; } }
+  @media (prefers-reduced-motion:reduce){ .labRes.win,.labRes.lose,.uranTag.pulse{ animation:none; } }
   .bkTier{margin:14px 0 5px; font-family:var(--f-head); font-weight:400; font-size:15px; letter-spacing:.4px; padding-bottom:3px; border-bottom:1px solid var(--line2);}
   .bkRow{display:flex; align-items:center; gap:8px; background:none; border:0; border-bottom:1px dashed var(--line); border-radius:0; padding:6px 4px; margin-bottom:0; font-size:12px;}
   .bkRow .r{flex:1; color:var(--dim);}
@@ -251,14 +273,14 @@
     .card{ padding:11px 10px 12px; }
     h1{ font-size:20px; }
     .stat{ padding:0 6px; } .stat .v{ font-size:20px; }
-    #book,#mission,#nav,#rec,#overlay{ padding:12px; }
+    #book,#mission,#nav,#rec,#lab,#overlay{ padding:12px; }
     .recDiff{ gap:2px 10px; }
     #overlay h2{ font-size:26px; }
     .docGrid,.diffGrid,.docDetail{ max-width:100%; }
   }
   /* S31: 폰·터치에서 누르는 곳은 전부 44px 이상 (PC 마우스 화면은 그대로) */
   @media (max-width:859.98px),(pointer:coarse){
-    #panel button,#sel button,#book button,#mission button,#nav button,#rec button,#overlay button,#rewardPop button,#wispMenu button{ min-height:44px; }
+    #panel button,#sel button,#book button,#mission button,#nav button,#rec button,#lab button,#overlay button,#rewardPop button,#wispMenu button{ min-height:44px; }
     #panel #waveBtn,#panel #speedBtn,#panel #sfxBtn{ min-height:46px; } #panel #summonBtn{ min-height:52px; }
     #book button,#sel button{ min-width:44px; }
     .resCells{ gap:4px 8px; }
@@ -286,6 +308,16 @@
           <button onclick="closeBook()" style="background:#30363d;font-size:13px;padding:6px 12px;">✕ 닫기</button>
         </div>
         <div id="bookBody"></div>
+      </div>
+    </div>
+    <div id="lab" class="hidden">
+      <div class="labInner">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <h2 style="margin:0;font-size:20px;">☢ 우라늄 연구소</h2>
+          <button onclick="closeLab()" style="background:#30363d;font-size:13px;padding:6px 12px;">✕ 닫기</button>
+        </div>
+        <p style="margin:0 0 8px;color:#a9b3bf;font-size:13px;">보스를 잡고 어려운 미션을 깨면 우라늄이 조금씩 쌓여요. 운에 맡겨 볼까요?</p>
+        <div id="labBody"></div>
       </div>
     </div>
     <div id="mission" class="hidden">
@@ -329,7 +361,7 @@
     <!-- 늘 보이는 지휘석: 자원 + 웨이브 + 소환 (PC에서는 작전판을 내려도 위에 붙어 있음) -->
     <div id="cmdTop">
       <div class="card stats">
-        <div class="stat gold"><div class="v" id="gold">0</div><div class="l">골드</div></div>
+        <div class="stat gold"><div class="v" id="gold">0</div><div class="l">골드 <span id="uranTag" class="uranTag">☢0</span></div></div>
         <div class="stat hp"><div class="v" id="hp">0</div><div class="l">혼잡/한계</div></div>
         <div class="stat wave"><div class="v" id="wave">0</div><div class="l">웨이브</div></div>
         <div class="stat score"><div class="v" id="score">0</div><div class="l">점수</div></div>
@@ -345,6 +377,7 @@
           <button id="strikeBtn" onclick="toggleStrike()">💥 지정 포격</button>
           <button id="missionBtn" onclick="openMissions()">🎖️ 미션 도전</button>
           <button id="rewardBtn" class="hidden" onclick="openRewardPop()">🏅 받을 보상</button>
+          <button id="labBtn" onclick="openLab()">☢ 연구소</button>
         </div>
         <div id="logLast" class="logLast"></div>
         <div id="hintLine" class="hintLine" role="button" tabindex="0" onclick="hintOpen()"></div>
@@ -454,8 +487,13 @@ const RARITY={
   mythic:{name:'신화',color:'#ff3d3d',odds:0},
   apex:{name:'초월',color:'#3ff0e6',odds:0},
   hidden:{name:'히든',color:'#ffd23a',odds:0},
+  // S34 조합 사다리(TIER_ORDER) 밖 등급: 비밀=우라늄 연구소 비밀 도박 전용 · 폐기물=도박 실패물
+  secret:{name:'비밀',color:'#ff4fa3',odds:0},
+  waste:{name:'폐기물',color:'#8a8f5a',odds:0},
 };
 const TIER_ORDER=['common','uncommon','special','rare','legend','mythic','apex','hidden'];
+// S34 정렬·판매가용 등급 위치: 비밀은 전설과 신화 사이(4.5), 폐기물은 맨 아래
+function tIdx(t){const i=TIER_ORDER.indexOf(t);return i>=0?i:t==='secret'?4.5:-1;}
 
 // 피해 종류: phys(물리·방어력 영향) magic(마법·마법저항 영향) pierce(방어무시)
 const DT_NAME={phys:'물리',magic:'마법',pierce:'방어무시'};
@@ -465,6 +503,9 @@ const DMG_MULT={
   magic:{low:1.25, high:0.55, boss:0.8},     // 마법저항 등급별
   pierce:{any:1.0},                          // 무시(균일)
 };
+// S34: 방어력·마법저항 읽기는 이 두 함수로만 (S35에서 수치 방어력으로 바꿀 때 이곳만 수정)
+function armorHi(z){return z.armor==='heavy';}
+function mresHi(z){return z.mres==='high';}
 function dmgMult(dt,e){
   if(dt==='phys')return DMG_MULT.phys[e.boss?'boss':e.armor]||1;
   if(dt==='magic')return DMG_MULT.magic[e.boss?'boss':e.mres]||1;
@@ -478,7 +519,7 @@ const U={
   'K3기관총사수':{t:'common',dt:'phys',dmg:7,range:88,cd:300,slow:0.85,short:'K3기관총',role:'감속'},
   '판처파우스트':{t:'common',dt:'pierce',dmg:20,range:98,cd:1150,bossBonus:1.2,short:'판처',role:'보스'},
   '신궁사수':{t:'common',dt:'phys',dmg:14,range:128,cd:850,air:true,mode:'air',role:'대공'},
-  '척탄병':{t:'common',dt:'magic',dmg:12,range:90,cd:820,splash:28,role:'광역'},
+  '척탄병':{t:'common',dt:'magic',dmg:12,range:90,cd:820,splash:28,mBrk:0.06,role:'광역',roles:['마방깎']},
   '통신병':{t:'common',dt:'phys',dmg:0,range:108,cd:9999,buff:{dmg:1.15,as:1.15},role:'강화'},
   '의무병':{t:'common',dt:'phys',dmg:6,range:88,cd:1100,supply:1,role:'경제'},
   '수송병':{t:'common',dt:'phys',dmg:7,range:85,cd:900,gold:0.15,role:'경제'},
@@ -490,7 +531,7 @@ const U={
   '저격수':{t:'uncommon',dt:'pierce',dmg:38,range:160,cd:900,mode:'strong',bossBonus:1.5,curHpPct:0.015,role:'현재%',roles:['보스']},
   '지정사수':{t:'uncommon',dt:'phys',dmg:32,range:145,cd:520,mode:'strong',maxHpPct:0.006,role:'최대%'},
   'K3기관총반':{t:'uncommon',dt:'phys',dmg:13,range:100,cd:230,slow:0.8,short:'K3반',role:'감속'},
-  '박격포반':{t:'uncommon',dt:'magic',dmg:30,range:120,cd:1050,splash:48,role:'광역'},
+  '박격포반':{t:'uncommon',dt:'magic',dmg:30,range:120,cd:1050,splash:48,mBrk:0.08,role:'광역',roles:['마방깎']},
   '발칸포반':{t:'uncommon',dt:'phys',dmg:26,range:134,cd:220,air:true,mode:'air',short:'발칸',role:'대공'},
   '정찰드론':{t:'uncommon',dt:'phys',dmg:22,range:140,cd:520,air:true,gold:0.05,slow:0.85,role:'감속',roles:['대공','경제']},
   '화염방사병':{t:'uncommon',dt:'magic',dmg:16,range:86,cd:340,dot:{dps:38,dur:1500},splash:34,short:'화염병',role:'지속',roles:['광역']},
@@ -504,12 +545,12 @@ const U={
   // ===== 특별 special (12) — 안흔함 3종 =====
   'K200 APC':{t:'special',dt:'phys',dmg:52,range:120,cd:560,splash:34,stun:300,stunP:0.15,short:'K200',role:'기절',roles:['광역']},
   'K808 백호':{t:'special',dt:'phys',dmg:64,range:128,cd:680,splash:40,shred:true,armBrk:0.15,short:'K808',role:'방깎',roles:['광역']},
-  'KH179 견인포':{t:'special',dt:'magic',dmg:82,range:150,cd:1250,splash:64,short:'KH179',role:'광역'},
+  'KH179 견인포':{t:'special',dt:'magic',dmg:82,range:150,cd:1250,splash:64,mBrk:0.12,short:'KH179',role:'마방깎',roles:['광역']},
   'K105A1 자주포':{t:'special',dt:'magic',dmg:70,range:160,cd:1050,splash:54,bossBonus:1.3,short:'K105',role:'보스',roles:['광역']},
   '비호':{t:'special',dt:'phys',dmg:34,range:135,cd:220,air:true,mode:'air',role:'대공'},
   '천마':{t:'special',dt:'pierce',dmg:96,range:158,cd:900,air:true,bossBonus:1.3,short:'천마',role:'대공',roles:['보스']},
   '송골매':{t:'special',dt:'phys',dmg:46,range:165,cd:430,air:true,debuff:1.15,role:'증폭'},
-  '500MD':{t:'special',dt:'magic',dmg:60,range:150,cd:620,air:true,splash:40,role:'광역'},
+  '500MD':{t:'special',dt:'magic',dmg:60,range:150,cd:620,air:true,splash:40,mBrk:0.1,role:'광역',roles:['마방깎']},
   '화룡 화염장갑차':{t:'special',dt:'magic',dmg:34,range:100,cd:420,dot:{dps:46,dur:1500},splash:46,short:'화룡',role:'지속',roles:['광역']},
   '제독차':{t:'special',dt:'pierce',dmg:24,range:116,cd:980,dot:{dps:48,dur:3000},splash:54,slow:0.75,role:'감속',roles:['지속']},
   '특공대':{t:'special',dt:'pierce',dmg:88,range:108,cd:520,bossBonus:1.8,execute:0.1,short:'특공',role:'처형',roles:['보스']},
@@ -530,7 +571,7 @@ const U={
   // ===== 전설 legend (10) — 희귀 3종 · 특수능력 보유 =====
   'K2 흑표':{t:'legend',dt:'phys',dmg:420,range:132,cd:820,splash:48,bossBonus:1.3,shred:true,armBrk:0.15,short:'K2흑표',role:'방깎',roles:['보스','광역']},
   '천무 다연장':{t:'legend',dt:'magic',dmg:230,range:232,cd:1550,splash:96,maxHpPct:0.03,short:'천무',role:'광역',roles:['최대%']},
-  'AH-64E 아파치':{t:'legend',dt:'magic',dmg:175,range:170,cd:480,air:true,splash:58,shred:true,curHpPct:0.01,short:'아파치',role:'현재%',roles:['방깎']},
+  'AH-64E 아파치':{t:'legend',dt:'magic',dmg:175,range:170,cd:480,air:true,splash:58,mBrk:0.15,curHpPct:0.01,short:'아파치',role:'현재%',roles:['마방깎']},
   '707특임대':{t:'legend',dt:'pierce',dmg:260,range:120,cd:480,bossBonus:3.0,execute:0.1,stun:500,short:'707',role:'처형',roles:['보스','기절']},
   '현무-3':{t:'legend',dt:'magic',dmg:1050,range:250,cd:2150,splash:54,bossBonus:1.5,curHpPct:0.04,short:'현무3',role:'보스',roles:['현재%']},
   'K10 탄약운반':{t:'legend',dt:'phys',dmg:140,range:170,cd:150,buff:{dmg:1.2,as:1.25},short:'K10',role:'강화',roles:['경제']},
@@ -554,10 +595,18 @@ const U={
   '국군통수권':{t:'hidden',dt:'magic',dmg:5200,range:340,cd:1500,splash:90,buff:{dmg:1.2,as:1.2},bossBonus:2.5,maxHpPct:0.06,stun:800,short:'통수권',role:'강화',roles:['최대%','기절']},
   '비밀정보부':{t:'hidden',dt:'pierce',dmg:6000,range:280,cd:700,bossBonus:5,execute:0.25,curHpPct:0.08,stun:600,short:'정보부',role:'현재%',roles:['처형','보스']},
   '현무-Ω':{t:'hidden',dt:'magic',dmg:9000,range:360,cd:1600,splash:120,bossBonus:3,maxHpPct:0.1,stun:1000,short:'현무Ω',role:'최대%',roles:['기절','보스']},
+  '코드네임 유령':{t:'hidden',dt:'magic',dmg:4800,range:320,cd:1300,splash:80,mBrk:0.2,maxHpPct:0.05,stun:600,short:'유령',role:'마방깎',roles:['최대%','광역']},
+  // ===== S34 비밀 secret (4) — ☢ 우라늄 연구소 비밀 도박에서만. 전설과 신화 사이 힘 =====
+  '특수정찰대':{t:'secret',dt:'phys',dmg:320,range:190,cd:360,debuff:1.2,armBrk:0.12,short:'특정대',role:'증폭',roles:['방깎']},
+  '전자전 부대':{t:'secret',dt:'magic',dmg:380,range:200,cd:520,air:true,splash:64,slow:0.75,mBrk:0.18,short:'전자전',role:'마방깎',roles:['감속']},
+  '스텔스 저격조':{t:'secret',dt:'pierce',dmg:1100,range:300,cd:1200,mode:'strong',bossBonus:2,maxHpPct:0.03,short:'스텔스',role:'최대%',roles:['보스']},
+  '자폭드론팀':{t:'secret',dt:'magic',dmg:560,range:220,cd:900,air:true,splash:90,stun:300,short:'자폭드론',role:'광역',roles:['기절']},
+  // 도박 실패물: 공격 안 함 · 칸 차지 · 판매 0골드 · 보통 조합 재료 아님
+  '핵폐기물':{t:'waste',dt:'pierce',dmg:0,range:0,cd:9999,junk:true,short:'폐기물'},
 };
 // ===== S31 등급 스킬: 희귀 1 · 전설 2 · 신화 3 · 초월 4 · 히든 5 =====
 // on: 'hit'=공격할 때 p 확률 · 'count'=n번 공격마다 · 'time'=공격 중 sec초마다
-const SKILL_N={rare:1,legend:2,mythic:3,apex:4,hidden:5};
+const SKILL_N={rare:1,legend:2,mythic:3,apex:4,hidden:5,secret:3};
 function SK(nm,on,v,fx,o){const s={nm,on,fx};if(on==='hit')s.p=v;else if(on==='count')s.n=v;else s.sec=v;return Object.assign(s,o||{});}
 // fx: stun(기절) bomb(폭발) barrage(연속 낙하) slow(감속) shred(방어력 감소) rally(아군 공속↑) aa(대공 폭발, 비행 2배) snipe(가장 튼튼한 1마리)
 //     S32 추가: mark(받는 피해 증가 표식) pct(체력 비례 폭발) exec(처형) burn(불붙이기) gold(골드 보급)
@@ -585,7 +634,20 @@ const SKD={
   '철갑탄 일제사격':['count',8,'shred',{r:55,k:1.0,v:0.15}],
   '장갑 파쇄':['count',15,'shred',{r:70,v:0.2}],
   '장갑 파쇄Ⅱ':['count',12,'shred',{r:90,v:0.25}],
-  '약점 폭로':['count',12,'shred',{r:80,v:0.2}],
+  '약점 폭로':['count',12,'shred',{r:80,v:0.2,m:1}],
+  // S34 마방깎 스킬(m:1 = 마법 방어 약화) · 비밀·유령 전용
+  '전자기 교란':['count',10,'shred',{r:90,v:0.2,m:1}],
+  '전술핵 투하':['hit',0.10,'bomb',{r:150,k:4,nuke:1}],
+  '방사능 낙진':['count',10,'burn',{r:110,k:0.6,dur:4000}],
+  '재밍 확산':['hit',0.10,'slow',{r:90,mul:0.55,dur:2000}],
+  '통신 마비':['hit',0.10,'stun',{r:80,ms:600}],
+  '은밀 저격':['count',6,'snipe',{k:1.6,mp:0.02}],
+  '자폭 돌입':['hit',0.12,'stun',{r:70,ms:500,k:0.5}],
+  '열압력 폭격':['count',12,'burn',{r:90,k:0.6,dur:3000}],
+  '침투 표적 지정':['count',12,'mark',{r:90,v:0.2,dur:4000}],
+  '그림자 소탕':['count',8,'exec',{r:80,th:0.2,k:0.7}],
+  '야간 정찰':['time',12,'rally',{r:130,mul:1.2,dur:4000}],
+  '그림자 저격':['count',6,'snipe',{k:1.5,cp:0.05}],
   // 받는 피해 증가
   '표적 지정 레이저':['count',15,'mark',{r:60,v:0.15,dur:4000,k:0.5}],
   '표적 지정':['count',20,'mark',{r:70,v:0.15,dur:4000}],
@@ -688,7 +750,13 @@ const SKILLS_BY={
   '드론봇 군단':['전파 교란Ⅲ','자폭 드론 군집','드론 집중 폭격','대공 드론망'],
   // 히든 (5개)
   '국군통수권':['전군 비상령','합동 화력 집중','다연장 로켓 세례','충격파 탄두Ⅲ','전군 표적 지정'],
-  '비밀정보부':['암살 저격','제거 명령','섬광 교란Ⅱ','첩보 지원','약점 폭로'],
+  '비밀정보부':['암살 저격','제거 명령','섬광 교란Ⅱ','첩보 지원','표적 지정Ⅱ'],
+  '코드네임 유령':['전술핵 투하','약점 폭로','그림자 저격','방사능 낙진','충격파 탄두Ⅲ'],
+  // 비밀 (3개)
+  '특수정찰대':['침투 표적 지정','그림자 소탕','야간 정찰'],
+  '전자전 부대':['전자기 교란','재밍 확산','통신 마비'],
+  '스텔스 저격조':['은밀 저격','관통 탄두Ⅱ','탄도탄 정밀타격Ⅱ'],
+  '자폭드론팀':['자폭 드론 군집','자폭 돌입','열압력 폭격'],
   '현무-Ω':['현무 궤도 포격','자탄 살포Ⅱ','충격파 탄두Ⅲ','관통 탄두Ⅲ','탄도탄 정밀타격Ⅲ'],
 };
 const SKILLS={};for(const n in SKILLS_BY)SKILLS[n]=SKILLS_BY[n].map(SKn);
@@ -730,6 +798,8 @@ const RECIPE={
   '국군통수권':['수도기계화사단','신속대응사단','백두금강정찰'],
   '비밀정보부':['백두금강정찰','드론봇 군단','수도기계화사단'],
   '현무-Ω':['신속대응사단','드론봇 군단','백두금강정찰'],
+  // S34 숨은 비밀 조합: 전설 1 + 우라늄 도박 실패물 2
+  '코드네임 유령':['미사일여단','핵폐기물','핵폐기물'],
 };
 const SUMMON_COST=10, MAX_WAVE=30, START_GOLD=50, WAVE_REWARD=40;
 const WISP_TP=2;
@@ -864,7 +934,7 @@ function retrySame(){if(!G)return;nextSeed=G.seed;startGame();}
 function newGame(diff){const d=DIFF[diff];return{diff,dcfg:d,gold:START_GOLD,wave:0,score:0,tp:0,seed:0,rng:null,goals:[],craftConfirm:null,
   speed:1,nextWaveT:WAVE_PREP,upg:{phys:0,magic:0,pierce:0},
   kills:0,crafts:0,quest:null,questDone:0,pendingReward:null,
-  missionsDone:0,activeMission:null,freeSummons:0,bag:[],discovered:{},
+  missionsDone:0,activeMission:null,freeSummons:0,bag:[],discovered:{},uran:0,parts:0,uranGot:0,bossK:0,labN:0,labLast:null,nukeN:0,
   doctrine:chosenDoctrine,navs:[],mod:Object.assign({},MOD_BASE),paused:false,navOffer:null,endless:false,
   nextQueue:null,nextQueueW:0,celebrate:null,
   enemies:[],shots:[],floats:[],fx:[],selected:null,queue:[],queueW:[],waveDone:0,rewardQueue:[],spawnT:0,waveActive:false,
@@ -948,6 +1018,7 @@ function startGame(){if(G&&G.started&&!G.over&&G.wave>=1)recSave('quit'); // S28
   document.getElementById('rewardBox').classList.add('hidden');
   document.getElementById('book').classList.add('hidden');
   document.getElementById('mission').classList.add('hidden');
+  {const lb=document.getElementById('lab');if(lb)lb.classList.add('hidden');}
   document.getElementById('nav').classList.add('hidden');
   document.getElementById('rewardPop').classList.add('hidden');
   // 시작 보너스: 작전이 정한 등급 유닛 1개 지급 (기본 특별 / 정예소수는 희귀)
@@ -1116,6 +1187,9 @@ function rewardNagCheck(){if(!G||G.over)return;const n=pendingCount();
   if(G.rewardNag==null){G.rewardNag=G.wave;if(!G.paused)openRewardPop();return;}
   if(G.wave-G.rewardNag>=2){if(G.rewardPop)closeRewardPop();autoClaimRewards();G.rewardNag=pendingCount()>=3?G.wave:null;}}
 function updateS27Btns(){const rb=document.getElementById('rewardBtn'),kb=document.getElementById('strikeBtn');
+  try{const lb=document.getElementById('labBtn'),ut=document.getElementById('uranTag'),u=G.uran||0,hot=G._uranT!=null&&G.t-G._uranT<1600;
+    if(lb){lb.innerHTML=`☢ 연구소 <b>${u}</b>`;lb.classList.toggle('uranHot',u>0);}
+    if(ut){ut.textContent=`☢${u}`;ut.classList.toggle('pulse',hot);}}catch(_){}
   if(rb){const n=pendingCount();rb.classList.toggle('hidden',!n);rb.innerHTML=`🏅 받을 보상 <b style="color:#f2cc60">${n}</b>개`;}
   if(kb){const cd=Math.max(0,Math.ceil((G.strikeCd-G.t)/1000));
     kb.innerHTML=G.aiming?'💥 조준 중 — 취소':cd>0?`💥 지정 포격 <span style="opacity:.7">재장전 ${cd}초</span>`:`💥 지정 포격 (${strikeCost()}G)`;
@@ -1179,7 +1253,7 @@ function missionFail(){ // true를 돌려주면 게임이 끝난 것
 }
 function grantMissionReward(m){
   G.missionsDone=Math.max(G.missionsDone,m.idx+1);G.activeMission=null;
-  SFX.reward();
+  SFX.reward();uranGain(m.idx>=5?1:0,'6·7번째 미션 성공',m.x,m.y);
   if(m.reward.type==='summon'){G.freeSummons+=m.reward.n;
     log(`🎁 미션 보상: <b style="color:#f2cc60">흔함 뽑기권 ×${m.reward.n}</b> 획득!`,'#f2cc60');}
   else{grantPick(m.reward.tier);const rc=RARITY[m.reward.tier];
@@ -1285,6 +1359,7 @@ function craftSilent(result){
   else return null;
   if(!G.discovered[result])G._newDiscovers=(G._newDiscovers||0)+1;
   G.discovered[result]=true;
+  if(result===GHOST){if(!ghostStored())log('☢ <b style="color:#ffd23a">비밀 조합 발견!</b> 미사일여단이 핵폐기물을 삼켰다… 코드네임 유령 합류','#ffd23a');ghostSave();}
   G.crafts++;questProgress('craft',1);
   if(G.goals&&G.goals.includes(result)){G.goals=G.goals.filter(x=>x!==result);log(`🎯 목표 달성! <b>${result}</b> 완성`,'#d29922');}
   // 전설급 이상 조합 = 축하 연출(화면 오버레이) + 팡파레
@@ -1310,7 +1385,8 @@ function isSecret(name){return U[name]&&U[name].t==='hidden';}
 // 조합식 표시: 비밀이 아니거나 해금됐으면 전체, 아니면 첫 재료만 + ???
 function recipeHint(result){
   const ing=RECIPE[result];if(!ing)return '';
-  if(!isSecret(result)||(G&&G.discovered[result]))return ing.map(shortName).join(' + ');
+  if(!isSecret(result)||secretKnown(result))return ing.map(shortName).join(' + ');
+  if(result===GHOST)return '??? — 비밀 조합';
   return shortName(ing[0])+' + ???' + (ing.length>2?' + ???':'');
 }
 function sellSelected(){
@@ -1323,7 +1399,58 @@ function sellSelected(){
 }
 // 판매가는 실제 지불한 소환비 기준(S25) — 할인 작전/카드로 소환비가 내려가도 소환→판매 차익이 안 나게 (칸·대기소·한꺼번에 팔기 공용)
 function sellPrice(t){const base=t.paid>0?t.paid:(t.paid===0?summonCost()*0.5:summonCost());
-  return Math.round(base*0.6*Math.pow(2.2,TIER_ORDER.indexOf(t.t)));}
+  if(U[t.name]&&U[t.name].junk)return 0; // S34 핵폐기물은 0골드
+  return Math.round(base*0.6*Math.pow(2.2,tIdx(t.t)));}
+// ===== S34 ☢ 우라늄 연구소: 보스 2마리마다 +1 · 6·7번째 미션 성공 +1 (한 판 약 4~5개 — 난이도 균형 ±5 맞춤) → 도박·부품 =====
+const LAB={rare:{cost:1,p:0.4},secret:{cost:2,p:0.3},part:{cost:3,p:1}};
+const SECRET_UNITS=['특수정찰대','전자전 부대','스텔스 저격조','자폭드론팀'];
+const WASTE='핵폐기물',GHOST='코드네임 유령',PART_NEED=2,GHOST_KEY='zld_secret_v1';
+function ghostStored(){try{return localStorage.getItem(GHOST_KEY)==='1';}catch(_){return false;}}
+function ghostSave(){try{localStorage.setItem(GHOST_KEY,'1');}catch(_){}}
+function secretKnown(r){return !!(G&&G.discovered&&G.discovered[r])||(r===GHOST&&ghostStored());}
+function uranGain(n,why,x,y){if(!G||!(n>0))return;G.uran=(G.uran||0)+n;G.uranGot=(G.uranGot||0)+n;G._uranT=G.t;
+  if(x!=null&&G.floats)G.floats.push({x,y:y-30,txt:`+${n}☢`,life:1200,sk:true});
+  log(`☢ 우라늄 +${n} (${why}) — 지금 ${G.uran}개 · <b>☢ 연구소</b>에서 쓸 수 있어요`,'#c6e04a');}
+function labRoom(){return SLOTS.some(s=>!s.tower)||resRoom();}
+// 성공 유닛은 적 출발지 가까운 빈 칸, 폐기물은 가장 먼 빈 칸 → 칸이 없으면 대기소
+function labPlace(nm,far){const empty=SLOTS.filter(s=>!s.tower);
+  if(empty.length){empty.sort((a,b)=>spawnDist(a)-spawnDist(b));const s=far?empty[empty.length-1]:empty[0];s.tower=mkTower(nm,s);s.tower.paid=0;return s;}
+  return resAdd(nm,0)?RES_SPOT:null;}
+function labBuy(kind){if(!G||G.over)return null;const L=LAB[kind];if(!L)return null;
+  if((G.uran||0)<L.cost){log(`☢ 우라늄이 모자라요 (${L.cost}개 필요)`,'#ff7b72');return null;}
+  if(kind!=='part'&&!labRoom()){log(RES_FULL_MSG,'#ff7b72');return null;}
+  G.uran-=L.cost;G.labN=(G.labN||0)+1;let res;
+  if(kind==='part'){G.parts=(G.parts||0)+1;
+    if(G.parts>=PART_NEED){G.parts-=PART_NEED;res={ok:true,txt:'초월 부품 완성! → <b>초월 선택권</b>'};grantPick('apex');}
+    else res={ok:true,txt:`초월 부품 ${G.parts}/${PART_NEED} — 하나 더 모으면 초월 선택권`};
+    try{SFX.reward();}catch(_){}}
+  else if(rnd()<L.p){const pool=kind==='rare'?Object.keys(U).filter(n=>U[n].t==='rare'):SECRET_UNITS;
+    const nm=pool[Math.floor(rnd()*pool.length)],at=labPlace(nm);G.seen&&(G.seen[nm]=1);
+    const rc=RARITY[U[nm].t];res={ok:true,nm,txt:`성공! <b style="color:${rc.color}">[${rc.name}] ${shortName(nm)}</b>${at&&at.res?' → 📦 대기소':''}`};
+    if(kind==='secret')G.celebrate={name:nm,tier:rc.name,color:rc.color,t0:G.t};
+    if(at&&!at.res)G.floats.push({x:at.x,y:at.y-20,txt:'☢✨',life:900});
+    try{SFX.legend();}catch(_){}}
+  else{const at=labPlace(WASTE,true);res={ok:false,nm:WASTE,txt:`실패… <b style="color:${RARITY.waste.color}">핵폐기물</b>이 생겼어요${at&&at.res?' → 📦 대기소':''}`};
+    if(at&&!at.res)G.floats.push({x:at.x,y:at.y-20,txt:'☢',life:900});
+    try{SFX.boom();}catch(_){}}
+  G.labLast={kind,ok:res.ok,nm:res.nm||null,txt:res.txt,n:G.labN};
+  log(`☢ 연구소 ${kind==='rare'?'희귀 도박':kind==='secret'?'비밀 도박':'초월 부품'}: ${res.txt}`,res.ok?'#c6e04a':'#a39f86');
+  G.invSig='';G._resSig='';updateUI();renderLab();return res;}
+function openLab(){if(!G)return;if(G.paused){log('🧭 항법을 먼저 선택하세요.','#ff7b72');return;}
+  renderLab();const el=document.getElementById('lab');if(el)el.classList.remove('hidden');}
+function closeLab(){const el=document.getElementById('lab');if(el)el.classList.add('hidden');}
+function renderLab(){const el=document.getElementById('labBody');if(!el||!G)return;const u=G.uran||0,room=labRoom();
+  const row=(k,title,desc)=>{const L=LAB[k],can=u>=L.cost&&(k==='part'||room);
+    return `<div class="labRow"><div class="labTxt"><b>${title}</b><span>${desc}</span></div>`
+      +`<button class="labGo" ${can?'':'disabled'} onclick="labBuy('${k}')">☢ ${L.cost}<small>${k==='part'?'항상 성공':'성공 '+Math.round(L.p*100)+'%'}</small></button></div>`;};
+  const last=G.labLast;
+  el.innerHTML=`<div class="labHave">가진 우라늄 <b>☢ ${u}</b><span>보스 2마리마다 +1 · 6·7번째 미션 성공 +1</span></div>`
+    +row('rare','희귀 도박','성공하면 희귀 유닛 1기 · 실패하면 핵폐기물')
+    +row('secret','비밀 도박','성공하면 <b style="color:'+RARITY.secret.color+'">비밀 유닛</b> 4종 중 1기 — 여기서만 나와요 · 실패하면 핵폐기물')
+    +row('part','초월 부품',`부품 ${G.parts||0}/${PART_NEED} — 다 모으면 초월 선택권`)
+    +(last?`<div class="labRes ${last.ok?'win':'lose'}">${last.txt}</div>`:'')
+    +(room?'':`<div class="labNote" style="color:#ff7b72">칸과 대기소가 꽉 차서 도박을 못 해요 — 먼저 비우세요</div>`)
+    +`<div class="labNote">핵폐기물: 공격하지 않고 자리만 차지해요 · 팔면 0골드 · 보통 조합 재료로는 못 써요</div>`;}
 // ===== 대기소(S30): 칸이 꽉 차면 새 유닛을 8칸 대기소에 보관 — 싸우지 않고 수용한계에도 안 들어가지만 조합 재료로 쓰임 =====
 const RES_MAX=8,RES_SPOT={res:true},RES_FULL_MSG='칸과 대기소가 모두 찼습니다 — 조합하거나 팔아서 비우세요';
 function resList(){return G&&G.reserve?G.reserve:[];}
@@ -1367,8 +1494,8 @@ function goalKeep(){const pool=inventory(),keep={};
   for(const g of G.goals)if(U[g])alloc(g,true); // 목표는 "새로 1개 더 만든다"로 계산 (보유 중간 재료 우선)
   return keep;}
 function unusedPlan(){const gs=G.goals.filter(g=>U[g]);if(!gs.length)return {};
-  const inv=inventory(),keep=goalKeep(),minT=Math.min(...gs.map(g=>TIER_ORDER.indexOf(U[g].t))),plan={};
-  for(const nm in inv){if(TIER_ORDER.indexOf(U[nm].t)>=minT)continue; // 목표 등급 이상은 절대 안 팜
+  const inv=inventory(),keep=goalKeep(),minT=Math.min(...gs.map(g=>tIdx(U[g].t))),plan={};
+  for(const nm in inv){if(tIdx(U[nm].t)>=minT)continue; // 목표 등급 이상은 절대 안 팜
     const ex=inv[nm]-(keep[nm]||0);if(ex>0)plan[nm]=ex;}
   return plan;}
 function unusedUnits(plan){const out=[],left=Object.assign({},plan);
@@ -1387,7 +1514,7 @@ function sellUnusedAsk(){if(!G||G.over||!G.started)return;
   G.craftConfirm=null;G.sellAsk={plan,gold:units.reduce((a,u)=>a+sellPrice(u.t),0),n:units.length,warn:sellRoleWarn(units)};renderWarn();}
 function renderSellAsk(el){const a=G.sellAsk;el.classList.remove('hidden');
   try{if(el.scrollIntoView)setTimeout(()=>{try{el.scrollIntoView({block:'nearest'});}catch(_){}},0);}catch(_){}
-  const names=Object.keys(a.plan).sort((x,y)=>TIER_ORDER.indexOf(U[y].t)-TIER_ORDER.indexOf(U[x].t));
+  const names=Object.keys(a.plan).sort((x,y)=>tIdx(U[y].t)-tIdx(U[x].t));
   el.innerHTML=`<div class="secT" style="color:#f2cc60;margin-bottom:4px;">🧹 안 쓰는 유닛 팔기 — ${a.n}기 · +${a.gold}골드</div>
     <div style="font-size:12px;color:var(--ink);line-height:1.6;">${names.map(nm=>`<span style="color:${RARITY[U[nm].t].color}">${shortName(nm)} ×${a.plan[nm]}</span>`).join(' · ')}</div>
     <div style="font-size:11.5px;color:var(--dim);margin-top:4px;">목표(${G.goals.map(shortName).join('·')})에 필요한 만큼은 남기고, 🔒잠근 유닛·목표 등급 이상은 팔지 않아요.</div>
@@ -1454,9 +1581,9 @@ function renderPreview(){
   let phys=0,magic=0,pierce=0;
   for(const t of G.nextQueue){const z=ZTYPE[t];if(!z)continue;
     if(z.boss)pierce+=3;
-    else if(z.armor==='heavy'&&z.mres==='high')pierce++;
-    else if(z.armor==='heavy')magic++;
-    else if(z.mres==='high')phys++;
+    else if(armorHi(z)&&mresHi(z))pierce++;
+    else if(armorHi(z))magic++;
+    else if(mresHi(z))phys++;
     else phys+=0.5;}
   const rec=pierce>=magic&&pierce>=phys?['방어무시','#f2cc60','🟡']:magic>=phys?['마법','#79c0ff','🔵']:['물리','#ff9f6e','🟠'];
   el.innerHTML=`👁 <b>다음 ${G.nextQueueW}웨이브</b> · `
@@ -1482,6 +1609,7 @@ function moveEnemy(e,dt){
   if(e.stunImmT>0)e.stunImmT-=dt;
   if(e.stunT>0){e.stunT-=dt;if(e.stunT<=0)e.stunImmT=e.boss?1500:STUN_IMM_N;return false;} // 스턴 중 이동 정지 · S32 일반 좀비도 잠깐 면역
   if(e.shredT>0)e.shredT-=dt;
+  if(e.mshredT>0)e.mshredT-=dt;
   const spd=e.spd*(e.slowT>0?(e.slowMul||0.45):1)*(e.hasted?(e.hasteAuraSpd||1.4):1);
   if(e.slw){for(const k in e.slw){e.slw[k].t-=dt;if(e.slw[k].t<=0)delete e.slw[k];}slowCalc(e);}else e.slowT=Math.max(0,e.slowT-dt);
   let remain=spd*dt/16,N=PATH.length,guard=0;
@@ -1550,7 +1678,7 @@ function update(dt){
       const dotUp=u.dot?{dps:u.dot.dps*upDmg,dur:u.dot.dur}:null; // 지속피해도 강화 반영
       G.shots.push({x:t.x,y:t.y,tx:target.x,ty:target.y,target,owner:t,dmg,dt:u.dt,
         splash:u.splash,slow:u.slow,dot:dotUp,bossBonus:u.bossBonus,execute:u.execute,
-        stun:u.stunP?(skRand()<u.stunP?u.stun:0):u.stun,shred:u.shred,armBrk:u.armBrk,maxHpPct:u.maxHpPct,curHpPct:u.curHpPct,
+        stun:u.stunP?(skRand()<u.stunP?u.stun:0):u.stun,shred:u.shred,armBrk:u.armBrk,mBrk:u.mBrk,maxHpPct:u.maxHpPct,curHpPct:u.curHpPct,
         color:RARITY[u.t].color,life:1,transport});SFX.shoot();
       skillsOnAttack(t,u,target,dmg,transport);} // S31 등급 스킬
   }
@@ -1590,7 +1718,7 @@ function killEnemy(e,idx,transport){
     spawnZombie('runner',{hpMul:0.35,seg:e.seg,p:e.p,x:e.x+(Math.random()*16-8),y:e.y+(Math.random()*16-8)});}}
   if(e.mission){log(`🎖️ <b style="color:${e.color}">${e.name}</b> 처치 성공!`,e.color);grantMissionReward(e.mission);return;}
   if(e.boss){
-    G.tp+=3;
+    G.tp+=3;G.bossK=(G.bossK||0)+1;if(G.bossK%2===0)uranGain(1,'보스 2마리 처치',e.x,e.y);else if(G.floats)G.floats.push({x:e.x,y:e.y-30,txt:'☢ 보스 1마리 더 잡으면 +1',life:1200,sk:true});
     const fast=(G.t-e.spawnAt)<20000;
     if(fast){G.score+=200;log(`${e.name} 20초 내 처치! 풀카운트 +200점 · 특성포인트 +3`,'#f2cc60');}
     else log(`${e.name} 처치! (+${Math.round(g)}골드 · 특성포인트 +3)`,'#f2cc60');
@@ -1620,7 +1748,7 @@ function updateStrikes(dt,transport){
     if(hitN)G.floats.push({x:s.x,y:s.y-20,txt:`💥 ×${hitN}`,life:700});}
 }
 // ===== S32 역할 규칙: 같은 효과는 겹치지 않음(가장 센 것만) + 종류별 합계 상한 =====
-const SLOW_CAP=0.6,BRK_CAP=0.25,AMP_CAP=0.25,EXEC_CAP=0.2,BOSS_PCT_SEC=0.05,STUN_IMM_N=600;
+const SLOW_CAP=0.6,BRK_CAP=0.25,MBRK_CAP=0.25,AMP_CAP=0.25,EXEC_CAP=0.2,BOSS_PCT_SEC=0.05,STUN_IMM_N=600;
 // 시너지: ①기절한 적 받는 피해↑ ②느려진 적 광역·지속피해↑ ③방어 깎인 적 처형 기준↑ ④불타는 적 현재체력 비례↑
 const SYN={stun:1.1,slowAoe:1.1,brkExec:0.05,burnCur:1.3};
 function fxKey(s){return s.skey||(s.owner&&s.owner.name)||'_';}
@@ -1633,6 +1761,11 @@ function applySlow(e,mul,dur,key){if(!(mul<1))return;const w=e.slw||(e.slw={}),k
 function applyBrk(e,key,v,dur){if(!(v>0))return;const w=e.brk||(e.brk={}),o=w[key],until=G.t+(dur||3000);
   if(!o||o.until<=G.t||v>o.v)w[key]={v,until};else if(v===o.v)o.until=Math.max(o.until,until);}
 function brkOf(e){let a=(e.boss&&e.shredT>0)?0.15:0;const w=e.brk;if(w)for(const k in w){const o=w[k];if(o.until>G.t)a+=o.v;}return Math.min(BRK_CAP,a);}
+// S34 마법 방어력 감소(마방깎): 방깎과 같은 규칙 — 같은 출처는 센 것 하나, 합계 최대 MBRK_CAP(25%), 보스 약화(mshredT)는 +15%
+// 방깎은 물리 피해만, 마방깎은 마법 피해만 늘림 (방어무시 피해는 둘 다 영향 없음)
+function applyMbrk(e,key,v,dur){if(!(v>0))return;const w=e.mbrk||(e.mbrk={}),o=w[key],until=G.t+(dur||3000);
+  if(!o||o.until<=G.t||v>o.v)w[key]={v,until};else if(v===o.v)o.until=Math.max(o.until,until);}
+function mbrkOf(e){let a=(e.boss&&e.mshredT>0)?0.15:0;const w=e.mbrk;if(w)for(const k in w){const o=w[k];if(o.until>G.t)a+=o.v;}return Math.min(MBRK_CAP,a);}
 // 받는 피해 증가: 표적지정 유닛(같은 이름은 1번만) + 표식 스킬, 합계 최대 AMP_CAP(25%)
 function applyMark(e,key,v,dur){if(!(v>0))return;const w=e.mk||(e.mk={}),o=w[key],until=G.t+(dur||4000);
   if(!o||o.until<=G.t||v>o.v)w[key]={v,until};else if(v===o.v)o.until=Math.max(o.until,until);}
@@ -1650,11 +1783,14 @@ function bossPct(e,raw){if(!e.boss)return raw;raw*=0.5;
 function applyDot(e,dps,dur){if(!(dps>0))return;if(!(e.dotT>0)||dps>=e.dotDps){e.dotT=dur;e.dotDps=dps;}}
 function dealDamage(e,s){
   // 약화(shred): 일반 좀비는 방어 등급 1단계 영구 강등, 보스는 4초간 받는 피해 +15% (S25: 보스에도 효과)
-  if(s.shred){if(e.boss)e.shredT=4000;else{if(s.dt==='phys'&&e.armor==='heavy')e.armor='light';if(s.dt==='magic'&&e.mres==='high')e.mres='low';}}
+  if(s.shred){if(s.dt==='phys')applyShred(e);else if(s.dt==='magic')applyMshred(e);} // 공격 속성별: 물리=방어 약화 · 마법=마법 약화 · 방어무시=없음
   if(s.armBrk)applyBrk(e,fxKey(s),s.armBrk,3000);
+  if(s.mBrk){applyMbrk(e,fxKey(s),s.mBrk,3000);applyMshred(e);} // S34 마방깎
   let dmg=s.dmg*dmgMult(s.dt,e);
   if(e.boss&&s.bossBonus)dmg*=s.bossBonus;
-  const brk=brkOf(e);if(brk)dmg*=1+brk;          // 방어력 감소 (합계 상한)
+  const brk=brkOf(e),mbrk=mbrkOf(e);
+  if(brk&&s.dt==='phys')dmg*=1+brk;             // 방어력 감소 (합계 상한) — 물리만
+  if(mbrk&&s.dt==='magic')dmg*=1+mbrk;          // S34 마법 방어력 감소 — 마법만
   const amp=ampOf(e);if(amp)dmg*=1+amp;          // 받는 피해 증가 (합계 상한)
   if(e.stunT>0)dmg*=SYN.stun;                    // 시너지① 기절한 적
   if(s.splash&&e.slowT>0)dmg*=SYN.slowAoe;       // 시너지② 느려진 적 + 광역
@@ -1666,7 +1802,7 @@ function dealDamage(e,s){
   if(e.shield>0){const ab=Math.min(e.shield,dmg);e.shield-=ab;dmg-=ab;
     if(e.shield<=0&&!e._shieldBroke){e._shieldBroke=true;G.floats.push({x:e.x,y:e.y-18,txt:'🛡️깨짐',life:480});}}
   // 처형: 보스 제외, 기준 최대 EXEC_CAP(20%) (시너지③ 방어 깎인 적 +5%p)
-  const ex=s.execute?Math.min(EXEC_CAP,s.execute+(brk>0?SYN.brkExec:0)):0;
+  const ex=s.execute?Math.min(EXEC_CAP,s.execute+(brk>0||mbrk>0?SYN.brkExec:0)):0;
   if(ex&&!e.boss&&e.hp<=e.maxhp*ex)e.hp=0;else e.hp-=dmg;
   if(s.slow)applySlow(e,s.slow,1000,fxKey(s));
   // 스턴(S25): 보스는 지속 절반 + 풀린 뒤 1.5초 면역 → 영구 스턴 불가 (S32: 일반 좀비도 STUN_IMM_N(0.6초) 면역)
@@ -1687,7 +1823,8 @@ function hit(s){
 // 기절: 보스는 시간 절반 + 풀린 뒤 1.5초 면역(moveEnemy) → 영구 기절 불가
 function applyStun(e,ms){if(!(ms>0)||e.stunImmT>0)return;e.stunT=Math.max(e.stunT||0,e.boss?ms*0.5:ms);}
 // 감속(applySlow)은 위 S32 역할 규칙에 있음
-function applyShred(e){if(e.boss)e.shredT=4000;else{if(e.armor==='heavy')e.armor='light';if(e.mres==='high')e.mres='low';}}
+function applyShred(e){if(e.boss)e.shredT=4000;else if(armorHi(e))e.armor='light';}
+function applyMshred(e){if(e.boss)e.mshredT=4000;else if(mresHi(e))e.mres='low';} // S34 마법 약화
 function skRand(){if(!G)return Math.random();if(!G.skRng)G.skRng=mkRng(((G.seed||1)^0x9e3779b9)>>>0);return G.skRng();}
 function skFx(f){if(G.fx.length<80)G.fx.push(f);}
 function skName(t,nm){ // 스킬 이름 띄우기: 전체 0.6초·유닛당 2.5초에 1번만
@@ -1710,9 +1847,9 @@ function skillFire(t,u,s,target,dmg,transport){
   const hp0=()=>G.enemies.reduce((a,e)=>a+e.hp,0);
   if(s.fx==='stun'||s.fx==='slow'||s.fx==='shred'||s.fx==='mark'){
     const es=skInArea(u,cx,cy,s.r);
-    skFx({type:'ring',x:cx,y:cy,r:s.r,life:420,max:420,color:s.fx==='stun'?'#f2cc60':s.fx==='slow'?'#79c0ff':s.fx==='mark'?'#d2a8ff':'#ff7b72'});
+    skFx({type:'ring',x:cx,y:cy,r:s.r,life:420,max:420,color:s.fx==='stun'?'#f2cc60':s.fx==='slow'?'#79c0ff':s.fx==='mark'?'#d2a8ff':s.m?'#38c9d6':'#ff7b72'});
     for(const e of es){if(s.fx==='stun')applyStun(e,s.ms);else if(s.fx==='slow')applySlow(e,s.mul,s.dur,s.nm);
-      else if(s.fx==='mark')applyMark(e,s.nm,s.v,s.dur);else{applyShred(e);if(s.v)applyBrk(e,s.nm,s.v,4000);}}
+      else if(s.fx==='mark')applyMark(e,s.nm,s.v,s.dur);else if(s.m){applyMshred(e);if(s.v)applyMbrk(e,s.nm,s.v,4000);}else{applyShred(e);if(s.v)applyBrk(e,s.nm,s.v,4000);}}
     if(s.k){const h=hp0();for(const e of es)skDmg(e,dmg*s.k,u,t,transport);st.dmg+=Math.max(0,h-hp0());}
   }else if(s.fx==='pct'||s.fx==='exec'){ // S32 체력 비례 폭발 · 처형(보스 제외)
     skFx({type:'ring',x:cx,y:cy,r:s.r,life:420,max:420,color:s.fx==='pct'?'#ffa657':'#f85149'});
@@ -1725,6 +1862,12 @@ function skillFire(t,u,s,target,dmg,transport){
   }else if(s.fx==='gold'){ // S32 골드 보급
     const g=Math.round(s.g+(G.wave||0)/3);G.gold+=g;st.dmg+=g;G.floats.push({x:t.x,y:t.y-30,txt:`+${g}G`,life:900});
   }else if(s.fx==='bomb'||s.fx==='aa'){
+    if(s.nuke){G.nukeN=(G.nukeN||0)+1; // S34 전술핵: 큰 섬광 + 충격파 고리 2겹 + 화면 흔들림(boom max 520)
+      skFx({type:'flash',x:cx,y:cy,r:s.r*1.3,life:300,max:300});
+      skFx({type:'ring',x:cx,y:cy,r:s.r*1.4,life:620,max:620,color:'#fff4a8'});
+      skFx({type:'ring',x:cx,y:cy,r:s.r*0.8,life:420,max:420,color:'#c6e04a'});
+      G.fx.push({type:'boom',x:cx,y:cy,r:s.r,life:520,max:520,color:'#fff4a8',dt:u.dt});
+      G.floats.push({x:cx,y:cy-24,txt:'☢ 전술핵!',life:1000,sk:true});}
     skFx({type:'flash',x:cx,y:cy,r:s.r,life:180,max:180});
     skFx({type:'boom',x:cx,y:cy,r:s.r,life:420,max:420,color:col,dt:u.dt});try{SFX.boom();}catch(_){}
     const h=hp0();for(const e of skInArea(u,cx,cy,s.r))skDmg(e,dmg*s.k*(s.fx==='aa'&&e.fly?2:1),u,t,transport);st.dmg+=Math.max(0,h-hp0());
@@ -1761,10 +1904,11 @@ function skillText(s){
   const when=s.on==='hit'?`공격할 때 ${Math.round(s.p*100)}% 확률`:s.on==='count'?`${s.n}번 공격마다`:`싸우는 동안 ${s.sec}초마다`;
   const kk=v=>`공격력 ${+v.toFixed(2)}배`;let what='';
   if(s.fx==='stun')what=`${skAreaWord(s.r)} 좀비 ${s.ms/1000}초 기절${s.k?` + ${kk(s.k)} 피해`:''} (보스는 절반)`;
-  else if(s.fx==='bomb')what=`${skAreaWord(s.r)} 폭발 · ${kk(s.k)} 피해`;
+  else if(s.fx==='bomb')what=`${s.nuke?'☢ 전술핵 — ':''}${skAreaWord(s.r)} 폭발 · ${kk(s.k)} 피해`;
   else if(s.fx==='aa')what=`${skAreaWord(s.r)} 폭발 · ${kk(s.k)} 피해 (비행 좀비는 2배)`;
   else if(s.fx==='barrage')what=`${s.hits}발 연속 낙하 · 한 발당 ${kk(s.k)} 피해`;
   else if(s.fx==='slow')what=`${skAreaWord(s.r)} 좀비 ${Math.round((1-s.mul)*100)}% 느리게 ${s.dur/1000}초${s.k?` + ${kk(s.k)} 피해`:''}`;
+  else if(s.fx==='shred'&&s.m)what=`${skAreaWord(s.r)} 좀비 마법 방어 약화${s.v?` · 마법 방어력 −${Math.round(s.v*100)}% 4초`:''}${s.k?` + ${kk(s.k)} 피해`:''} (보스는 4초간 받는 마법 피해 +15%)`;
   else if(s.fx==='shred')what=`${skAreaWord(s.r)} 좀비 방어 약화${s.v?` · 방어력 −${Math.round(s.v*100)}% 4초`:''}${s.k?` + ${kk(s.k)} 피해`:''} (보스는 4초간 받는 피해 +15%)`;
   else if(s.fx==='mark')what=`${skAreaWord(s.r)} 좀비에 표식 · 받는 피해 +${Math.round(s.v*100)}% ${s.dur/1000}초${s.k?` + ${kk(s.k)} 피해`:''}`;
   else if(s.fx==='pct')what=`${skAreaWord(s.r)} 폭발 · ${kk(s.k)} + 최대체력 ${+(s.mp*100).toFixed(1)}% 피해 (보스는 절반)`;
@@ -1778,7 +1922,7 @@ function skillText(s){
 function defeatDiag(){
   const es=G.enemies;if(!es.length)return '';
   let heavy=0,high=0,fly=0,boss=0;const n=es.length;
-  for(const e of es){if(e.boss)boss++;else{if(e.armor==='heavy')heavy++;if(e.mres==='high')high++;if(e.fly)fly++;}}
+  for(const e of es){if(e.boss)boss++;else{if(armorHi(e))heavy++;if(mresHi(e))high++;if(e.fly)fly++;}}
   let tip;
   if(boss>=1&&boss>=n*0.15)tip='보스가 남았어요 — <b style="color:#f2cc60">방어무시</b> 유닛·강화가 해답';
   else if(fly>n*0.3)tip='비행 좀비가 쌓였어요 — <b style="color:#ff9f6e">대공</b> 유닛을 준비하세요';
@@ -1929,7 +2073,8 @@ const SP={
   '현무-3':'arty','K10 탄약운반':'truck','드론봇중대':'drone','미사일여단':'arty',
   '현무-5':'arty','천광 레이저포대':'aa','드론봇 전투단':'drone','ATACMS':'arty','LAH 편대':'heli',
   '현무-2A':'arty','K30 비호Ⅱ':'aa','K808A 천산':'vehicle','현궁 대전차':'soldier','천검 무인편대':'drone',
-  '드론봇 군단':'drone','국군통수권':'special','비밀정보부':'special',
+  '드론봇 군단':'drone','국군통수권':'special','비밀정보부':'special','코드네임 유령':'special',
+  '특수정찰대':'soldier','전자전 부대':'comms','스텔스 저격조':'soldier','자폭드론팀':'drone',
   '수도기계화사단':'tank','신속대응사단':'soldier','백두금강정찰':'drone','현무-Ω':'arty',
 };
 function spOf(n){return SP[n]||'soldier';}
@@ -1976,7 +2121,7 @@ function skinPrep(im,name){try{
   const load=(map,dir,key,file)=>{const im=new Image();
     im.onload=()=>{map[key]=dir==='units'?skinPrep(im,key):im;};
     im.src='assets/'+dir+'/'+encodeURIComponent(file||key)+'.png';};
-  for(const n of Object.keys(U))load(SKIN.u,'units',n);                  // 유닛 73종
+  for(const n of Object.keys(U))if(TIER_ORDER.includes(U[n].t)&&n!=='코드네임 유령')load(SKIN.u,'units',n);                  // 유닛 73종
   for(const t of Object.keys(ZTYPE))load(SKIN.z,'zombies',t,ZTYPE[t].name); // 좀비 (한글 이름 파일)
   load(SKIN.z,'zombies','mission','미션보스');
   load(SKIN.fx,'fx','hit_phys','타격_물리');load(SKIN.fx,'fx','hit_magic','타격_마법');
@@ -2351,7 +2496,8 @@ const UVAR={'K2소총수':['rifle',1,'bul'],'K3기관총사수':['mg',1,'bul'],'
   '현무-2A':['tel',1,'bal'],'K30 비호Ⅱ':['spaag',1,'bul'],'K2 흑표':['k2',1,'shell0'],'천무 다연장':['mlrs',1,'msl'],'AH-64E 아파치':['apache',1,'rkt'],'707특임대':['spec707',3,'bul'],
   '현무-3':['tel',1,'bal'],'K10 탄약운반':['k10',1,'bul'],'드론봇중대':['quad',3,'bul'],'미사일여단':['tel',2,'msl'],'현무-5':['tel5',1,'bal'],'천광 레이저포대':['laser',1,'laser'],
   '드론봇 전투단':['quad',4,'bul'],'ATACMS':['mlrs',1,'bal'],'LAH 편대':['lah',2,'rkt'],'K808A 천산':['wheeledmsl',1,'msl'],'현궁 대전차':['atgm',1,'msl'],'천검 무인편대':['uav',3,'msl'],
-  '드론봇 군단':['quad',5,'bul'],'국군통수권':['command',1,'orb'],'비밀정보부':['intel',1,'rail'],'수도기계화사단':['k2',2,'shell0'],'신속대응사단':['spec',3,'bul'],'백두금강정찰':['jet',1,'msl'],'현무-Ω':['tel5',1,'bal']};
+  '드론봇 군단':['quad',5,'bul'],'국군통수권':['command',1,'orb'],'비밀정보부':['intel',1,'rail'],'수도기계화사단':['k2',2,'shell0'],'신속대응사단':['spec',3,'bul'],'백두금강정찰':['jet',1,'msl'],'현무-Ω':['tel5',1,'bal'],
+  '특수정찰대':['spec',2,'bul'],'전자전 부대':['radio',3,'orb'],'스텔스 저격조':['intel',2,'rail'],'자폭드론팀':['quad',3,'rkt'],'코드네임 유령':['intel',1,'bal']};
 const VCAT_FALLBACK={soldier:['rifle',1,'bul'],comms:['radio',1,'bul'],medic:['medic',1,'bul'],truck:['truck',1,'bul'],arty:['k9',1,'shell'],aa:['spaag',1,'bul'],
   drone:['quad',1,'bul'],heli:['md500',1,'rkt'],jet:['jet',1,'msl'],vehicle:['apc',1,'bul'],tank:['k1',1,'shell0'],special:['command',1,'orb']};
 const VCAT_REP={soldier:'K2소총수',comms:'통신병',medic:'의무병',truck:'수송병',arty:'K9 천둥',aa:'비호',drone:'정찰드론',heli:'500MD',jet:'백두금강정찰',vehicle:'K200 APC',tank:'K1A2 전차',special:'국군통수권'};
@@ -2534,25 +2680,43 @@ function vTierShape(g,ti,r){ // 등급별 외곽선 경로
   else if(ti===3)vPoly(g,6,r,-Math.PI/2);
   else if(ti===5)vSpike(g,8,r,r*.84,-Math.PI/2);
   else if(ti===6)vSpike(g,12,r,r*.86,-Math.PI/2);
+  else if(ti===8)vPoly(g,5,r*1.05,-Math.PI/2); // S34 비밀: 오각형
   else vPoly(g,4,r*1.08,-Math.PI/2);}
-function vBase(tier){if(VBASE[tier])return VBASE[tier];const ti=Math.max(0,TIER_ORDER.indexOf(tier)),c=vHex(RARITY[tier]&&RARITY[tier].color);
-  const r=[14,14.6,15.2,15.8,16.4,18.2,19,17.4][ti]||15;
+function vBase(tier){if(VBASE[tier])return VBASE[tier];const ti=tier==='secret'?8:Math.max(0,TIER_ORDER.indexOf(tier)),c=vHex(RARITY[tier]&&RARITY[tier].color);
+  const r=[14,14.6,15.2,15.8,16.4,18.2,19,17.4,17][ti]||15;
   VBASE[tier]=vSprite(48,g=>{
     g.save();g.translate(1.2,2);vTierShape(g,ti,r+.8);g.fillStyle='rgba(0,0,0,.42)';g.fill();g.restore();
     // 판: 낮은 등급=밝은 강철, 높을수록 어둡고 등급색이 배어듦 → 밝기 차이로도 구분
-    const lt=ti===7?['#26221a','#0b0a07']:[['#74776b','#45473d'],['#6a7263','#39402f'],['#5d6772','#2d343d'],['#5f566e','#2b2536'],['#6c5a44','#2f261a'],['#5e3a38','#241514'],['#355a5c','#122526']][ti];
+    const lt=ti===8?['#3a1f33','#12080f']:ti===7?['#26221a','#0b0a07']:[['#74776b','#45473d'],['#6a7263','#39402f'],['#5d6772','#2d343d'],['#5f566e','#2b2536'],['#6c5a44','#2f261a'],['#5e3a38','#241514'],['#355a5c','#122526']][ti];
     const gr=g.createLinearGradient(-r,-r,r,r);gr.addColorStop(0,lt[0]);gr.addColorStop(1,lt[1]);
     vTierShape(g,ti,r);g.fillStyle=gr;g.fill();g.strokeStyle='#14150f';g.lineWidth=1;g.stroke();
     g.fillStyle=vRGBA(c,ti>=5?.16:.1);vTierShape(g,ti,r);g.fill();
     vTierShape(g,ti,r*.74);g.strokeStyle='rgba(0,0,0,.26)';g.lineWidth=1;g.stroke();
     // 등급 테두리: 굵기·겹수가 등급 따라 늘어남
     g.strokeStyle=c;g.lineJoin='round';
-    const lw=[1.1,1.6,1.9,2.1,2.3,2.4,2.4,2.6][ti];g.globalAlpha=ti===0?.75:1;g.lineWidth=lw;vTierShape(g,ti,r-.9);g.stroke();g.globalAlpha=1;
+    const lw=[1.1,1.6,1.9,2.1,2.3,2.4,2.4,2.6,2.5][ti];g.globalAlpha=ti===0?.75:1;g.lineWidth=lw;vTierShape(g,ti,r-.9);g.stroke();g.globalAlpha=1;
     if(ti>=4){g.lineWidth=1;g.globalAlpha=.7;vTierShape(g,ti,r*.8);g.stroke();g.globalAlpha=1;}
     if(ti===6){g.lineWidth=.9;g.globalAlpha=.5;g.beginPath();g.arc(0,0,r*.66,0,TAU);g.stroke();g.globalAlpha=1;}
     if(ti===4||ti===7){g.fillStyle=c;const k=ti===7?4:4,rr=ti===7?r*.62:r*.88;for(let i=0;i<k;i++){const a=(ti===7?0:Math.PI/4)+i*TAU/k;g.beginPath();g.arc(Math.cos(a)*rr,Math.sin(a)*rr,1.2,0,TAU);g.fill();}}
     if(ti===7){g.lineWidth=1;vPoly(g,4,r*1.08+2.2,-Math.PI/2);g.stroke();}
+    if(ti===8){g.fillStyle=c;for(let i=0;i<3;i++){const a=-Math.PI/2+i*TAU/3;g.beginPath();g.arc(Math.cos(a)*r*.86,Math.sin(a)*r*.86,1.3,0,TAU);g.fill();}} // 세 잎 점
   });return VBASE[tier];}
+// S34 핵폐기물 드럼통(한 번 그려 캐시): 노란 통 · 방사능 표시 · 초록 누출
+let VWASTE=null;
+function vWaste(){if(VWASTE)return VWASTE;VWASTE=vSprite(40,g=>{
+  g.fillStyle='rgba(0,0,0,.4)';g.beginPath();g.ellipse(1.5,11,11,4,0,0,TAU);g.fill();
+  g.fillStyle='#7fd13b';g.beginPath();g.ellipse(-3,12,8,3,0,0,TAU);g.fill();g.fillStyle='#b6f06a';g.beginPath();g.ellipse(-4,11.5,4,1.4,0,0,TAU);g.fill();
+  const gr=g.createLinearGradient(-9,0,9,0);gr.addColorStop(0,'#8a6d0c');gr.addColorStop(.45,'#e8c21e');gr.addColorStop(1,'#6f5608');
+  g.fillStyle=gr;g.fillRect(-9,-11,18,21);g.strokeStyle='#2a2206';g.lineWidth=1;g.strokeRect(-9,-11,18,21);
+  g.fillStyle='#5c4a08';g.fillRect(-9,-5,18,1.4);g.fillRect(-9,4,18,1.4);
+  g.fillStyle='#d9b41a';g.beginPath();g.ellipse(0,-11,9,2.6,0,0,TAU);g.fill();g.stroke();
+  g.fillStyle='#17140a';g.beginPath();g.arc(0,0,4.6,0,TAU);g.fill();g.fillStyle='#e8c21e';
+  for(let i=0;i<3;i++){const a=-Math.PI/2+i*TAU/3;g.beginPath();g.moveTo(0,0);g.arc(0,0,4,a-.5,a+.5);g.closePath();g.fill();}
+  g.fillStyle='#17140a';g.beginPath();g.arc(0,0,1,0,TAU);g.fill();
+  g.fillStyle='#7fd13b';g.beginPath();g.moveTo(4,-9);g.quadraticCurveTo(6,-2,4.6,6);g.lineTo(3.2,6);g.quadraticCurveTo(4.4,-2,3,-9);g.closePath();g.fill();});return VWASTE;}
+// 비밀 계급장: 작은 방사능 표시
+function vSecretMark(g,c){g.fillStyle='#0d0e0a';g.beginPath();g.arc(0,17,4.4,0,TAU);g.fill();g.fillStyle=c;
+  for(let i=0;i<3;i++){const a=-Math.PI/2+i*TAU/3;g.beginPath();g.moveTo(0,17);g.arc(0,17,3.6,a-.5,a+.5);g.closePath();g.fill();}}
 // S33 역할 휘장(오른쪽 아래 작은 원): 13역할마다 다른 그림 — 비슷한 병사끼리도 무슨 일 하는지 바로 보이게
 function vRoleBadge(role){if(VROLE[role])return VROLE[role];const R=(typeof ROLES!=='undefined'&&ROLES[role])||null;if(!R)return null;const c=vHex(R.c);
   VROLE[role]=vSprite(16,g=>{g.fillStyle='#0d0e0a';g.beginPath();g.arc(0,0,7.4,0,TAU);g.fill();g.strokeStyle=c;g.lineWidth=1.4;g.beginPath();g.arc(0,0,6.6,0,TAU);g.stroke();
@@ -2561,6 +2725,7 @@ function vRoleBadge(role){if(VROLE[role])return VROLE[role];const R=(typeof ROLE
       case '기절':P([1,-4.5,-2.4,.6,.2,.6,-1,4.5,2.6,-.8,0,-.8]);g.closePath();g.fill();break;
       case '감속':for(let i=0;i<3;i++){const a=i*Math.PI/3;g.beginPath();g.moveTo(Math.cos(a)*4.2,Math.sin(a)*4.2);g.lineTo(-Math.cos(a)*4.2,-Math.sin(a)*4.2);g.stroke();}break;
       case '방깎':P([-3.4,-3.6,3.4,-3.6,3.4,.2,0,4.4,-3.4,.2]);g.closePath();g.fill();g.strokeStyle='#0d0e0a';g.lineWidth=1.2;P([.8,-3.8,-.6,-.6,1,.8,-.4,4]);g.stroke();break;
+      case '마방깎':g.lineWidth=1.1;P([-3.4,-3.6,3.4,-3.6,3.4,.2,0,4.4,-3.4,.2]);g.closePath();g.stroke();g.beginPath();g.moveTo(0,-2.6);g.lineTo(.7,-.6);g.lineTo(2.4,0);g.lineTo(.7,.6);g.lineTo(0,2.6);g.lineTo(-.7,.6);g.lineTo(-2.4,0);g.lineTo(-.7,-.6);g.closePath();g.fill();break;
       case '증폭':g.beginPath();g.arc(0,0,3.2,0,TAU);g.stroke();P([0,-4.8,0,-1.6]);g.stroke();P([0,4.8,0,1.6]);g.stroke();P([-4.8,0,-1.6,0]);g.stroke();P([4.8,0,1.6,0]);g.stroke();break;
       case '최대%':case '현재%':g.beginPath();g.moveTo(0,4);g.bezierCurveTo(-5.5,0,-3.4,-4.8,0,-2);g.bezierCurveTo(3.4,-4.8,5.5,0,0,4);g.closePath();
         if(role==='최대%')g.fill();else{g.lineWidth=1.1;g.stroke();g.save();g.clip();g.fillRect(-5,-5,5,10);g.restore();}break;
@@ -2579,6 +2744,7 @@ function vIns(tier,dt){const k=tier+'|'+dt;if(VINS[k])return VINS[k];const ti=TI
     g.lineCap='round';g.lineJoin='round';
     if(ti>=1&&ti<=3){for(let i=0;i<ti;i++){const y=18-i*2.6;g.beginPath();g.moveTo(-4,y-2);g.lineTo(0,y);g.lineTo(4,y-2);g.strokeStyle='#0d0e0a';g.lineWidth=2.8;g.stroke();g.strokeStyle=c;g.lineWidth=1.3;g.stroke();}}
     else if(ti>=4&&ti<=6){const m=ti-3;for(let i=0;i<m;i++){const x=(i-(m-1)/2)*6.5;pStar(g,x,17,3.8,'#0d0e0a');pStar(g,x,17,2.6,c);}}
+    else if(tier==='secret')vSecretMark(g,c);
     else if(ti===7){g.fillStyle='#0d0e0a';g.beginPath();g.arc(0,17,4,0,TAU);g.fill();g.fillStyle=c;g.beginPath();g.moveTo(0,14);g.lineTo(2.8,17);g.lineTo(0,20);g.lineTo(-2.8,17);g.closePath();g.fill();}
   });return VINS[k];}
 function vAim(t){const tg=t.angle==null?-1.5708:t.angle;let a=VFX.aim.get(t);
@@ -2600,8 +2766,10 @@ function vDrawUnitAt(g,v,x,y,aim,ha,fAge,mode,dt){const now=vNow();
     g.restore();}}
 function vFlushAir(){const Q=VFX.airQ;for(const q of Q)vDrawUnitAt(ctx,q.v,q.x,q.y,q.aim,q.ha,q.fAge,'body',q.dt);Q.length=0;}
 
-function drawTower(s){const t=s.tower,u=U[t.name];if(!u)return;const c=vHex(RARITY[u.t]?RARITY[u.t].color:'#9aa5b1'),sel=G&&G.selected===s;
-  const ti=TIER_ORDER.indexOf(u.t),now=vNow(),x=t.x,y=t.y;
+function drawTower(s){const t=s.tower,u=U[t.name];if(!u)return;vInitFx();const c=vHex(RARITY[u.t]?RARITY[u.t].color:'#9aa5b1'),sel=G&&G.selected===s;
+  const ti=u.t==='secret'?5:TIER_ORDER.indexOf(u.t),now=vNow(),x=t.x,y=t.y;
+  if(u.junk){vBlit(ctx,vWaste(),x,y); // S34 핵폐기물: 드럼통만(공격·휘장 없음)
+    if(sel){ctx.save();ctx.strokeStyle='#e8d9a0';ctx.lineWidth=2;vBrk(ctx,x,y,19+Math.sin(now*.008),6);ctx.restore();}return;}
   // 전설↑ 은은한 광채(미리 그린 빛 그림을 겹쳐 그림 — 매 프레임 흐림효과 없음)
   if(ti>=4){const gl=vGlow(u.t);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=(ti>=6?.5:.34)+.14*Math.sin(now*.004+x);vBlit(ctx,gl,x,y,ti>=6?.62:.52);ctx.restore();}
   vBlit(ctx,vBase(u.t),x,y);
@@ -2801,6 +2969,7 @@ function drawZombie(e){const c=ctx,r=e.r||10,gt=G?G.t:0,boss=!!e.boss,stun=e.stu
   if(stun){c.fillStyle='#ffe27a';for(let i=0;i<3;i++){const a=gt*.008+i*TAU/3;pStar(c,e.x+Math.cos(a)*r*.8,e.y-r-3+Math.sin(a)*2.5,2.6,'#ffe27a');}}
   if(e.dotT>0){c.globalCompositeOperation='lighter';for(let i=0;i<2;i++){const fl=Math.sin(gt*.03+i*2+ph)*1.5;vBlit(c,VS.flame,e.x+(i?r*.45:-r*.4),e.y-r*.25-fl,.32+.06*fl);}c.globalCompositeOperation='source-over';}
   if(e.shredT>0){const x=e.x+r+3,y=e.y-r*.4;c.fillStyle='#0d0e0a';c.beginPath();c.arc(x,y,4,0,TAU);c.fill();c.strokeStyle='#e0a526';c.lineWidth=1.2;c.beginPath();c.moveTo(x-2,y-2.5);c.lineTo(x,y);c.lineTo(x-1,y+.5);c.lineTo(x+1.5,y+2.5);c.stroke();}
+  if(e.mshredT>0){const x=e.x+r+3,y=e.y-r*.4+(e.shredT>0?9:0);c.fillStyle='#0d0e0a';c.beginPath();c.arc(x,y,4,0,TAU);c.fill();c.strokeStyle='#38c9d6';c.lineWidth=1.2;c.beginPath();c.moveTo(x,y-2.6);c.lineTo(x,y+2.6);c.moveTo(x-2.6,y);c.lineTo(x+2.6,y);c.stroke();}
   // 체력바: 피해를 입었거나 보스일 때만. 흰 잔상 = 방금 깎인 양
   if(boss||hpr<.999||e.shield>0){const w=boss?(e.type==='final'||e.type==='mission'?72:56):Math.max(16,r*2.2),h=boss?5:3,x=Math.round(e.x-w/2),y=Math.round(e.y-r-(boss?12:8));
     c.fillStyle='rgba(8,9,5,.85)';c.fillRect(x-1,y-1,w+2,h+2);c.fillStyle='#2a2c22';c.fillRect(x,y,w,h);
@@ -2907,9 +3076,11 @@ function renderSelected(){
     <span class="dtag ${dtc}">${DT_NAME[u.dt]}</span>${roleTags(t.name)}${upTxt}
     <span style="font-size:11px;color:#aeb6bf">· 흔함 ${cval(t.name)}개 가치</span>
     ${u.role&&ROLES[u.role]?`<div style="margin-top:4px;font-size:11px;color:${ROLES[u.role].c};">역할: <b>${u.role}</b> — ${ROLES[u.role].d}</div>`:''}
+    ${u.junk?`<div style="margin-top:4px;font-size:11px;color:#c6e04a;">☢ 공격하지 않고 자리만 차지해요 · 팔면 0골드 · 보통 조합 재료로는 못 써요</div>`:''}
+    ${u.t==='secret'?`<div style="margin-top:4px;font-size:11px;color:${RARITY.secret.color};">☢ 비밀 유닛 — 우라늄 연구소 비밀 도박에서만 나와요</div>`:''}
     <div style="margin-top:6px;">공격력 ${dmgTxt} · 사거리 ${u.range}<br>
     ${asTxt}${fx.length?' · '+fx.join('·'):''}</div>${skillListHtml(t.name)}${recipeHtml}`;
-  btns.innerHTML=`<div class="btn-row"><button class="btn-sell" onclick="sellSelected()" ${t.locked?'disabled':''} style="flex:1;">판매 (+${Math.round(SUMMON_COST*0.6*Math.pow(2.2,tierIdx))})</button>
+  btns.innerHTML=`<div class="btn-row"><button class="btn-sell" onclick="sellSelected()" ${t.locked?'disabled':''} style="flex:1;">판매 (+${sellPrice(t)})</button>
     <button onclick="toggleLock()" style="flex:1;background:${t.locked?'linear-gradient(135deg,#d29922,#9e6a03)':'#30363d'};">${t.locked?'🔒 잠금 해제':'🔓 잠금(재료 보호)'}</button></div>
     <div style="font-size:11px;color:#aeb6bf;margin-top:6px;text-align:center;">끌어서 이동 · 유닛 위에 놓으면 교체</div>`;
 }
@@ -2922,7 +3093,7 @@ function renderInv(){
   const el=document.getElementById('invBox');if(!el)return;
   const inv=inventory(),lk={};
   SLOTS.forEach(s=>{if(s.tower&&s.tower.locked)lk[s.tower.name]=(lk[s.tower.name]||0)+1;});
-  const names=[...new Set([...Object.keys(inv),...Object.keys(lk)])].sort((a,b)=>TIER_ORDER.indexOf(U[a].t)-TIER_ORDER.indexOf(U[b].t));
+  const names=[...new Set([...Object.keys(inv),...Object.keys(lk)])].sort((a,b)=>tIdx(U[a].t)-tIdx(U[b].t));
   if(!names.length){el.innerHTML='<span style="color:#aeb6bf;">없음</span>';return;}
   el.innerHTML=names.map(n=>{const rc=RARITY[U[n].t];
     return `<span style="background:#1c2230;border:1px solid ${rc.color};border-radius:6px;padding:2px 6px;color:${rc.color};">${shortName(n)}${inv[n]?` <b style="color:#fff;">×${inv[n]}</b>`:''}${lk[n]?` <span style="color:#d29922;">🔒${lk[n]}</span>`:''}</span>`;
@@ -3054,6 +3225,7 @@ const ROLES={
   '강화':{c:'#7ee787',d:'주변 아군 공격력·공격 속도 증가'},
   '경제':{c:'#c9d97a',d:'골드·보급으로 살림에 보탬'},
   '지속':{c:'#56d364',d:'불·가스 지속 피해 — 가장 센 것 1개만 적용'},
+  '마방깎':{c:'#38c9d6',d:`마법 방어 깎기 — 마법 피해 증가, 합쳐도 최대 ${Math.round(MBRK_CAP*100)}% (보스는 +15%)`},
 };
 const ROLE_ORDER=Object.keys(ROLES);
 const ROLE_RULE='같은 효과는 겹치지 않아요 — 역할을 섞으세요';
@@ -3075,10 +3247,16 @@ function renderRoleCov(){
     +`<br><span class="miss">${ROLE_RULE}</span>`;
 }
 // ===== S33 빠진 역할 알림 — 쉬움·보통에서만(어려움↑·무한은 절대 안 뜸). 한 번에 하나, 같은 역할은 2웨이브 넘게 쉬고, 한 판에 3번까지 =====
-const ROLE_SHORT={'기절':'잠깐 멈춰 세우기','감속':'걸음 느리게','방깎':'방어력 낮추기','증폭':'받는 피해 늘리기','최대%':'최대 체력 비례 피해',
+const ROLE_SHORT={'기절':'잠깐 멈춰 세우기','감속':'걸음 느리게','방깎':'방어력 낮추기','마방깎':'마법 방어력 낮추기','증폭':'받는 피해 늘리기','최대%':'최대 체력 비례 피해',
   '현재%':'남은 체력 비례 피해','처형':'빈사 적 바로 처치','보스':'보스에게 추가 피해','광역':'여러 마리 한꺼번에','대공':'나는 적 공격',
   '강화':'옆 아군 힘 올리기','경제':'골드 벌기','지속':'불·가스 지속 피해'};
-const HINT_ORDER=['광역','감속','기절','강화','방깎','처형','지속','증폭','최대%','현재%','경제','대공','보스'];
+const HINT_ORDER=['광역','감속','기절','강화','방깎','마방깎','처형','지속','증폭','최대%','현재%','경제','대공','보스'];
+// S34 덱 공격 속성 판단: 물리가 많으면 방깎, 마법이 많으면 마방깎, 방어무시가 많으면 둘 다 필요 없음
+const BRK_TIP='물리 덱 → 방깎, 마법 덱 → 마방깎, 방어무시 덱은 둘 다 필요 없어요';
+function teamDt(){const c={phys:0,magic:0,pierce:0};const add=t=>{const u=t&&U[t.name];if(!u||u.junk||u.cd>=9999)return;c[u.dt]=(c[u.dt]||0)+1;};
+  try{SLOTS.forEach(s=>add(s.tower));resList().forEach(add);}catch(_){}
+  return c.magic>c.phys&&c.magic>=c.pierce?'magic':c.pierce>c.phys&&c.pierce>c.magic?'pierce':'phys';}
+function brkRole(){const d=teamDt();return d==='magic'?'마방깎':d==='phys'?'방깎':null;}
 const HINT_GAP=20000,HINT_SHOW=15000,HINT_MAX=3;
 function hintJosa(w){const c=(w||'').charCodeAt(w.length-1);return(c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28)?'이':'가';}
 function hintOn(){return !!(G&&!G.over&&!G.endless&&(G.diff==='쉬움'||G.diff==='보통'));}
@@ -3086,7 +3264,7 @@ function hintHas(n,r){return unitHasRole(n,r)||(r==='대공'&&!!(U[n]&&U[n].air)
 function teamRoleSet(){const any={};let n=0;
   const add=t=>{const u=t&&U[t.name];if(!u)return;n++;for(const r of ROLE_ORDER)if(hintHas(t.name,r))any[r]=1;};
   try{SLOTS.forEach(s=>add(s.tower));resList().forEach(add);}catch(_){}return{any,n};}
-function hintUnits(r){return Object.keys(U).filter(n=>unitHasRole(n,r)&&!isSecret(n))
+function hintUnits(r){return Object.keys(U).filter(n=>unitHasRole(n,r)&&!isSecret(n)&&TIER_ORDER.includes(U[n].t))
   .sort((a,b)=>TIER_ORDER.indexOf(U[a].t)-TIER_ORDER.indexOf(U[b].t)).slice(0,2);}
 function hintThreats(){const t={};try{
   const q=[].concat(G.queue||[],G.nextQueue||[]);
@@ -3097,9 +3275,10 @@ function roleHint(trigger){try{
   if(!hintOn())return null;
   if(!G.hintSeen)G.hintSeen={};if(!G.hintCnt)G.hintCnt={};if(!G.hintLog)G.hintLog=[];
   if(G.hintT!=null&&G.t-G.hintT<HINT_GAP)return null;
-  const tm=teamRoleSet(),th=hintThreats();
-  const ok=r=>!tm.any[r]&&(G.hintCnt[r]||0)<HINT_MAX&&!(G.hintSeen[r]!=null&&G.wave-G.hintSeen[r]<3)&&hintUnits(r).length;
-  let role=['대공','보스','방깎'].find(r=>th[r]&&ok(r)),threat=!!role;
+  const tm=teamRoleSet(),th=hintThreats(),br=brkRole();
+  if(th['방깎']){delete th['방깎'];if(br)th[br]=1;} // 단단한 적: 우리 덱 속성에 맞는 깎기만
+  const ok=r=>((r!=='방깎'&&r!=='마방깎')||r===br)&&!tm.any[r]&&(G.hintCnt[r]||0)<HINT_MAX&&!(G.hintSeen[r]!=null&&G.wave-G.hintSeen[r]<3)&&hintUnits(r).length;
+  let role=['대공','보스',br].find(r=>r&&th[r]&&ok(r)),threat=!!role;
   // 급하지 않은 알림은 더 드물게(마지막 알림 뒤 60초↑ ≈ 1.5웨이브)
   if(!role&&(tm.n>=4||G.wave>=2)&&!(G.hintT!=null&&G.t-G.hintT<HINT_GAP*3))role=HINT_ORDER.find(ok);
   if(!role)return null;
@@ -3121,18 +3300,18 @@ function hintOpen(){try{const h=G&&G.hint;if(!h)return;openBook();bookRole=null;
 function unitTags(u){const fx=[];if(u.splash)fx.push('광역');if(u.slow)fx.push(`둔화${Math.round((1-u.slow)*100)}%`);if(u.dot)fx.push('지속피해');
   if(u.air)fx.push('대공');if(u.bossBonus)fx.push('보스특화');if(u.buff)fx.push('버프');if(u.debuff)fx.push('표적지정');
   if(u.execute)fx.push('처형');if(u.rampage)fx.push('성장');if(u.supply)fx.push('보급');if(u.gold)fx.push('골드');
-  if(u.stun)fx.push(u.stunP?`기절${Math.round(u.stunP*100)}%확률`:'스턴');if(u.shred)fx.push('약화');if(u.armBrk)fx.push(`방깎${Math.round(u.armBrk*100)}%`);if(u.maxHpPct)fx.push('최대체력딜');if(u.curHpPct)fx.push('현재체력딜');return fx;}
+  if(u.stun)fx.push(u.stunP?`기절${Math.round(u.stunP*100)}%확률`:'스턴');if(u.shred)fx.push('약화');if(u.armBrk)fx.push(`방깎${Math.round(u.armBrk*100)}%`);if(u.mBrk)fx.push(`마방깎${Math.round(u.mBrk*100)}%`);if(u.maxHpPct)fx.push('최대체력딜');if(u.curHpPct)fx.push('현재체력딜');return fx;}
 function renderCraft(){
   const el=document.getElementById('craftList');
   // 만들 수 있는 것 + 1~2개만 더 모으면 되는 것까지 표시
-  const all=Object.keys(RECIPE).map(r=>({r,...recipeProgress(r)}));
+  const all=Object.keys(RECIPE).map(r=>({r,...recipeProgress(r)})).filter(o=>o.r!==GHOST||secretKnown(GHOST)||o.ratio>=1); // S34 유령: 모르면 재료가 다 있을 때만
   const readyN=all.filter(o=>o.ratio>=1).length;setCraftCount(readyN);
   const items=all
     .filter(o=>o.ratio>=0.5)              // 절반 이상 모은 것만
     .sort((a,b)=>{
       if((b.ratio>=1)!==(a.ratio>=1))return (b.ratio>=1?1:0)-(a.ratio>=1?1:0); // 완성가능 먼저
       if(b.ratio!==a.ratio)return b.ratio-a.ratio;                              // 진행률 높은 순
-      return TIER_ORDER.indexOf(U[b.r].t)-TIER_ORDER.indexOf(U[a.r].t);
+      return tIdx(U[b.r].t)-tIdx(U[a.r].t);
     }).slice(0,Math.max(8,readyN)); // 지금 가능한 건 전부 + 나머지는 8개까지
   if(items.length===0){el.innerHTML='<span style="font-size:13px;color:#aeb6bf;">재료를 절반 이상 모으면 여기에 표시돼요.</span>';return;}
   el.innerHTML='';let sepDone=false;
@@ -3140,11 +3319,11 @@ function renderCraft(){
     const ready=o.ratio>=1;
     if(!ready&&!sepDone){sepDone=true;const sp=document.createElement('div');sp.className='craftSep';
       sp.textContent=readyN?'▾ 조금만 더 모으면 가능':'▾ 조금만 더 모으면 가능 (지금 바로 되는 조합은 없어요)';el.appendChild(sp);}
-    const secret=isSecret(r)&&!(G&&G.discovered[r]);
-    const dispName=secret?'??? '+shortName(r):shortName(r);
+    const secret=isSecret(r)&&!secretKnown(r);
+    const dispName=secret?(r===GHOST?'???':'??? '+shortName(r)):shortName(r);
     // 재료별 보유/필요 색칠
     const need=needCount(RECIPE[r]),inv=inventory();
-    const ingTxt=(secret?[recipeHint(r)]:Object.entries(need).map(([n,c])=>{
+    const ingTxt=(secret?[r===GHOST?'<i style="color:#c6e04a">☢ 무언가 반응한다…</i>':recipeHint(r)]:Object.entries(need).map(([n,c])=>{
       const h=Math.min(inv[n]||0,c);const ok=h>=c;
       return `<span style="color:${ok?'#7ee787':'#aeb6bf'}">${shortName(n)}${c>1?'×'+c:''}${ok?'':` (${h}/${c})`}</span>`;
     })).join(' + ');
@@ -3210,11 +3389,12 @@ function renderBook(){
   html+=`<div style="background:#161b22;border:1px solid #232b36;border-radius:8px;padding:8px 11px;margin-bottom:8px;font-size:12px;color:#c9d1d9;">
     🟢 = 지금 만들 수 있음 · 유닛을 <b>탭</b>하면 단계별 조합 재료(희귀→특별→흔함)가 다 보여요 · <b style="color:#d29922">🎯</b> = 목표로 등록(최대 ${GOAL_MAX})</div>`;
   // S32: 겹침 규칙 + 역할 거르기
-  html+=`<details class="roleRule"><summary><b>${ROLE_RULE}</b><span class="more">자세히</span></summary><span style="color:var(--dim);font-size:11px;">감속 합계 최대 ${Math.round(SLOW_CAP*100)}% · 방깎 최대 ${Math.round(BRK_CAP*100)}% · 받는 피해 증가 최대 ${Math.round(AMP_CAP*100)}% · 같은 이름 기술은 가장 센 것 1개만<br>함께 쓰면 더 세요: ${ROLE_SYN_TXT}</span></details>`;
+  html+=`<details class="roleRule"><summary><b>${ROLE_RULE}</b><span class="more">자세히</span></summary><span style="color:var(--dim);font-size:11px;">감속 합계 최대 ${Math.round(SLOW_CAP*100)}% · 방깎 최대 ${Math.round(BRK_CAP*100)}% · 마방깎 최대 ${Math.round(MBRK_CAP*100)}% · 받는 피해 증가 최대 ${Math.round(AMP_CAP*100)}% · 같은 이름 기술은 가장 센 것 1개만<br>💡 ${BRK_TIP}<br>함께 쓰면 더 세요: ${ROLE_SYN_TXT}</span></details>`;
   html+=`<div class="roleChips"><button class="${bookRole?'':'on'}" style="color:var(--ink)" onclick="setBookRole(null)">전체</button>`
     +ROLE_ORDER.map(r=>`<button class="${bookRole===r?'on':''}" style="color:${ROLES[r].c}" title="${ROLES[r].d}" onclick="setBookRole('${r}')">${r}</button>`).join('')+`</div>`;
   if(bookRole){
     html+=`<div style="font-size:12px;color:${ROLES[bookRole].c};margin-bottom:4px;">「${bookRole}」 — ${ROLES[bookRole].d}</div>`;
+    if(bookRole==='방깎'||bookRole==='마방깎')html+=`<div style="font-size:11px;color:var(--khaki);margin-bottom:4px;">💡 ${BRK_TIP}</div>`;
     const cm=Object.keys(U).filter(n=>U[n].t==='common'&&unitHasRole(n,bookRole));
     if(cm.length){const rc=RARITY.common;html+=`<div class="bkTier" style="color:${rc.color};margin-top:8px;">흔함 <span style="color:#6e7681;font-weight:400;font-size:11px;">— 뽑기로 나옴</span></div>`;
       for(const n of cm)html+=`<div class="bkRow"><b style="color:${rc.color}">${shortName(n)}</b><span class="dtag ${dtClass(U[n].dt)}">${DT_NAME[U[n].dt]}</span>${roleTags(n)}</div>`;}
@@ -3228,16 +3408,16 @@ function renderBook(){
       <div style="color:#c9d1d9;margin-top:2px;">${d.role} — 핵심: ${d.core.map(c=>`<span style="color:${RARITY[U[c].t].color}">${shortName(c)}</span>`).join(' · ')}</div>
       <div style="color:#7ee787;font-size:11px;">＋ ${d.good}</div><div style="color:#ffb3ad;font-size:11px;">－ ${d.bad}</div></div>`;});
   for(const tier of tiers){
-    const items=Object.keys(RECIPE).filter(n=>U[n].t===tier&&(!bookRole||(unitHasRole(n,bookRole)&&!(isSecret(n)&&!(G&&G.discovered[n])))));
+    const items=Object.keys(RECIPE).filter(n=>U[n].t===tier&&(!bookRole||(unitHasRole(n,bookRole)&&!(isSecret(n)&&!secretKnown(n)))));
     if(!items.length)continue;
     const rc=RARITY[tier];
     html+=`<div class="bkTier" style="color:${rc.color};margin-top:8px;">${TN[tier]||tier}</div>`;
     for(const n of items){
-      const secret=isSecret(n)&&!(G&&G.discovered[n]);
+      const secret=isSecret(n)&&!secretKnown(n);
       const canDeep=G&&canCraftDeepTop(n);          // 흔함까지 합쳐 만들 수 있나
       const open=bookOpenUnit===n;
       const dot=canDeep?'🟢':'⚪';
-      const nm=secret?'<span style="color:#9aa5b1">???</span>':shortName(n);
+      const nm=secret?`<span style="color:#9aa5b1">${n===GHOST?'??? — 비밀 조합':'???'}</span>`:shortName(n);
       // 한 줄: [상태점] 이름  [등급칩]  [조합버튼(가능시)]
       html+=`<div class="bkCard ${open?'open':''}" style="border-left:3px solid ${rc.color};" onclick="bookToggle('${n}')">
         <span style="flex:1;"><span style="font-size:13px;">${dot}</span> <b style="color:${rc.color}">${nm}</b>
@@ -3266,6 +3446,15 @@ function renderBook(){
       if(open&&secret)html+=`<div class="bkDetail" style="color:#9aa5b1;">🔒 비밀 유닛 — 직접 조합해 알아가세요</div>`;
     }
   }
+  // S34 비밀 등급 — 조합으로는 못 만들고 ☢ 우라늄 연구소 비밀 도박에서만 나옴
+  {const sc=SECRET_UNITS.filter(n=>!bookRole||unitHasRole(n,bookRole));
+    if(sc.length){const rc=RARITY.secret;
+      html+=`<div class="bkTier" style="color:${rc.color};margin-top:8px;">비밀 <span style="color:#6e7681;font-weight:400;font-size:11px;">— ☢ 우라늄 연구소 비밀 도박에서만 나와요</span></div>`;
+      for(const n of sc){const open=bookOpenUnit===n;
+        html+=`<div class="bkCard ${open?'open':''}" style="border-left:3px solid ${rc.color};" onclick="bookToggle('${n}')">
+          <span style="flex:1;"><span style="font-size:13px;">☢</span> <b style="color:${rc.color}">${shortName(n)}</b>
+          <span class="dtag ${dtClass(U[n].dt)}" style="margin-left:4px;">${DT_NAME[U[n].dt]}</span>${roleTags(n,1)+skillBadge(n)}</span></div>`;
+        if(open)html+=`<div class="bkDetail">${skillListHtml(n)}<div style="color:#aeb6bf;font-size:11px;">조합으로는 못 만들어요 — 비밀 도박(☢ 2개, 성공 30%)에서만</div></div>`;}}}
   body.innerHTML=html;
 }
 // ===== 입력: 탭=선택, 드래그=이동/교체 =====
