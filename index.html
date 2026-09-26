@@ -56,6 +56,11 @@
   .subBtns{ display:flex; gap:6px; } .subBtns button{ flex:1 1 0; min-width:0; min-height:40px; font-size:13px; padding:8px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .logLast{ font-size:12px; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:17px; border-left:2px solid var(--line2); padding-left:7px; }
   .logLast:empty::before{ content:"전투 소식이 여기 한 줄로 떠요"; color:var(--mute); }
+  /* S33 빠진 역할 알림(쉬움·보통) — 전투 소식과 같은 줄 모양, 황색 선으로만 구분 · 누르면 도감이 그 역할로 열림 */
+  .hintLine{ font-size:12px; color:#e8d9a0; line-height:1.45; border-left:2px solid var(--amber); padding:3px 0 3px 7px; margin-top:4px; cursor:pointer; }
+  .hintLine:empty{ display:none; }
+  .hintLine b{ color:var(--amber); font-weight:700; } .hintLine u{ text-decoration:none; border-bottom:1px dashed var(--line2); color:var(--khaki); }
+  .refLink{ display:inline-flex; align-items:center; text-decoration:none; }
   /* 조합 칸 */
   .craftHead{ display:flex; align-items:center; gap:10px; }
   .craftT{ font-family:var(--f-head); font-size:19px; letter-spacing:.5px; color:var(--ink); }
@@ -193,6 +198,7 @@
   .recAct{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:14px;}
   .linkBtn{background:none; border:0; border-bottom:1px dashed var(--line2); clip-path:none; box-shadow:none !important; text-shadow:none;
     color:var(--khaki); padding:6px 2px; font-size:13px;}
+  #book .refLink{ margin-left:auto; margin-right:14px; font-size:13px; }
   .recNote{margin:8px 0 0; font-size:12px; color:var(--dim); line-height:1.5;}
   #recText{width:100%; box-sizing:border-box; height:130px; margin-top:6px; background:var(--inset); color:var(--ink); border:0; border-left:2px solid var(--amber);
     border-radius:0; padding:6px 8px; font:11px/1.4 Consolas,monospace;}
@@ -276,6 +282,7 @@
       <div id="bookInner">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <h2 style="margin:0;font-size:20px;">📖 조합식 도감</h2>
+          <a class="linkBtn refLink" id="refLinkBook" href="자료/" target="_blank" rel="noopener">📚 전체 도감 보기</a>
           <button onclick="closeBook()" style="background:#30363d;font-size:13px;padding:6px 12px;">✕ 닫기</button>
         </div>
         <div id="bookBody"></div>
@@ -340,6 +347,7 @@
           <button id="rewardBtn" class="hidden" onclick="openRewardPop()">🏅 받을 보상</button>
         </div>
         <div id="logLast" class="logLast"></div>
+        <div id="hintLine" class="hintLine" role="button" tabindex="0" onclick="hintOpen()"></div>
       </div>
     </div>
     <div class="card hidden" id="rewardBox"></div>
@@ -438,14 +446,14 @@ const CELL=30; // 배치칸 한 변 (촘촘하게)
 
 // 등급 (전설=뽑기 상한 / 신화·히든=조합 전용)
 const RARITY={
-  common:{name:'흔함',color:'#9aa5b1',odds:0.55},
-  uncommon:{name:'안흔함',color:'#7ee787',odds:0.27},
-  special:{name:'특별',color:'#58a6ff',odds:0.12},
-  rare:{name:'희귀',color:'#bc8cff',odds:0.05},
-  legend:{name:'전설',color:'#f0883e',odds:0.01},
-  mythic:{name:'신화',color:'#f2cc60',odds:0},
-  apex:{name:'초월',color:'#ff4d6d',odds:0},
-  hidden:{name:'히든',color:'#ff6ac1',odds:0},
+  common:{name:'흔함',color:'#a3a89a',odds:0.55},
+  uncommon:{name:'안흔함',color:'#52d160',odds:0.27},
+  special:{name:'특별',color:'#4aaeff',odds:0.12},
+  rare:{name:'희귀',color:'#a45cff',odds:0.05},
+  legend:{name:'전설',color:'#ff8a1c',odds:0.01},
+  mythic:{name:'신화',color:'#ff3d3d',odds:0},
+  apex:{name:'초월',color:'#3ff0e6',odds:0},
+  hidden:{name:'히든',color:'#ffd23a',odds:0},
 };
 const TIER_ORDER=['common','uncommon','special','rare','legend','mythic','apex','hidden'];
 
@@ -926,7 +934,8 @@ function showStart(){
     <div style="font-size:12px;color:#aeb6bf;">🎖️ 작전 선택 <span style="color:#6e7681">— 매판 다른 전략</span></div>
     <div class="docGrid">${docBtns}</div>${docDetail}
     <button class="btn-wave" style="max-width:220px" onclick="startGame()">게임 시작</button>
-    <button class="linkBtn" onclick="openRecords()">📋 내 기록${recCount()?` <span style="color:var(--mute);font-weight:400">(${recCount()}판)</span>`:''}</button>`;
+    <button class="linkBtn" onclick="openRecords()">📋 내 기록${recCount()?` <span style="color:var(--mute);font-weight:400">(${recCount()}판)</span>`:''}</button>
+    <a class="linkBtn refLink" id="refLinkStart" href="자료/" target="_blank" rel="noopener">📚 전체 도감 보기</a>`;
 }
 function pickDiff(d){chosenDiff=d;showStart();}
 function pickDoctrine(k){chosenDoctrine=k;showStart();}
@@ -976,7 +985,7 @@ function summon(quiet){
   const pick=empty[Math.floor(rnd()*Math.min(5,empty.length))];
   const name=drawCommon();
   pick.tower=mkTower(name,pick);pick.tower.paid=free?0:cost;
-  if(!quiet){const rc=RARITY[U[name].t];log(`소환: <b style="color:${rc.color}">[${rc.name}] ${name}</b>`);}
+  if(!quiet){const rc=RARITY[U[name].t];log(`소환: <b style="color:${rc.color}">[${rc.name}] ${name}</b>`);roleHint('summon');}
   SFX.summon();
   G.invSig='';updateUI();return true;
 }
@@ -1010,7 +1019,7 @@ function chooseWisp(name){
   G.tp-=WISP_TP;
   if(empty.length===0)resAdd(name); // S30: 칸이 꽉 차면 대기소로
   else{const slot=empty[Math.floor(rnd()*empty.length)];slot.tower=mkTower(name,slot);}
-  log(`✨ 선택흔함: <b style="color:#9aa5b1">${name}</b> (TP -${WISP_TP})`,'#d2a8ff');
+  log(`✨ 선택흔함: <b style="color:${RARITY.common.color}">${name}</b> (TP -${WISP_TP})`,'#d2a8ff');
   document.getElementById('wispMenu').classList.add('hidden');G.invSig='';updateUI();}
 
 // ===== 공격타입 강화 =====
@@ -1115,13 +1124,13 @@ function updateS27Btns(){const rb=document.getElementById('rewardBtn'),kb=docume
 // ===== 미션 (특수 보스 도전) =====
 // limit: 제한 웨이브 수 — 그 안에 못 잡으면 난이도별 벌칙(missionFail, S27: 신만 패배)
 const MISSIONS=[
-  {name:'거대 골렘 좀비',color:'#aeb6bf',hpMul:7,  limit:3,reward:{type:'summon',n:3}, rw:'흔함 뽑기권 ×3'},
-  {name:'부패 거인',     color:'#7ee787',hpMul:12, limit:3,reward:{type:'pick',tier:'uncommon'}, rw:'안흔함 선택권'},
-  {name:'강철 골렘',     color:'#58a6ff',hpMul:20, limit:3,reward:{type:'pick',tier:'special'},  rw:'특별 선택권'},
-  {name:'역병 군주',     color:'#bc8cff',hpMul:32, limit:4,reward:{type:'pick',tier:'rare'},     rw:'희귀 선택권'},
-  {name:'파멸의 타이탄', color:'#f0883e',hpMul:48, limit:4,reward:{type:'pick',tier:'legend'},   rw:'전설 선택권'},
-  {name:'심연의 군주',   color:'#f2cc60',hpMul:70, limit:5,reward:{type:'pick',tier:'mythic'},   rw:'신화 선택권'},
-  {name:'종말의 화신',   color:'#ff4d6d',hpMul:100,limit:5,reward:{type:'pick',tier:'apex'},     rw:'초월 선택권'},
+  {name:'거대 골렘 좀비',color:RARITY.common.color,hpMul:7,  limit:3,reward:{type:'summon',n:3}, rw:'흔함 뽑기권 ×3'},
+  {name:'부패 거인',     color:RARITY.uncommon.color,hpMul:12, limit:3,reward:{type:'pick',tier:'uncommon'}, rw:'안흔함 선택권'},
+  {name:'강철 골렘',     color:RARITY.special.color,hpMul:20, limit:3,reward:{type:'pick',tier:'special'},  rw:'특별 선택권'},
+  {name:'역병 군주',     color:RARITY.rare.color,hpMul:32, limit:4,reward:{type:'pick',tier:'rare'},     rw:'희귀 선택권'},
+  {name:'파멸의 타이탄', color:RARITY.legend.color,hpMul:48, limit:4,reward:{type:'pick',tier:'legend'},   rw:'전설 선택권'},
+  {name:'심연의 군주',   color:RARITY.mythic.color,hpMul:70, limit:5,reward:{type:'pick',tier:'mythic'},   rw:'신화 선택권'},
+  {name:'종말의 화신',   color:RARITY.apex.color,hpMul:100,limit:5,reward:{type:'pick',tier:'apex'},     rw:'초월 선택권'},
 ];
 function openMissions(){if(G&&G.paused){log('🧭 항법을 먼저 선택하세요.','#ff7b72');return;}
   renderMissions();document.getElementById('mission').classList.remove('hidden');}
@@ -1260,6 +1269,7 @@ function craftDeep(target){
     log(`⚙️ 한방 조합! <b style="color:${rc.color}">[${rc.name}] ${target}</b> 완성${G._newDiscovers?' 📖<i>해금!</i>':''}${slot.res?' → 📦 대기소':''}`,rc.color);
     G.selected=slot.res?null:slot;}
   else log('조합에 실패했습니다(빈 칸 부족?).','#ff7b72');
+  if(slot)roleHint('craft');
   G.invSig='';updateUI();
 }
 // 조용히 1회 조합 (재료 소모 + 결과 배치). 성공하면 결과 슬롯 반환
@@ -1292,6 +1302,7 @@ function craft(result){
   log(`⚙️ 조합 완성! <b style="color:${rc.color}">[${rc.name}] ${result}</b>${G._newDiscovers?' 📖<i>조합식 해금!</i>':''}`,rc.color);
   if(slot&&slot.res)log('📦 칸이 꽉 차서 결과를 대기소로 보냈어요.','#c2b27a');
   if(slot){if(!slot.res)G.floats.push({x:slot.x,y:slot.y-20,txt:'✨',life:600});SFX.craft();}
+  if(slot)roleHint('craft');
   G.selected=(slot&&!slot.res)?slot:null;G.invSig='';updateUI();
 }
 // 히든·비밀 등급만 가림 대상 (그 외 등급은 항상 전체 공개)
@@ -1432,6 +1443,7 @@ function nextWave(){
   log(boss?`★ ${G.wave}웨이브 — ${G.wave===MAX_WAVE?'최종 보스':'보스'} 등장! ★`:`${G.wave}웨이브 시작`,boss?'#f2cc60':'#79c0ff');
   questProgress('wave',G.wave);
   rewardNagCheck(); // S27 쌓인 보상 챙기기
+  roleHint('wave'); // S33 빠진 역할 알림(쉬움·보통만)
   updateUI();
 }
 // 다음 웨이브 미리보기: 구성 요약 + 추천 화력 (상성 학습 유도)
@@ -1941,9 +1953,28 @@ mapBg.src='assets/'+encodeURIComponent('디펜스게임 배경.png');
 // assets/units·zombies·fx 폴더에 규격 PNG를 넣으면 즉시 그 이미지로 교체(없으면 코드 스프라이트 유지)
 // 파일명 = 유닛/좀비 한글 이름. 자세한 규격은 assets/이미지_제작_가이드.md 참고
 const SKIN={u:{},z:{},fx:{}};
+// S33: 같은 등급·같은 역할이라 겉모습이 거의 같은 유닛 → 위장색을 살짝 입혀 구분
+const SKIN_TINT={'천마':'#d9b56b','K30 비호Ⅱ':'#8fb0d8','미사일여단':'#c98a5a'};
+function vHSL(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;let h=0,s=0;
+  if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h/=6;}return[h,s,l];}
+function vFromHSL(h,s,l){if(!s){const v=Math.round(l*255);return[v,v,v];}const q=l<.5?l*(1+s):l+s-l*s,p=2*l-q;
+  const f=t=>{t=(t%1+1)%1;return t<1/6?p+(q-p)*6*t:t<.5?q:t<2/3?p+(q-p)*(2/3-t)*6:p;};return[Math.round(f(h+1/3)*255),Math.round(f(h)*255),Math.round(f(h-1/3)*255)];}
+// 신화↑ 그림에 구워진 옛 등급 테두리(반지름 52/128 바깥)를 새 등급색으로 다시 칠함. 실패(로컬 파일 보안 등)하면 원본 그대로
+function skinPrep(im,name){try{
+  const u=U[name]||{},ti=TIER_ORDER.indexOf(u.t),tint=SKIN_TINT[name];
+  if(ti<5&&!tint)return im;
+  const w=im.naturalWidth||im.width||128,h=im.naturalHeight||im.height||128,c=mkCv(w,h),g=c.getContext&&c.getContext('2d');if(!g)return im;
+  g.drawImage(im,0,0,w,h);
+  if(ti>=5&&g.getImageData){const d=g.getImageData(0,0,w,h),px=d.data,r0=w/128*51.5,r2=r0*r0,cx=w/2,cy=h/2;
+    const n=parseInt(vHex(RARITY[u.t].color).slice(1),16),T=vHSL(n>>16,(n>>8)&255,n&255);
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++){const dx=x+.5-cx,dy=y+.5-cy;if(dx*dx+dy*dy<r2)continue;const i=(y*w+x)*4;if(px[i+3]<8)continue;
+      const P=vHSL(px[i],px[i+1],px[i+2]);if(P[1]<.25)continue;const o=vFromHSL(T[0],Math.max(P[1],T[1]*.9),P[2]*.45+T[2]*.55);px[i]=o[0];px[i+1]=o[1];px[i+2]=o[2];}
+    g.putImageData(d,0,0);}
+  if(tint){g.globalCompositeOperation='source-atop';g.globalAlpha=.3;g.fillStyle=tint;g.fillRect(0,0,w,h);g.globalAlpha=1;g.globalCompositeOperation='source-over';}
+  return c;}catch(_){return im;}}
 (function(){
   const load=(map,dir,key,file)=>{const im=new Image();
-    im.onload=()=>{map[key]=im;};
+    im.onload=()=>{map[key]=dir==='units'?skinPrep(im,key):im;};
     im.src='assets/'+dir+'/'+encodeURIComponent(file||key)+'.png';};
   for(const n of Object.keys(U))load(SKIN.u,'units',n);                  // 유닛 73종
   for(const t of Object.keys(ZTYPE))load(SKIN.z,'zombies',t,ZTYPE[t].name); // 좀비 (한글 이름 파일)
@@ -1987,10 +2018,10 @@ function vShadow(src){const s=vSil(src,'#000',1),c=mkCv(src.width,src.height),g=
 function vBlit(g,spr,x,y,sc){if(!spr)return;const s=spr._s*(sc||1);g.drawImage(spr,x-s/2,y-s/2,s,s);}
 function vRad(size,stops){return vSprite(size,g=>{const r=size/2,gr=g.createRadialGradient(0,0,0,0,0,r);for(const s of stops)gr.addColorStop(s[0],s[1]);g.fillStyle=gr;g.beginPath();g.arc(0,0,r,0,TAU);g.fill();});}
 // 고해상도(레티나) 대응: 화면 크기×기기 배율에 맞춰 캔버스 실제 픽셀만 키움(좌표계 760×580은 그대로)
-let VK=1,vFitT=-1e9;
+let VK=1,vFitT=-1e9,VCSS=1; // VCSS: 화면에 보이는 캔버스 배율(휴대폰≈0.47)
 function vFit(){const n=vNow();if(n-vFitT<500)return;vFitT=n;
   try{const r=cv.getBoundingClientRect(),css=(r&&r.width)||W,dpr=(typeof window!=='undefined'&&window.devicePixelRatio)||1;
-    let k=Math.round(dpr*css/W*4)/4;k=Math.max(1,Math.min(2,k||1));
+    VCSS=css/W||1;let k=Math.round(dpr*css/W*4)/4;k=Math.max(1,Math.min(2,k||1));
     if(k!==VK){VK=k;cv.width=Math.round(W*k);cv.height=Math.round(H*k);MAPL.c=null;}}catch(_){}}
 let V_CALM=null;
 function vCalm(){if(V_CALM===null){try{V_CALM=!!(typeof window!=='undefined'&&window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);}catch(_){V_CALM=false;}}return V_CALM;}
@@ -2490,17 +2521,58 @@ function vRotor(g,x,y,R,a){vBlit(g,VS.disc,x,y,R/20);g.strokeStyle='rgba(22,24,2
   for(let i=0;i<2;i++){const b=a+i*Math.PI/2,cx=Math.cos(b)*R,sy=Math.sin(b)*R;g.moveTo(x-cx,y-sy);g.lineTo(x+cx,y+sy);}g.stroke();
   g.fillStyle='#1a1b17';g.beginPath();g.arc(x,y,1.4,0,TAU);g.fill();}
 function vOct(g,x,y,r){g.beginPath();for(let i=0;i<8;i++){const a=Math.PI/8+i*TAU/8;g.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);}g.closePath();}
-// 받침대(팔각 강판) + 등급 링: 일반=가는선, 고급~희귀=점선, 전설↑=굵은 이중선
-const VBASE={},VINS={};
-function vBase(tier){if(VBASE[tier])return VBASE[tier];const ti=TIER_ORDER.indexOf(tier),c=vHex(RARITY[tier]&&RARITY[tier].color);
-  VBASE[tier]=vSprite(44,g=>{vOct(g,1.2,2,16.5);g.fillStyle='rgba(0,0,0,.4)';g.fill();
-    const gr=g.createLinearGradient(-15,-15,15,15);gr.addColorStop(0,'#6a6d62');gr.addColorStop(1,'#3c3e36');vOct(g,0,0,15.5);g.fillStyle=gr;g.fill();g.strokeStyle='#23241e';g.lineWidth=1;g.stroke();
-    vOct(g,0,0,12);g.strokeStyle='rgba(0,0,0,.28)';g.stroke();vOct(g,0,0,11.2);g.strokeStyle='rgba(255,255,255,.08)';g.stroke();
-    g.strokeStyle=c;
-    if(ti<=0){g.globalAlpha=.6;g.lineWidth=1;vOct(g,0,0,14.6);g.stroke();}
-    else if(ti<=3){g.lineWidth=1.8;g.setLineDash([4,2.4]);vOct(g,0,0,14.6);g.stroke();g.setLineDash([]);}
-    else{g.lineWidth=2.2;vOct(g,0,0,14.6);g.stroke();g.globalAlpha=.6;g.lineWidth=1;vOct(g,0,0,18);g.stroke();}
-    g.globalAlpha=1;});return VBASE[tier];}
+// S33 받침대: 등급마다 모양·크기·밝기가 다름(색을 못 구분해도 모양으로 구분)
+// 흔함=원 · 안흔함=네모 · 특별=팔각 · 희귀=육각 · 전설=팔각+이중테+리벳 · 신화=톱니8 · 초월=햇살12+삼중테 · 히든=검은 마름모+금테
+const VBASE={},VINS={},VROLE={};
+function vPoly(g,n,r,rot){g.beginPath();for(let i=0;i<n;i++){const a=rot+i*TAU/n;g.lineTo(Math.cos(a)*r,Math.sin(a)*r);}g.closePath();}
+function vSpike(g,n,ro,ri,rot){g.beginPath();for(let i=0;i<n*2;i++){const a=rot+i*Math.PI/n,r=i%2?ri:ro;g.lineTo(Math.cos(a)*r,Math.sin(a)*r);}g.closePath();}
+function vRRect(g,h,rr){g.beginPath();g.moveTo(-h+rr,-h);g.lineTo(h-rr,-h);g.quadraticCurveTo(h,-h,h,-h+rr);g.lineTo(h,h-rr);g.quadraticCurveTo(h,h,h-rr,h);g.lineTo(-h+rr,h);g.quadraticCurveTo(-h,h,-h,h-rr);g.lineTo(-h,-h+rr);g.quadraticCurveTo(-h,-h,-h+rr,-h);g.closePath();}
+function vTierShape(g,ti,r){ // 등급별 외곽선 경로
+  if(ti<=0){g.beginPath();g.arc(0,0,r,0,TAU);}
+  else if(ti===1)vRRect(g,r*.86,2.4);
+  else if(ti===2||ti===4)vPoly(g,8,r,Math.PI/8);
+  else if(ti===3)vPoly(g,6,r,-Math.PI/2);
+  else if(ti===5)vSpike(g,8,r,r*.84,-Math.PI/2);
+  else if(ti===6)vSpike(g,12,r,r*.86,-Math.PI/2);
+  else vPoly(g,4,r*1.08,-Math.PI/2);}
+function vBase(tier){if(VBASE[tier])return VBASE[tier];const ti=Math.max(0,TIER_ORDER.indexOf(tier)),c=vHex(RARITY[tier]&&RARITY[tier].color);
+  const r=[14,14.6,15.2,15.8,16.4,18.2,19,17.4][ti]||15;
+  VBASE[tier]=vSprite(48,g=>{
+    g.save();g.translate(1.2,2);vTierShape(g,ti,r+.8);g.fillStyle='rgba(0,0,0,.42)';g.fill();g.restore();
+    // 판: 낮은 등급=밝은 강철, 높을수록 어둡고 등급색이 배어듦 → 밝기 차이로도 구분
+    const lt=ti===7?['#26221a','#0b0a07']:[['#74776b','#45473d'],['#6a7263','#39402f'],['#5d6772','#2d343d'],['#5f566e','#2b2536'],['#6c5a44','#2f261a'],['#5e3a38','#241514'],['#355a5c','#122526']][ti];
+    const gr=g.createLinearGradient(-r,-r,r,r);gr.addColorStop(0,lt[0]);gr.addColorStop(1,lt[1]);
+    vTierShape(g,ti,r);g.fillStyle=gr;g.fill();g.strokeStyle='#14150f';g.lineWidth=1;g.stroke();
+    g.fillStyle=vRGBA(c,ti>=5?.16:.1);vTierShape(g,ti,r);g.fill();
+    vTierShape(g,ti,r*.74);g.strokeStyle='rgba(0,0,0,.26)';g.lineWidth=1;g.stroke();
+    // 등급 테두리: 굵기·겹수가 등급 따라 늘어남
+    g.strokeStyle=c;g.lineJoin='round';
+    const lw=[1.1,1.6,1.9,2.1,2.3,2.4,2.4,2.6][ti];g.globalAlpha=ti===0?.75:1;g.lineWidth=lw;vTierShape(g,ti,r-.9);g.stroke();g.globalAlpha=1;
+    if(ti>=4){g.lineWidth=1;g.globalAlpha=.7;vTierShape(g,ti,r*.8);g.stroke();g.globalAlpha=1;}
+    if(ti===6){g.lineWidth=.9;g.globalAlpha=.5;g.beginPath();g.arc(0,0,r*.66,0,TAU);g.stroke();g.globalAlpha=1;}
+    if(ti===4||ti===7){g.fillStyle=c;const k=ti===7?4:4,rr=ti===7?r*.62:r*.88;for(let i=0;i<k;i++){const a=(ti===7?0:Math.PI/4)+i*TAU/k;g.beginPath();g.arc(Math.cos(a)*rr,Math.sin(a)*rr,1.2,0,TAU);g.fill();}}
+    if(ti===7){g.lineWidth=1;vPoly(g,4,r*1.08+2.2,-Math.PI/2);g.stroke();}
+  });return VBASE[tier];}
+// S33 역할 휘장(오른쪽 아래 작은 원): 13역할마다 다른 그림 — 비슷한 병사끼리도 무슨 일 하는지 바로 보이게
+function vRoleBadge(role){if(VROLE[role])return VROLE[role];const R=(typeof ROLES!=='undefined'&&ROLES[role])||null;if(!R)return null;const c=vHex(R.c);
+  VROLE[role]=vSprite(16,g=>{g.fillStyle='#0d0e0a';g.beginPath();g.arc(0,0,7.4,0,TAU);g.fill();g.strokeStyle=c;g.lineWidth=1.4;g.beginPath();g.arc(0,0,6.6,0,TAU);g.stroke();
+    g.fillStyle=c;g.strokeStyle=c;g.lineWidth=1.3;g.lineCap='round';g.lineJoin='round';const P=(a)=>{g.beginPath();g.moveTo(a[0],a[1]);for(let i=2;i<a.length;i+=2)g.lineTo(a[i],a[i+1]);};
+    switch(role){
+      case '기절':P([1,-4.5,-2.4,.6,.2,.6,-1,4.5,2.6,-.8,0,-.8]);g.closePath();g.fill();break;
+      case '감속':for(let i=0;i<3;i++){const a=i*Math.PI/3;g.beginPath();g.moveTo(Math.cos(a)*4.2,Math.sin(a)*4.2);g.lineTo(-Math.cos(a)*4.2,-Math.sin(a)*4.2);g.stroke();}break;
+      case '방깎':P([-3.4,-3.6,3.4,-3.6,3.4,.2,0,4.4,-3.4,.2]);g.closePath();g.fill();g.strokeStyle='#0d0e0a';g.lineWidth=1.2;P([.8,-3.8,-.6,-.6,1,.8,-.4,4]);g.stroke();break;
+      case '증폭':g.beginPath();g.arc(0,0,3.2,0,TAU);g.stroke();P([0,-4.8,0,-1.6]);g.stroke();P([0,4.8,0,1.6]);g.stroke();P([-4.8,0,-1.6,0]);g.stroke();P([4.8,0,1.6,0]);g.stroke();break;
+      case '최대%':case '현재%':g.beginPath();g.moveTo(0,4);g.bezierCurveTo(-5.5,0,-3.4,-4.8,0,-2);g.bezierCurveTo(3.4,-4.8,5.5,0,0,4);g.closePath();
+        if(role==='최대%')g.fill();else{g.lineWidth=1.1;g.stroke();g.save();g.clip();g.fillRect(-5,-5,5,10);g.restore();}break;
+      case '처형':g.lineWidth=1.8;P([-3.2,-3.2,3.2,3.2]);g.stroke();P([3.2,-3.2,-3.2,3.2]);g.stroke();break;
+      case '보스':P([-4,3,-4,-2,-2,.2,0,-3.6,2,.2,4,-2,4,3]);g.closePath();g.fill();break;
+      case '광역':vSpike(g,6,4.6,1.9,-Math.PI/2);g.fill();break;
+      case '대공':g.lineWidth=1.6;P([0,4,0,-3.6]);g.stroke();P([-3.2,-.6,0,-4,3.2,-.6]);g.stroke();break;
+      case '강화':g.lineWidth=2;P([0,-4,0,4]);g.stroke();P([-4,0,4,0]);g.stroke();break;
+      case '경제':g.beginPath();g.arc(0,0,4,0,TAU);g.fill();g.fillStyle='#0d0e0a';g.fillRect(-.7,-2.6,1.4,5.2);break;
+      case '지속':g.beginPath();g.moveTo(0,-4.6);g.bezierCurveTo(3.8,-1,3.4,4,0,4.2);g.bezierCurveTo(-3.4,4,-3.8,-.4,-1,-1.6);g.bezierCurveTo(-.6,-.4,.2,-2.6,0,-4.6);g.closePath();g.fill();break;
+      default:g.beginPath();g.arc(0,0,2,0,TAU);g.fill();}
+  });return VROLE[role];}
 // 계급장: 좌상=공격 속성 마름모 / 아래=등급 표시(갈매기 1~3 → 별 1~3 → 비밀 마름모)
 function vIns(tier,dt){const k=tier+'|'+dt;if(VINS[k])return VINS[k];const ti=TIER_ORDER.indexOf(tier),c=vHex(RARITY[tier]&&RARITY[tier].color);
   VINS[k]=vSprite(44,g=>{g.save();g.translate(-13,-13);g.rotate(Math.PI/4);g.fillStyle='#0d0e0a';g.fillRect(-3.6,-3.6,7.2,7.2);g.fillStyle=DT_COL[dt]||'#cccccc';g.fillRect(-2.4,-2.4,4.8,4.8);g.restore();
@@ -2534,14 +2606,14 @@ function drawTower(s){const t=s.tower,u=U[t.name];if(!u)return;const c=vHex(RARI
   if(ti>=4){const gl=vGlow(u.t);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=(ti>=6?.5:.34)+.14*Math.sin(now*.004+x);vBlit(ctx,gl,x,y,ti>=6?.62:.52);ctx.restore();}
   vBlit(ctx,vBase(u.t),x,y);
   if(ti>=5&&!vCalm()){ctx.save();ctx.strokeStyle=c;ctx.lineWidth=1.6;ctx.globalAlpha=.8;const a=now*.0018;
-    for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(x,y,19,a+i*TAU/3,a+i*TAU/3+.8);ctx.stroke();}
-    if(ti>=6){ctx.globalAlpha=.55;ctx.lineWidth=1;for(let i=0;i<4;i++){ctx.beginPath();ctx.arc(x,y,22,-a*1.4+i*TAU/4,-a*1.4+i*TAU/4+.5);ctx.stroke();}}
+    for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(x,y,20.5,a+i*TAU/3,a+i*TAU/3+.8);ctx.stroke();}
+    if(ti>=6){ctx.globalAlpha=.55;ctx.lineWidth=1;for(let i=0;i<4;i++){ctx.beginPath();ctx.arc(x,y,23,-a*1.4+i*TAU/4,-a*1.4+i*TAU/4+.5);ctx.stroke();}}
     if(ti>=7){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.9;for(let i=0;i<3;i++){const b=a*2.2+i*TAU/3;vBlit(ctx,vGlow(u.t),x+Math.cos(b)*21,y+Math.sin(b)*21,.14);}}
     ctx.restore();}
   const aim=vAim(t),fAge=G?G.t-(t.flash==null?-9999:t.flash):9999;
   const sk=SKIN.u[t.name];
   if(sk){ // 이미지 스킨: 정면(총구)이 위쪽인 PNG → 타겟 방향으로 회전
-    ctx.save();ctx.translate(x,y);ctx.rotate(aim+1.5708);const sz=34;ctx.drawImage(sk,-sz/2,-sz/2,sz,sz);
+    ctx.save();ctx.translate(x,y);ctx.rotate(aim+1.5708);const sz=Math.min(38,30+Math.max(0,ti)*1.2);ctx.drawImage(sk,-sz/2,-sz/2,sz,sz); // S33: 등급 높을수록 크게
     if(fAge<90){ctx.globalCompositeOperation='lighter';vBlit(ctx,VS.flash[u.dt]||VS.flash.phys,0,-sz/2-2,.6);}
     ctx.restore();
   }else{const v=vUnit(t.name),ha=vHullAng(s);
@@ -2549,8 +2621,10 @@ function drawTower(s){const t=s.tower,u=U[t.name];if(!u)return;const c=vHex(RARI
     else vDrawUnitAt(ctx,v,x,y,aim,ha,fAge,'both',u.dt);}
   vBlit(ctx,vIns(u.t,u.dt),x,y);
   // 잠금 표시(S26)
-  if(t.locked){ctx.save();ctx.fillStyle='#0d0e0a';ctx.beginPath();ctx.arc(x+12,y+12,5.5,0,TAU);ctx.fill();ctx.strokeStyle='#e0a526';ctx.lineWidth=1.3;
-    ctx.beginPath();ctx.arc(x+12,y+10.6,2,Math.PI,0);ctx.stroke();ctx.fillStyle='#e0a526';ctx.fillRect(x+9.6,y+11,4.8,3.6);ctx.restore();}
+  // S33 역할 휘장(오른쪽 아래) — 휴대폰처럼 화면이 작으면 조금 크게
+  if(u.role){const rb=vRoleBadge(u.role);if(rb)vBlit(ctx,rb,x+12.5,y+12.5,VCSS<.7?1.3:1);}
+  if(t.locked){const lx=x+12,ly=y-12;ctx.save();ctx.fillStyle='#0d0e0a';ctx.beginPath();ctx.arc(lx,ly,5.5,0,TAU);ctx.fill();ctx.strokeStyle='#e0a526';ctx.lineWidth=1.3;
+    ctx.beginPath();ctx.arc(lx,ly-1.4,2,Math.PI,0);ctx.stroke();ctx.fillStyle='#e0a526';ctx.fillRect(lx-2.4,ly-1,4.8,3.6);ctx.restore();}
   if(sel){ctx.save();ctx.strokeStyle='#e8d9a0';ctx.lineWidth=2;vBrk(ctx,x,y,19+Math.sin(now*.008),6);ctx.restore();}
 }
 // 예전 호출 호환용(끌어다 놓는 중 반투명 유닛 등): 캐시된 스프라이트를 그대로 찍음
@@ -2844,7 +2918,7 @@ function fieldCount(n){let c=0;for(const s of SLOTS)if(s.tower&&s.tower.name===n
 // 이 유닛이 재료로 들어가는 모든 상위 조합 (재료 충족 무관 — 조합식 보여주기용)
 function upgradesFrom(name){return Object.keys(RECIPE).filter(r=>RECIPE[r].includes(name));}
 function renderInv(){
-  renderRoleCov();
+  renderRoleCov();hintTick();
   const el=document.getElementById('invBox');if(!el)return;
   const inv=inventory(),lk={};
   SLOTS.forEach(s=>{if(s.tower&&s.tower.locked)lk[s.tower.name]=(lk[s.tower.name]||0)+1;});
@@ -2869,7 +2943,7 @@ function craftMax(r){
   if(!k)return;
   if(!confirmCraft(consumed,r,()=>craftMax(r)))return;
   let n=0;while(canCraft(r)){craftSilent(r);n++;}if(n>0){G.invSig='';updateUI();
-  const rc=RARITY[U[r].t];log(`⚙️ <b style="color:${rc.color}">${shortName(r)}</b> ×${n} 조합 완성!`,rc.color);}}
+  const rc=RARITY[U[r].t];log(`⚙️ <b style="color:${rc.color}">${shortName(r)}</b> ×${n} 조합 완성!`,rc.color);roleHint('craft');updateUI();}}
 // ===== 조합 손실 경고(S26): 사라지는 재료가 "그 역할의 마지막 유닛"이면 먼저 알려줌 =====
 const ROLE_KEYS=[['air','대공'],['buff','공격 지원(버프)'],['slow','둔화'],['supply','보급'],['debuff','표적지정'],['bossBonus','보스특화'],['splash','광역']];
 function roleCount(){const c={};for(const s of SLOTS){if(!s.tower)continue;const u=U[s.tower.name];for(const [k] of ROLE_KEYS)if(u[k])c[k]=(c[k]||0)+1;}return c;}
@@ -3000,6 +3074,50 @@ function renderRoleCov(){
     +(miss.length?`<br><span class="miss">없음: ${miss.join(' · ')}</span>`:'')
     +`<br><span class="miss">${ROLE_RULE}</span>`;
 }
+// ===== S33 빠진 역할 알림 — 쉬움·보통에서만(어려움↑·무한은 절대 안 뜸). 한 번에 하나, 같은 역할은 2웨이브 넘게 쉬고, 한 판에 3번까지 =====
+const ROLE_SHORT={'기절':'잠깐 멈춰 세우기','감속':'걸음 느리게','방깎':'방어력 낮추기','증폭':'받는 피해 늘리기','최대%':'최대 체력 비례 피해',
+  '현재%':'남은 체력 비례 피해','처형':'빈사 적 바로 처치','보스':'보스에게 추가 피해','광역':'여러 마리 한꺼번에','대공':'나는 적 공격',
+  '강화':'옆 아군 힘 올리기','경제':'골드 벌기','지속':'불·가스 지속 피해'};
+const HINT_ORDER=['광역','감속','기절','강화','방깎','처형','지속','증폭','최대%','현재%','경제','대공','보스'];
+const HINT_GAP=20000,HINT_SHOW=15000,HINT_MAX=3;
+function hintJosa(w){const c=(w||'').charCodeAt(w.length-1);return(c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28)?'이':'가';}
+function hintOn(){return !!(G&&!G.over&&!G.endless&&(G.diff==='쉬움'||G.diff==='보통'));}
+function hintHas(n,r){return unitHasRole(n,r)||(r==='대공'&&!!(U[n]&&U[n].air));}
+function teamRoleSet(){const any={};let n=0;
+  const add=t=>{const u=t&&U[t.name];if(!u)return;n++;for(const r of ROLE_ORDER)if(hintHas(t.name,r))any[r]=1;};
+  try{SLOTS.forEach(s=>add(s.tower));resList().forEach(add);}catch(_){}return{any,n};}
+function hintUnits(r){return Object.keys(U).filter(n=>unitHasRole(n,r)&&!isSecret(n))
+  .sort((a,b)=>TIER_ORDER.indexOf(U[a].t)-TIER_ORDER.indexOf(U[b].t)).slice(0,2);}
+function hintThreats(){const t={};try{
+  const q=[].concat(G.queue||[],G.nextQueue||[]);
+  for(const k of q){const z=ZTYPE[k];if(z&&z.fly)t['대공']=1;if(k==='boss'||k==='final')t['보스']=1;if(k==='tank'||k==='shielded')t['방깎']=1;}
+  for(const e of G.enemies||[]){if(e.mission)t['보스']=1;}
+  if(G.activeMission)t['보스']=1;}catch(_){}return t;}
+function roleHint(trigger){try{
+  if(!hintOn())return null;
+  if(!G.hintSeen)G.hintSeen={};if(!G.hintCnt)G.hintCnt={};if(!G.hintLog)G.hintLog=[];
+  if(G.hintT!=null&&G.t-G.hintT<HINT_GAP)return null;
+  const tm=teamRoleSet(),th=hintThreats();
+  const ok=r=>!tm.any[r]&&(G.hintCnt[r]||0)<HINT_MAX&&!(G.hintSeen[r]!=null&&G.wave-G.hintSeen[r]<3)&&hintUnits(r).length;
+  let role=['대공','보스','방깎'].find(r=>th[r]&&ok(r)),threat=!!role;
+  // 급하지 않은 알림은 더 드물게(마지막 알림 뒤 60초↑ ≈ 1.5웨이브)
+  if(!role&&(tm.n>=4||G.wave>=2)&&!(G.hintT!=null&&G.t-G.hintT<HINT_GAP*3))role=HINT_ORDER.find(ok);
+  if(!role)return null;
+  const us=hintUnits(role).map(n=>`[${RARITY[U[n].t].name}] ${shortName(n)}`);
+  const why=threat?(role==='대공'?'곧 나는 적이 와요! ':role==='보스'?'곧 보스가 와요! ':'곧 단단한 적이 와요! '):'';
+  const msg=`💡 ${why}지금 우리 편에 <b>'${role}'</b>(${ROLE_SHORT[role]||''})${hintJosa(role)} 없어요 — <u>${us.join(' · ')}</u> 계열을 노려보세요`;
+  G.hintSeen[role]=G.wave;G.hintCnt[role]=(G.hintCnt[role]||0)+1;G.hintT=G.t;
+  G.hint={role,msg,t:G.t};G.hintLog.push({role,wave:G.wave,trigger,t:G.t});
+  // 기록창에는 남기되, 맨 위 한 줄(전투 소식)은 그대로 두고 알림 줄에만 크게 보여줌(같은 글 두 번 안 보이게)
+  let ll=null,prev='';try{ll=document.getElementById('logLast');prev=ll?ll.innerHTML:'';}catch(_){}
+  log(msg,'#e0a526');try{if(ll)ll.innerHTML=prev;}catch(_){}
+  hintTick(true);return role;}catch(_){return null;}}
+function hintTick(force){try{const el=document.getElementById('hintLine');if(!el)return;
+  let h=G&&G.hint;
+  if(h&&(!hintOn()||G.t-h.t>HINT_SHOW||teamRoleSet().any[h.role])){G.hint=null;h=null;}
+  const html=h?h.msg+' <span style="color:var(--mute)">· 눌러서 도감 보기</span>':'';
+  if(force||el._hs!==html){el.innerHTML=html;el._hs=html;}}catch(_){}}
+function hintOpen(){try{const h=G&&G.hint;if(!h)return;openBook();bookRole=null;setBookRole(h.role);}catch(_){}}
 function unitTags(u){const fx=[];if(u.splash)fx.push('광역');if(u.slow)fx.push(`둔화${Math.round((1-u.slow)*100)}%`);if(u.dot)fx.push('지속피해');
   if(u.air)fx.push('대공');if(u.bossBonus)fx.push('보스특화');if(u.buff)fx.push('버프');if(u.debuff)fx.push('표적지정');
   if(u.execute)fx.push('처형');if(u.rampage)fx.push('성장');if(u.supply)fx.push('보급');if(u.gold)fx.push('골드');
