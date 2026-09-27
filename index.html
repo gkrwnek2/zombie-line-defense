@@ -321,6 +321,83 @@
     #lab .labTxt b{ font-size:15.5px; } #lab .labTxt span{ font-size:12px; }
     #lab .labGo{ min-width:84px; min-height:52px; }
   }
+  /* S36b 기술 카드: 원장 줄(.navCard) 그대로 + 왼쪽 막대 색·스텐실 태그로 희귀도 구분(색만으로 구분하지 않음) */
+  .tcSten{font-family:var(--f-sten); font-size:11px; letter-spacing:2px; color:var(--mute); margin-bottom:2px;}
+  #nav .tcTitle{font-family:var(--f-head); font-weight:400; font-size:22px; margin:0 0 4px; letter-spacing:.4px;}
+  .tcLead{margin:0 0 10px; color:var(--dim); font-size:12.5px; line-height:1.5;}
+  .tcCard{position:relative; min-height:56px; padding:10px 13px 10px 14px;}
+  .tcCard .tcTag{float:right; font-family:var(--f-sten); font-size:10px; letter-spacing:1.2px; color:var(--mute); margin:2px 0 0 8px;}
+  .tcCard.tcU{border-left-color:var(--steel);} .tcCard.tcU .tcTag{color:var(--steel);}
+  .tcCard.tcR{border-left-color:var(--amber); background:linear-gradient(90deg,rgba(224,165,38,.14),rgba(224,165,38,0) 70%);} .tcCard.tcR .tcTag{color:var(--amber);}
+  .tcCard.tcRisk{border-left:0; padding-left:18px; background:linear-gradient(90deg,rgba(214,69,58,.14),rgba(214,69,58,0) 70%);}
+  .tcCard.tcRisk::before{content:''; position:absolute; left:0; top:0; bottom:0; width:6px;
+    background:repeating-linear-gradient(-45deg,var(--red) 0 5px,#2a0f0c 5px 9px);}
+  .tcCard.tcRisk .tcTag{color:#ec7a62;}
+  .tcCard .ng,.tcCard .nb{font-size:12.5px; line-height:1.45;} .tcCard .nb small{color:var(--mute);}
+  .tcCard.tcRisk .ng{color:#a9c95c;} .tcCard.tcRisk .nb{color:#ec7a62;}
+  .tcCard:not(.tcRisk) .ng{color:var(--ink); opacity:.9;}
+  .tcMerge{margin-top:4px; font-size:12px; color:var(--amber); font-weight:600; text-decoration:underline; text-decoration-color:var(--amber); text-underline-offset:3px;}
+  .tcNote{margin-top:3px; font-size:10.5px; color:var(--mute);}
+  .tcFoot{display:flex; align-items:center; gap:14px; margin-top:8px; padding-top:8px; border-top:1px dashed var(--line2);}
+  .tcRe{min-height:48px; min-width:132px; font-size:14px;} .tcRe b{font-family:var(--f-num); color:var(--amber); margin-left:4px;}
+  .tcRe.dim,.mtBuy.dim,.mtTech.dim .mtBuy{opacity:.38; filter:saturate(.3);}
+  .tcOwnBtn{min-height:48px;}
+  .tcOwn{padding:6px 0 2px; line-height:1.9;}
+  .tcO{display:inline-block; font-size:11.5px; color:var(--ink); border-bottom:1px solid var(--olive2); margin:0 10px 0 0; padding:0 1px;}
+  .tcO.r{border-bottom-color:var(--red);} .tcO.m{border-bottom:2px solid var(--amber);} .tcO.l{border-bottom-color:#b8c4c9;}
+  .tcO i{font-style:normal; color:var(--amber);}
+  .shake{animation:labLose .32s;}
+  .metaLine{margin:6px 0 2px; font-size:13px; color:var(--dim); border-bottom:1px dashed var(--line2); padding-bottom:6px;}
+  .metaLine b{color:var(--amber); font-family:var(--f-num); font-size:15px;}
+  .mtDot{display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--amber); margin-left:5px; vertical-align:2px;}
+  .mtSw b{color:var(--mute);} .mtSw.on b{color:#a9c95c;}
+  .pureBadge{font-family:var(--f-sten); font-size:10px; letter-spacing:1px; color:var(--steel); border-bottom:1px solid var(--steel); margin-left:4px;}
+  /* S36b 영구 기술 창 (시작 화면 전용) — 시안 '영구기술' 모양: 경고 줄무늬 + 밑줄 탭 + 구분선 목록 */
+  #meta{position:fixed; inset:0; z-index:70; background:var(--panel); overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;}
+  #metaBody{max-width:1180px; margin:0 auto; min-height:100%; display:flex; flex-direction:column;}
+  .mtHaz{height:6px; background:var(--haz); flex:none;}
+  .mtHead{padding:14px 16px 12px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,#1f2418,var(--panel) 120px);}
+  .mtSten{font-family:var(--f-num); font-size:10.5px; letter-spacing:2px; color:var(--mute); margin-bottom:4px;}
+  .mtTitleRow{display:flex; align-items:center; gap:10px;}
+  #meta .mtTitleRow h2{font-family:var(--f-head); font-weight:400; font-size:26px; margin:0; padding:0; border:0; color:var(--ink); letter-spacing:.5px;}
+  .mtClose{margin-left:auto; min-height:48px; min-width:84px; font-size:13px;}
+  .mtPts{display:flex; align-items:baseline; gap:8px; margin-top:6px; font-size:12px; color:var(--dim);}
+  .mtPts b{font-family:var(--f-num); font-size:30px; font-weight:600; color:var(--amber); line-height:1;}
+  .mtTabs{display:flex; border-bottom:1px solid var(--line); background:var(--panel2); position:sticky; top:0; z-index:2;}
+  .mtTab{flex:1 1 0; min-height:52px; background:none; border:0; border-bottom:3px solid transparent; border-radius:0; clip-path:none; box-shadow:none; text-shadow:none;
+    font-family:var(--f-head); font-weight:400; font-size:15px; color:var(--mute); padding:8px 4px 6px;}
+  .mtTab span{display:block; font-family:var(--f-num); font-size:10.5px; color:var(--mute); margin-top:2px;}
+  .mtTab.on{color:var(--ink); border-bottom-color:var(--olive);} .mtTab.on span{color:var(--khaki);}
+  .mtGrid{flex:1 1 auto; padding:4px 16px 8px;}
+  .mtCol{display:none;} .mtCol.on{display:block;}
+  .mtColHd{display:none;}
+  .mtTech{padding:12px 2px 13px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:5px;}
+  .mtTech.maxed{opacity:.72;}
+  .mtRow1{display:flex; align-items:baseline; gap:8px;}
+  .mtName{font-family:var(--f-head); font-size:16px; color:var(--ink); letter-spacing:.2px;}
+  .mtPips{margin-left:auto; display:flex; gap:3px;}
+  .mtPip{width:10px; height:10px; background:var(--line2); display:inline-block;}
+  .mtPip.on{background:var(--olive); box-shadow:0 0 0 1px var(--olive2);}
+  .mtMax{font-size:11px; color:var(--teal); font-weight:700; letter-spacing:.5px;}
+  .mtEff{font-size:12.5px; color:var(--dim); line-height:1.45;} .mtEff b{color:var(--ink);} .mtArrow{color:var(--amber);} .mtStep{color:var(--mute); font-size:11px;}
+  .mtRow3{display:flex; align-items:center; gap:10px;}
+  .mtCost{font-family:var(--f-num); font-size:15px; font-weight:600; color:var(--amber);} .mtCost small{font-size:10.5px; color:var(--dim); margin-left:2px; font-weight:500;}
+  .mtBuy{margin-left:auto; min-height:48px; min-width:112px; font-size:13px;}
+  .mtFoot{border-top:1px solid var(--line); background:var(--panel2); padding:10px 16px calc(16px + env(safe-area-inset-bottom)); font-size:11.5px; color:var(--mute); line-height:1.6;}
+  .mtFoot p{margin:0 0 3px;} .mtFoot b{color:var(--khaki);} .mtFoot .god{color:var(--steel);}
+  .mtResetRow{margin-top:10px; padding-top:8px; border-top:1px dashed var(--line2); display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center; justify-content:center;}
+  .mtReset{background:none; border:0; border-bottom:1px solid var(--line2); border-radius:0; clip-path:none; box-shadow:none; text-shadow:none; color:var(--dim); font-size:13px; min-height:44px; padding:4px 6px;}
+  .mtReset.go{color:var(--amber); border-bottom-color:var(--amber);}
+  .mtAsk{color:var(--ink); font-size:13px;}
+  @media (min-width:860px){
+    .mtTabs{display:none;}
+    .mtGrid{display:grid; grid-template-columns:repeat(4,1fr); gap:0 22px;}
+    .mtCol,.mtCol.on{display:block;}
+    .mtColHd{display:block; font-family:var(--f-head); font-size:17px; color:var(--khaki); padding:12px 0 6px; border-bottom:3px solid var(--olive);}
+  }
+  @media (max-width:859.98px){
+    #nav{position:fixed; inset:0; z-index:60; border-radius:0; padding:14px 16px calc(14px + env(safe-area-inset-bottom)); -webkit-overflow-scrolling:touch; overscroll-behavior:contain;}
+  }
   .hidden{display:none !important;}
 </style>
 </head>
@@ -371,11 +448,13 @@
     </div>
     <div id="nav" class="hidden">
       <div id="bookInner">
-        <h2 style="margin:0 0 4px;font-size:20px;">🧭 항법 선택</h2>
-        <p style="margin:0 0 12px;color:#a9b3bf;font-size:13px;">보스를 돌파했습니다. <b style="color:#79c0ff">진로</b>를 정하세요 — 이득과 대가가 남은 판 전체에 <b>계속 적용</b>됩니다. (1장 필수 선택)</p>
+        <div class="tcSten" id="techSten">WAVE 05 · 기술 보급</div>
+        <h2 class="tcTitle">🔧 기술 카드</h2>
+        <p class="tcLead">보스를 막았어요. 1장을 고르면 <b style="color:var(--khaki)">남은 판 내내</b> 적용돼요. 같은 줄 카드 2장이 모이면 더 센 카드로 합쳐져요.</p>
         <div id="navBody"></div>
       </div>
     </div>
+    <div id="meta" class="hidden"><div id="metaBody"></div></div>
     <div id="rec" class="hidden">
       <div style="max-width:720px;margin:0 auto;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
@@ -927,7 +1006,7 @@ function needPts(){return Math.round(((G&&G.dcfg&&G.dcfg.need)||0)*FULL_BRK);}
 // S27: 초반 완충 + 후반 압박 — 난이도 체력 배율은 1웨이브에 40%만 적용돼 8웨이브에 100%가 되고(초반 즉사 방지),
 // late 값이 있으면 16웨이브부터 30웨이브까지 추가로 조금씩 더 단단해짐(난이도 차이는 중후반에 체감)
 function diffHp(w){const d=G.dcfg,h=d.hp;let m=h<=1?h:1+(h-1)*Math.min(1,0.4+0.6*Math.max(0,w-1)/7);
-  if(d.late&&w>15)m*=1+d.late*Math.min(1,(w-15)/15);return m;}
+  if(d.late&&w>15)m*=1+d.late*Math.min(1,(w-15)/15);return m*techHpAt(w);}
 let chosenDiff='보통';
 
 // ===== 작전(교리) + 항법(루트 모디파이어) =====
@@ -935,9 +1014,12 @@ let chosenDiff='보통';
 // S35: as=아군 공속 배율, buffAmp=강화(버프) 효과 배율, pierceBuff=방무 유닛이 받는 강화 효과 배율, lapHeal=한 바퀴 회복 배율
 //      brkAdd/mbrkAdd=방깎·마방깎 점수 가산 — S36 기술 카드는 이 값들만 바꾸면 됨
 const MOD_BASE={dmg:1,as:1,buffAmp:1,pierceBuff:1.5,lapHeal:1,brkAdd:0,mbrkAdd:0,summonCost:1,waveReward:1,killGold:1,bossGold:1,upgCost:1,
-  enemyHp:1,earlyHp:1,enemySpd:1,score:1,capAdd:0,eliteBias:0,startGold:0,startTier:'special'};
+  enemyHp:1,earlyHp:1,enemySpd:1,score:1,capAdd:0,eliteBias:0,startGold:0,startTier:'special',
+  // S36b 기술 카드 필드 (곱=1, 가산=0)
+  brkMul:1,mbrkMul:1,dmgPhys:1,dmgMagic:1,dmgPierce:1,asPierce:1,bossDmg:1,slowMul:1,stunMul:1,dotMul:1,buffRange:1,
+  brkDur:0,mbrkDur:0,ampAdd:0,pierceBuffAdd:0,waveInterest:0,interestCap:0};
 // 가산 항목(곱연산이 아니라 더하는 값)
-const MOD_ADD=['capAdd','eliteBias','startGold','brkAdd','mbrkAdd'];
+const MOD_ADD=['capAdd','eliteBias','startGold','brkAdd','mbrkAdd','brkDur','mbrkDur','ampAdd','pierceBuffAdd','waveInterest','interestCap'];
 
 // 작전 5종 — 시작 시 1택, 그 판 전체 적용
 const DOCTRINE={
@@ -975,13 +1057,392 @@ function recalcMods(){
       else m[k]=(m[k]===undefined?1:m[k])*src[k];
     }};
   apply(DOCTRINE[G.doctrine]&&DOCTRINE[G.doctrine].m);
-  for(const n of G.navs)apply(n.m);
+  for(const n of (G.navs||[]))apply(n.m); // 옛 항법(이전 판 호환)
+  const ta=techAgg();apply(ta.t);apply(ta.dn); // S36b 기술·전리품·영구 기술(상한 적용) + 위험 카드 대가(상한 없음)
+  if(G.avatarUsed)m.capAdd+=2; // 화신의 불씨
+  m.upgCost=Math.max(0.4,m.upgCost);
   G.mod=m;
 }
 // 모디파이어 반영 헬퍼 (상수 직접 참조 대신 이걸 사용)
 function summonCost(){return Math.max(1,Math.round(SUMMON_COST*(G&&G.mod?G.mod.summonCost:1)));}
 function waveReward(){return Math.round(WAVE_REWARD*(G&&G.mod?G.mod.waveReward:1));}
-function capNow(){return Math.max(10,G.dcfg.cap+(G.mod?G.mod.capAdd:0));} // S36: 미션 실패 벌칙(capPen) 없어짐 — 실패=패배
+function capNow(){const b=Math.max(10,G.dcfg.cap+(G.mod?G.mod.capAdd:0));return G.avatarGrace>G.t?Math.max(b,G.enemies.length):b;} // S36: 미션 실패 벌칙(capPen) 없어짐 — 실패=패배
+// ===== S36b 기술 카드 · 위험한 개발 · 카드 합치기 · 전리품 (항법 카드 자리를 대신함) =====
+// 5·10·15·20·25웨이브 보스를 막으면 게임이 멈추고 카드 3장 중 1장 선택 → 효과는 남은 판 전체에 계속.
+// 3장 중 1장은 늘 지금 필드에서 가장 많이 쓰는 부대 갈래(물리·마법·방무) 카드 — 화면에는 알리지 않음.
+// 모든 효과는 G.mod 하나로 합산(recalcMods). 기술·전리품·영구 기술은 TECH_CAP 상한 안에서만, 위험 카드의 대가는 상한 없음.
+const TECH_CARDS=[
+  {id:'tc_drill',name:'사격 교범',rarity:'C',branch:'all',line:'fire',effect:'모든 부대 공격력 +6%',m:{dmg:1.06}},
+  {id:'tc_rapid',name:'탄창 개량',rarity:'C',branch:'all',line:'rapid',effect:'모든 부대 공격속도 +6%',m:{as:1.06}},
+  {id:'tc_bounty',name:'현상금',rarity:'C',branch:'all',line:'coin',effect:'좀비 처치 골드 +15%',m:{killGold:1.15}},
+  {id:'tc_ration',name:'보급 증량',rarity:'C',branch:'all',line:'coin',effect:'웨이브 보상 골드 +12%',m:{waveReward:1.12}},
+  {id:'tc_draft',name:'징집 할인',rarity:'C',branch:'all',line:'logi',effect:'소환 가격 10% 할인',m:{summonCost:0.9}},
+  {id:'tc_forge',name:'야전 정비창',rarity:'C',branch:'all',line:'logi',effect:'강화 버튼 가격 15% 할인',m:{upgCost:0.85}},
+  {id:'tc_hunter',name:'보스 사냥꾼',rarity:'U',branch:'all',line:'hunt',effect:'보스·미션 보스에게 주는 피해 +12%',m:{bossDmg:1.12}},
+  {id:'tc_wire',name:'철조망',rarity:'U',branch:'all',line:null,effect:'좀비가 트랙 한 바퀴 돌 때 회복하는 양 −20%',m:{lapHeal:0.8}},
+  {id:'tc_trench',name:'교통호',rarity:'U',branch:'all',line:null,effect:'트랙 수용 한계 +2',m:{capAdd:2}},
+  {id:'tc_mark',name:'표적 지시',rarity:'U',branch:'all',line:null,effect:'표적이 찍힌 좀비가 받는 피해 +5% (최대 25% 그대로)',m:{ampAdd:0.05}},
+  {id:'tc_interest',name:'군자금 운용',rarity:'U',branch:'all',line:'coin',effect:'웨이브를 막을 때마다 가진 골드의 5%를 이자로 (한 번에 최대 25골드)',m:{waveInterest:0.05,interestCap:25}},
+  {id:'tc_veteran',name:'고참병 편입',rarity:'R',branch:'all',line:null,max:1,effect:'지금 가장 많이 쓰는 부대 갈래의 강화 단계 +1 (즉시, 골드 안 듦)',m:{},now:'veteran'},
+  {id:'tc_ap',name:'철갑탄',rarity:'C',branch:'phys',line:'ap',effect:'방깎 +8 (방깎 부대가 있을 때 더해짐)',m:{brkAdd:8}},
+  {id:'tc_heat',name:'성형작약탄',rarity:'U',branch:'phys',line:'ap',effect:'부대가 거는 방깎 효과 +6%',m:{brkMul:1.06}},
+  {id:'tc_barrel',name:'포신 교체',rarity:'C',branch:'phys',line:null,effect:'물리 부대 공격력 +10%',m:{dmgPhys:1.1}},
+  {id:'tc_shock',name:'충격 장약',rarity:'U',branch:'phys',line:null,effect:'기절 시간 +20% (보스는 원래대로 절반 규칙)',m:{stunMul:1.2}},
+  {id:'tc_shatter',name:'파쇄 지속',rarity:'U',branch:'phys',line:null,effect:'방깎이 1초 더 오래 남음',m:{brkDur:1000}},
+  {id:'tc_rune',name:'저주 각인',rarity:'C',branch:'magic',line:'rune',effect:'마방깎 +8 (마방깎 부대가 있을 때 더해짐)',m:{mbrkAdd:8}},
+  {id:'tc_reso',name:'공명 증폭',rarity:'U',branch:'magic',line:'rune',effect:'부대가 거는 마방깎 효과 +6%',m:{mbrkMul:1.06}},
+  {id:'tc_focus',name:'마력 증폭기',rarity:'C',branch:'magic',line:null,effect:'마법 부대 공격력 +10%',m:{dmgMagic:1.1}},
+  {id:'tc_frost',name:'냉각 탄두',rarity:'U',branch:'magic',line:null,effect:'감속 효과 +15% (최대 60% 그대로)',m:{slowMul:1.15}},
+  {id:'tc_hex',name:'저주 지속',rarity:'U',branch:'magic',line:null,effect:'마방깎이 1초 더 오래 남음',m:{mbrkDur:1000}},
+  {id:'tc_relay',name:'통신 중계기',rarity:'C',branch:'pierce',line:null,effect:'강화 부대의 효과 범위 +12%',m:{buffRange:1.12}},
+  {id:'tc_sync',name:'전술 동기화',rarity:'U',branch:'pierce',line:'sync',effect:'방무 부대가 받는 강화 효과 1.5배 → 1.6배',m:{pierceBuffAdd:0.1}},
+  {id:'tc_core',name:'관통 탄심',rarity:'C',branch:'pierce',line:null,effect:'방무 부대 공격력 +10%',m:{dmgPierce:1.1}},
+  {id:'tc_cmdnet',name:'지휘 체계',rarity:'U',branch:'pierce',line:'sync',effect:'모든 강화 부대 효과 +5%',m:{buffAmp:1.05}},
+  {id:'tc_module',name:'연사 모듈',rarity:'C',branch:'pierce',line:null,effect:'방무 부대 공격속도 +8%',m:{asPierce:1.08}}];
+// 위험한 개발: 좋은 점(up)은 상한 안에서, 대가(dn)는 상한 없음 · 제시 1번에 최대 1장 · 같은 카드는 한 판 1회 · 합치기 없음
+const TECH_RISK=[
+  {id:'tk_overdrive',name:'과부하 사격',upT:'공격속도 +25%',dnT:'웨이브 보상·처치 골드 −20%',up:{as:1.25},dn:{waveReward:0.8,killGold:0.8}},
+  {id:'tk_march',name:'강행군',upT:'웨이브 보상 +40%',dnT:'좀비 체력 +12%',up:{waveReward:1.4},dn:{enemyHp:1.12}},
+  {id:'tk_glass',name:'유리 대포',upT:'공격력 +25%',dnT:'트랙 수용 한계 −3',up:{dmg:1.25},dn:{capAdd:-3}},
+  {id:'tk_black',name:'암시장',upT:'즉시 200골드',dnT:'소환 가격 +30%',up:{},dn:{summonCost:1.3},now:'gold200'},
+  {id:'tk_stim',name:'각성제',upT:'강화 부대 효과 +20%',dnT:'좀비 이동속도 +10%',up:{buffAmp:1.2},dn:{enemySpd:1.1}},
+  {id:'tk_depleted',name:'열화 탄두',upT:'방깎 +15, 마방깎 +15',dnT:'좀비 체력 +10%',up:{brkAdd:15,mbrkAdd:15},dn:{enemyHp:1.1}},
+  {id:'tk_allin',name:'총력전',upT:'보스 피해 +30%',dnT:'일반 좀비 처치 골드 −30%',up:{bossDmg:1.3},dn:{killGold:0.7}}];
+// 합치기: 같은 줄(line) 카드 2장이 모이면 고르는 순간 자동으로 1장(더 센 카드)으로 — 줄마다 한 판 1번
+const TECH_MERGE=[
+  {id:'tm_fire',name:'정밀 사격 교리',line:'fire',effect:'공격력 +15%',m:{dmg:1.15}},
+  {id:'tm_rapid',name:'자동 장전기',line:'rapid',effect:'공격속도 +15%',m:{as:1.15}},
+  {id:'tm_coin',name:'전시 경제',line:'coin',effect:'처치 골드 +15%, 웨이브 보상 +15%, 이자 5%(최대 30)',m:{killGold:1.15,waveReward:1.15,waveInterest:0.05,interestCap:30}},
+  {id:'tm_ap',name:'열화우라늄탄',line:'ap',effect:'방깎 +12, 방깎 효과 +6%',m:{brkAdd:12,brkMul:1.06}},
+  {id:'tm_rune',name:'심연 각인',line:'rune',effect:'마방깎 +12, 마방깎 효과 +6%',m:{mbrkAdd:12,mbrkMul:1.06}},
+  {id:'tm_sync',name:'합동 지휘망',line:'sync',effect:'방무 강화 배율 +0.15, 강화 효과 +5%, 강화 범위 +12%',m:{pierceBuffAdd:0.15,buffAmp:1.05,buffRange:1.12}},
+  {id:'tm_hunt',name:'거인 사냥',line:'hunt',effect:'보스 피해 +30%',m:{bossDmg:1.3}},
+  {id:'tm_logi',name:'군수 혁신',line:'logi',effect:'소환 가격 −15%, 강화 가격 −25%',m:{summonCost:0.85,upgCost:0.75}}];
+// 전리품: 미션 보스(순서대로 0~6)를 잡으면 그 보스 전용 카드 1장 자동 획득 (뽑기에는 안 나옴)
+const TECH_LOOT=[
+  {id:'tl_golem',boss:'거대 골렘 좀비',name:'골렘 파편 방벽',effect:'트랙 수용 한계 +1',m:{capAdd:1}},
+  {id:'tl_rot',boss:'부패 거인',name:'부패 배양액',effect:'지속 피해 +20%, 감속 +10%',m:{dotMul:1.2,slowMul:1.1}},
+  {id:'tl_steel',boss:'강철 골렘',name:'강철 해체술',effect:'주력 갈래에 맞춰 변신 — 물리: 방깎 +10 / 마법: 마방깎 +10 / 방무: 방무 강화 배율 +0.10',
+    byType:{phys:{brkAdd:10},magic:{mbrkAdd:10},pierce:{pierceBuffAdd:0.1}},byText:{phys:'방깎 +10',magic:'마방깎 +10',pierce:'방무 강화 배율 +0.10'}},
+  {id:'tl_plague',boss:'역병 군주',name:'역병 해독제',effect:'좀비 한 바퀴 회복량 −25%',m:{lapHeal:0.75}},
+  {id:'tl_titan',boss:'파멸의 타이탄',name:'타이탄 장갑판',effect:'보스 피해 +15%, 기절 +10%',m:{bossDmg:1.15,stunMul:1.1}},
+  {id:'tl_abyss',boss:'심연의 군주',name:'심연의 핵',effect:'공격력 +8%, 공격속도 +8%',m:{dmg:1.08,as:1.08}},
+  {id:'tl_avatar',boss:'종말의 화신',name:'화신의 불씨',effect:'한 판 1번: 트랙이 넘쳐 질 뻔한 순간 모든 좀비 3초 정지(보스 1.5초) + 수용 한계 +2',m:{}}];
+const TECH_FILLER={id:'tf_supply',name:'군수품 정리',rarity:'C',branch:'all',line:null,effect:'즉시 골드 +100',m:{},now:'gold100'};
+const TECH_RARITY_W=[{C:70,U:25,R:5},{C:60,U:30,R:10},{C:50,U:35,R:15},{C:40,U:40,R:20}]; // 5 / 10 / 15 / 20웨이브 이후
+const TECH_RNAME={C:'일반',U:'고급',R:'특급',X:'위험',L:'전리품',M:'합치기'};
+const TECH_BNAME={all:'공통',phys:'물리',magic:'마법',pierce:'방무'};
+// 기술 합계 상한 [최소, 최대] — 카드·전리품·영구 기술만 (작전과 위험 카드 대가는 따로)
+const TECH_CAP={dmg:[0,1.4],as:[0,1.35],dmgPhys:[0,1.25],dmgMagic:[0,1.25],dmgPierce:[0,1.25],asPierce:[0,1.2],bossDmg:[0,1.45],
+  brkMul:[0,1.12],mbrkMul:[0,1.12],brkDur:[0,2000],mbrkDur:[0,2000],buffAmp:[0,1.15],pierceBuffAdd:[0,0.25],buffRange:[0,1.3],
+  slowMul:[0,1.25],stunMul:[0,1.3],dotMul:[0,1.4],lapHeal:[0.55,1],ampAdd:[0,0.08],capAdd:[-99,4],summonCost:[0.8,1],
+  killGold:[0,1.4],waveReward:[0,1.4],waveInterest:[0,0.06],interestCap:[0,30]};
+const TECH_BRK_CAP={쉬움:30,보통:30,어려움:27,지옥:22,신:18}; // 방깎·마방깎 추가분(카드·영구 기술) 상한
+// 기술 카드로 생긴 힘을 좀비 체력으로 상쇄하는 조절 손잡이 (diffHp에 곱함) — sim으로 맞춘 값
+const TECH_HP=/*HPV*/{쉬움:1,보통:1.8,어려움:2.6,지옥:1.76,신:2};
+// 카드·전리품은 5웨이브부터 쌓이므로 체력 보정도 5웨이브 0% → 20웨이브 100%로 서서히 (초반 즉사 방지)
+function techHpAt(w){const h=(G&&TECH_HP[G.diff])||1;return 1+(h-1)*Math.min(1,Math.max(0,w-5)/15);}
+const BUFF_HARD=2.4; // 강화(버프) 최종 상한
+const TECH_BY={};
+for(const c of TECH_CARDS)TECH_BY[c.id]=c;
+for(const c of TECH_RISK){c.rarity='X';c.branch='all';c.line=null;TECH_BY[c.id]=c;}
+for(const c of TECH_MERGE){c.rarity='M';c.branch='all';c.merge=true;TECH_BY[c.id]=c;}
+for(const c of TECH_LOOT){c.rarity='L';c.branch='all';TECH_BY[c.id]=c;}
+TECH_BY[TECH_FILLER.id]=TECH_FILLER;
+const TECH_MERGE_BY={};for(const c of TECH_MERGE)TECH_MERGE_BY[c.line]=c;
+const TECH_ARMKEYS=['brkAdd','mbrkAdd','brkMul','mbrkMul','brkDur','mbrkDur'];
+for(const c of TECH_CARDS)c.arm=Object.keys(c.m).some(k=>TECH_ARMKEYS.includes(k));
+
+// ----- 영구 기술 (판이 끝나면 쌓이는 기술 점수로 해금 · 이 기기에 저장) -----
+const META_KEY='zld_meta_v1';
+const META_BR=['보급','화력','공병','지휘'];
+const META_TREE=[
+  {id:'sup_gold',br:'보급',name:'군수 적립',max:4,cost:[3,5,8,12],per:{startGold:5},txt:v=>`시작 골드 +${v}`},
+  {id:'sup_free',br:'보급',name:'보급 상자',max:3,cost:[4,7,11],per:{freeSummons:1},txt:v=>`시작 무료 소환 +${v}회`},
+  {id:'sup_wave',br:'보급',name:'보급 정산',max:3,cost:[4,6,9],per:{waveReward:0.02},txt:v=>`웨이브 보상 +${metaPc(v)}%`},
+  {id:'sup_upg',br:'보급',name:'현장 정비',max:3,cost:[5,8,12],per:{upgCost:-0.03},txt:v=>`강화 가격 −${metaPc(-v)}%`},
+  {id:'fire_dmg',br:'화력',name:'사격 훈련',max:3,cost:[4,6,9],per:{dmg:0.01},txt:v=>`모든 부대 공격력 +${metaPc(v)}%`},
+  {id:'fire_boss',br:'화력',name:'보스 사냥',max:3,cost:[5,8,12],per:{bossDmg:0.02},txt:v=>`보스 피해 +${metaPc(v)}%`},
+  {id:'fire_strike',br:'화력',name:'포격 지원',max:3,cost:[3,5,8],per:{strikeCd:-0.05},txt:v=>`포격 재사용 대기 −${metaPc(-v)}%`},
+  {id:'fire_mark',br:'화력',name:'표적 훈련',max:2,cost:[5,9],per:{ampAdd:0.01},txt:v=>`표적 피해 +${metaPc(v)}%p`},
+  {id:'eng_brk',br:'공병',name:'장갑 파쇄 교범',max:3,cost:[6,10,15],per:{brkAdd:1},txt:v=>`방깎 +${v} (방깎 부대가 있을 때)`},
+  {id:'eng_mbrk',br:'공병',name:'마력 분쇄 교범',max:3,cost:[6,10,15],per:{mbrkAdd:1},txt:v=>`마방깎 +${v} (마방깎 부대가 있을 때)`},
+  {id:'eng_pierce',br:'공병',name:'관통 조율 교범',max:3,cost:[6,10,15],per:{pierceBuffAdd:0.02},txt:v=>`방무 강화 배율 +${(+v).toFixed(2)}`},
+  {id:'eng_cap',br:'공병',name:'참호 구축',max:2,cost:[10,18],per:{capAdd:1},txt:v=>`트랙 수용 한계 +${v}`},
+  {id:'cmd_reroll',br:'지휘',name:'작전 참모',max:2,cost:[8,15],per:{techBank:1},txt:v=>`판마다 다시 뽑기 +${v}회 (아껴 두기 가능)`},
+  {id:'cmd_choice',br:'지휘',name:'선택지 확대',max:2,cost:[15,25],per:{wideOffers:1},txt:v=>`처음 ${v}번의 카드 제시가 4장`},
+  {id:'cmd_loot',br:'지휘',name:'전리품 연구',max:3,cost:[6,10,15],per:{lootMul:0.1},txt:v=>`전리품 효과 +${metaPc(v)}%`},
+  {id:'cmd_risk',br:'지휘',name:'위험 관리',max:3,cost:[6,10,15],per:{riskSoft:0.1},txt:v=>`위험 카드의 대가 −${metaPc(v)}%`}];
+const META_BY={};for(const t of META_TREE)META_BY[t.id]=t;
+const META_INT=['startGold','freeSummons','brkAdd','mbrkAdd','capAdd','techBank','wideOffers'];
+const META_PTS={BASE:{쉬움:3,보통:5,어려움:8,지옥:11,신:14},WIN:{쉬움:2,보통:3,어려움:5,지옥:7,신:9},FIRST_WIN:{쉬움:5,보통:10,어려움:15,지옥:20,신:25}};
+function metaPc(v){return Math.round(v*1000)/10;}
+let META=null,metaSaveOk=true,metaTab='보급',metaAsk=false;
+function metaFresh(){return {v:1,pts:0,earned:0,lv:{},firstWin:{},on:true,games:0,awarded:{}};}
+function metaSpent(lv){let s=0;for(const t of META_TREE){const n=Math.min(t.max,(lv&&lv[t.id])|0);for(let i=0;i<n;i++)s+=t.cost[i];}return s;}
+// 불러오기 검사: 깨진 저장 → 옛 값 보관 후 새로 · 모르는 기술 버림 · 단계 0~최대 · 점수 음수 0 · 쓴 점수가 번 점수보다 많으면 단계 초기화 후 환급
+function metaClean(o){const m=metaFresh();if(!o||typeof o!=='object'||Array.isArray(o))return m;
+  const int=v=>{v=Math.floor(Number(v));return isFinite(v)&&v>0?v:0;};
+  m.earned=int(o.earned);m.pts=int(o.pts);m.games=int(o.games);m.on=o.on!==false;
+  const lv=(o.lv&&typeof o.lv==='object')?o.lv:{};
+  for(const t of META_TREE){const n=Math.min(t.max,int(lv[t.id]));if(n>0)m.lv[t.id]=n;}
+  if(o.firstWin&&typeof o.firstWin==='object')for(const d in DIFF)if(o.firstWin[d])m.firstWin[d]=true;
+  if(o.awarded&&typeof o.awarded==='object')for(const k of Object.keys(o.awarded).slice(-20))m.awarded[k]=int(o.awarded[k]);
+  const sp=metaSpent(m.lv);
+  if(sp>m.earned){m.lv={};m.pts=m.earned;}
+  else m.pts=Math.min(m.pts,m.earned-sp);
+  return m;}
+function metaLoad(){if(META)return META;let raw=null;
+  try{raw=localStorage.getItem(META_KEY);}catch(e){raw=null;}
+  let o=null;
+  if(raw){try{o=JSON.parse(raw);}catch(e){o=null;try{localStorage.setItem(META_KEY+'_bak',String(raw));}catch(_){}}}
+  META=metaClean(o);return META;}
+function metaSave(){try{const M=metaLoad(),ks=Object.keys(M.awarded);
+    if(ks.length>20)for(const k of ks.slice(0,ks.length-20))delete M.awarded[k];
+    localStorage.setItem(META_KEY,JSON.stringify(M));metaSaveOk=true;return true;}catch(e){metaSaveOk=false;return false;}}
+// 이번 판에 쓰는 영구 기술: 끔 → 없음, 신 난이도 → 절반
+function metaModeFor(diff){const M=metaLoad();return !M.on?'off':diff==='신'?'half':'on';}
+function metaVal(key,lv,mode){
+  if(lv===undefined)lv=(G&&G.metaLv)||{};if(mode===undefined)mode=(G&&G.metaMode)||'off';
+  if(mode==='off')return 0;let v=0;
+  for(const t of META_TREE){const n=Math.min(t.max,lv[t.id]|0);if(n&&t.per[key]!=null)v+=t.per[key]*n;}
+  if(mode==='half')v=META_INT.includes(key)?Math.floor(v/2):v/2;
+  return Math.round(v*1e6)/1e6;}
+function metaMods(){const o={};
+  for(const k of ['waveReward','upgCost','dmg','bossDmg']){const v=metaVal(k);if(v)o[k]=1+v;}
+  for(const k of ['startGold','ampAdd','brkAdd','mbrkAdd','pierceBuffAdd','capAdd']){const v=metaVal(k);if(v)o[k]=v;}
+  return o;}
+function metaStart(){try{const M=metaLoad();G.metaLv=Object.assign({},M.lv);G.metaMode=metaModeFor(G.diff);}catch(e){G.metaLv={};G.metaMode='off';}
+  G.techBank=metaVal('techBank');const fs=metaVal('freeSummons');if(fs>0)G.freeSummons=(G.freeSummons||0)+fs;}
+// 기술 점수: 도달 웨이브 비례 + 승리 + 난이도 첫 승리(1번) + 무한 모드 5웨이브마다 +1(최대 +4) · 3웨이브 미만·중단은 0
+function metaPtsCalc(){if(!G||!G.started||(G.wave|0)<3)return 0;const d=G.diff,P=META_PTS;
+  let p=Math.floor((P.BASE[d]||0)*Math.min(G.wave,30)/30);
+  if(G.won){p+=P.WIN[d]||0;if(G.metaFW)p+=P.FIRST_WIN[d]||0;if(G.wave>30)p+=Math.min(4,Math.floor((G.wave-30)/5));}
+  return p;}
+function metaAward(){try{if(!G||!G.started)return 0;const M=metaLoad();
+  if(!G.recId)G.recId=G.seed+'-'+Date.now();
+  if(G.won&&!G.metaFW&&!M.firstWin[G.diff])G.metaFW=true;
+  const tot=metaPtsCalc(),id=String(G.recId),prev=Math.max(G.metaAwarded||0,M.awarded[id]||0),d=Math.max(0,tot-prev);
+  if(!(prev>0)&&!(id in M.awarded))M.games++;
+  if(G.won)M.firstWin[G.diff]=true;
+  M.pts+=d;M.earned+=d;delete M.awarded[id];M.awarded[id]=Math.max(prev,tot);
+  G.metaAwarded=Math.max(prev,tot);G.metaGain=(G.metaGain||0)+d;metaSave();return d;}catch(e){return 0;}}
+function metaNextCost(){const M=metaLoad();let c=null;
+  for(const t of META_TREE){const n=M.lv[t.id]|0;if(n<t.max&&(c===null||t.cost[n]<c))c=t.cost[n];}return c;}
+function metaCanBuy(){const c=metaNextCost();return c!==null&&c<=metaLoad().pts;}
+// 결과 화면 한 줄: "이번 판 기술 점수 +N → 다음 해금까지 M점"
+function metaLine(){try{if(!G||!G.started)return '';const M=metaLoad(),g=G.metaGain||0,nx=metaNextCost();
+  const tail=nx===null?'모든 영구 기술을 다 열었어요':(nx>M.pts?`다음 해금까지 ${nx-M.pts}점`:'지금 새 영구 기술을 열 수 있어요');
+  return `<p class="metaLine">🎖 이번 판 기술 점수 <b>+${g}</b> → ${tail}</p>`;}catch(e){return '';}}
+
+// ----- 기술 합산 → G.mod -----
+function techAgg(noClamp){const t={},dn={};
+  const put=src=>{if(!src)return;for(const k in src){const v=src[k];
+    if(k==='interestCap')t[k]=Math.max(t[k]||0,v);
+    else if(MOD_ADD.includes(k))t[k]=(t[k]||0)+v;
+    else t[k]=(t[k]==null?1:t[k])*v;}};
+  const soft=Math.max(0,1-metaVal('riskSoft'));
+  for(const id of (G.techs||[])){const c=TECH_BY[id];if(!c)continue;
+    if(c.rarity==='X'){put(c.up);for(const k in c.dn){const v=c.dn[k];
+      if(MOD_ADD.includes(k))dn[k]=(dn[k]||0)+v*soft;else dn[k]=(dn[k]==null?1:dn[k])*(1+(v-1)*soft);}}
+    else put(c.m);}
+  for(const l of (G.loot||[]))put(l.m);
+  put(metaMods());
+  if(!noClamp)for(const k in TECH_CAP){if(t[k]==null)continue;const c=TECH_CAP[k];t[k]=Math.min(c[1],Math.max(c[0],t[k]));}
+  return {t,dn};}
+function techBrkCap(){return (G&&TECH_BRK_CAP[G.diff])||30;}
+// 방깎 추가분 = 부대 방깎 × (배율−1) + 가산 — 부대 방깎이 있을 때만, 난이도별 상한
+function techBrkExtra(a,mul,add){const x=a*((mul||1)-1)+(add||0);return x>0?Math.min(techBrkCap(),x):x;}
+function techDtDmg(dt){const M=G.mod||{};return dt==='phys'?(M.dmgPhys||1):dt==='magic'?(M.dmgMagic||1):(M.dmgPierce||1);}
+function techInterest(){const M=G.mod||{},r=M.waveInterest||0;if(!(r>0))return 0;return Math.max(0,Math.min(M.interestCap||25,Math.floor(G.gold*r)));}
+function strikeCdNow(){return STRIKE_CD*Math.max(0.5,1+metaVal('strikeCd'));}
+
+// ----- 카드 뽑기 -----
+function deckDtOf(name){const d=(typeof DECKS!=='undefined')&&DECKS.find(x=>x.name===name);if(!d)return '';const c={};
+  for(const n of d.core){const u=U[n];if(u)c[u.dt]=(c[u.dt]||0)+1;}
+  let b='',bv=0;for(const k of ['phys','magic','pierce'])if((c[k]||0)>bv){bv=c[k];b=k;}return b;}
+// 주력 갈래: 필드에 놓인 부대의 흔함 환산 가치(cval)를 갈래별로 더해 가장 큰 쪽 (화면에는 표시 안 함)
+function mainDeckType(){const s={phys:0,magic:0,pierce:0},K=['phys','magic','pierce'];
+  for(const sl of SLOTS){const t=sl.tower;if(!t||!U[t.name])continue;s[U[t.name].dt]=(s[U[t.name].dt]||0)+cval(t.name);}
+  const mx=Math.max(s.phys,s.magic,s.pierce),dd=deckDtOf(G&&G.deck);
+  if(!(mx>0))return dd||K[Math.floor(rnd()*3)];
+  const top=K.filter(k=>s[k]===mx);if(top.length===1)return top[0];
+  if(top.includes(dd))return dd;return top[Math.floor(rnd()*top.length)];}
+function techHasArmUnits(){return SLOTS.some(sl=>{const t=sl.tower,u=t&&U[t.name];return !!(u&&(u.armBrk||u.mBrk));});}
+function techCount(id){let n=0;for(const x of (G.techs||[]))if(x===id)n++;return n;}
+function techLineOwned(line){return !!line&&(G.techs||[]).some(x=>{const c=TECH_BY[x];return c&&!c.merge&&c.line===line;});}
+function techLineDone(line){return !!line&&(G.techs||[]).some(x=>{const c=TECH_BY[x];return c&&c.merge&&c.line===line;});}
+// 상한에 닿은 카드는 제시하지 않음(쓸모없는 카드를 고르게 하지 않음)
+function techCapped(c,raw){const ks=Object.keys(c.m||{});if(!ks.length)return false;
+  return ks.every(k=>{const v=c.m[k],cur=raw[k];
+    if(k==='brkAdd'||k==='mbrkAdd')return (cur||0)>=techBrkCap();
+    const cp=TECH_CAP[k];if(!cp||cur==null)return false;
+    return v>=1||(MOD_ADD.includes(k)&&v>0)?cur>=cp[1]:cur<=cp[0];});}
+function techAvail(c,raw){return techCount(c.id)<(c.max||2)&&!techLineDone(c.line)&&!(raw&&techCapped(c,raw));}
+function techMergeWith(c){return (c&&c.line&&!c.merge&&techLineOwned(c.line)&&!techLineDone(c.line))?TECH_MERGE_BY[c.line]:null;}
+function techBand(w){return w<=5?0:w<=10?1:w<=15?2:3;}
+function techW(c,deck,band){let w=TECH_RARITY_W[band][c.rarity]||0;
+  if(c.line&&techLineOwned(c.line))w*=2;
+  if(c.branch!=='all'&&c.branch!==deck)w*=0.6;
+  if(band===0&&c.arm)w*=0.5;
+  return w;}
+function techWPick(arr,wf){let s=0;const ws=arr.map(c=>{const v=Math.max(0,wf(c)||0);s+=v;return v;});
+  if(!(s>0))return -1;let r=rnd()*s;for(let i=0;i<arr.length;i++){r-=ws[i];if(r<0)return i;}return arr.length-1;}
+function techOfferSize(){if(G.doctrine==='기술개발')return 4;return (G.techPicks||0)<metaVal('wideOffers')?4:3;}
+function drawTechOffer(){
+  const deck=mainDeckType(),band=techBand(G.techWave||G.waveDone||5),size=techOfferSize(),W=c=>techW(c,deck,band);
+  const raw=techAgg(true).t;let pool=TECH_CARDS.filter(c=>techAvail(c,raw));const out=[];
+  const gp=pool.filter(c=>c.branch===deck),gi=techWPick(gp,W); // ① 주력 갈래 1장 보장
+  if(gi>=0){out.push(gp[gi]);pool=pool.filter(c=>c!==gp[gi]);}
+  const armOk=deck!=='pierce'||techHasArmUnits();
+  const rp=TECH_RISK.filter(c=>!(G.techs||[]).includes(c.id)&&(c.id!=='tk_depleted'||armOk));
+  const rk=rnd()<(G.doctrine==='기술개발'?0.3:0.25); // ② 위험한 개발: 보장 칸이 아닌 칸 1개까지
+  if(rk&&rp.length&&out.length<size)out.push(rp[Math.floor(rnd()*rp.length)]);
+  while(out.length<size){const i=techWPick(pool,W);if(i<0)break;out.push(pool[i]);pool.splice(i,1);} // ③ 나머지
+  if(out.length<size)out.push(TECH_FILLER); // 뽑을 카드가 떨어지면(무한 모드) 골드 카드 1장
+  for(let i=out.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));const x=out[i];out[i]=out[j];out[j]=x;} // ④ 순서 섞기
+  return out.map(c=>c.id);}
+function openTech(){if(!G)return;
+  G.techWave=G.waveDone||G.wave||5;G.techFreeRe=G.doctrine==='기술개발'?1:0;G.techOwnOpen=false;
+  G.techOffer=drawTechOffer();G.navOffer=G.techOffer;G.paused=true; // 고를 때까지 게임 정지
+  renderTech();const el=document.getElementById('nav');if(el)el.classList.remove('hidden');}
+function openNav(){openTech();} // 옛 이름(시뮬·옛 코드 호환)
+function techShake(el){try{if(!el)return;el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');}catch(e){}}
+function renderTech(){const b=document.getElementById('navBody');if(!b||!G||!G.techOffer)return;
+  const st=document.getElementById('techSten');if(st)st.textContent=`WAVE ${G.techWave||G.waveDone||0} · 기술 보급`;
+  const soft=metaVal('riskSoft');
+  const card=(id,i)=>{const c=TECH_BY[id];if(!c)return '';
+    const cls=c.rarity==='X'?'tcRisk':c.rarity==='R'?'tcR':c.rarity==='U'?'tcU':'tcC';
+    const tag=c.rarity==='X'?'RISK · 위험':`${TECH_RNAME[c.rarity]} · ${TECH_BNAME[c.branch]||'공통'}`;
+    const mg=techMergeWith(c);
+    const body=c.rarity==='X'?`<div class="ng">▲ ${c.upT}</div><div class="nb">▼ ${c.dnT}${soft>0?` <small>(위험 관리로 ${metaPc(soft)}% 덜함)</small>`:''}</div>`
+      :`<div class="ng">${c.effect}</div>`;
+    return `<button class="navCard tcCard ${cls}" onclick="chooseTech(${i})"><span class="tcTag">${tag}</span><div class="nn">${c.name}</div>${body}`
+      +(mg?`<div class="tcMerge">⇄ 합치기 가능 → ${mg.name}</div>`:'')
+      +(c.arm&&(G.techWave||0)<=10?`<div class="tcNote">11웨이브부터 좀비가 방어력을 가집니다</div>`:'')+`</button>`;};
+  const re=(G.techFreeRe||0)+(G.techBank||0),own=(G.techs||[]).length+(G.loot||[]).length;
+  let h=G.techOffer.map(card).join('');
+  h+=`<div class="tcFoot"><button id="techRe" class="tcRe${re?'':' dim'}" onclick="rerollTech()">↻ 다시 뽑기${re?` <b>${re}</b>`:''}</button>`
+    +`<button class="linkBtn tcOwnBtn" onclick="techOwnTog()">보유 기술 ${own} ${G.techOwnOpen?'▾':'▸'}</button></div>`;
+  if(G.techOwnOpen)h+=`<div class="tcOwn">${own?techOwnList():'아직 고른 기술이 없어요'}</div>`;
+  b.innerHTML=h;}
+function techOwnList(){const a=[];
+  for(const id of (G.techs||[])){const c=TECH_BY[id];if(!c)continue;
+    const wait=c.line&&!c.merge&&!techLineDone(c.line)&&TECH_MERGE_BY[c.line];
+    a.push(`<span class="tcO ${c.rarity==='X'?'r':c.merge?'m':''}">${c.name}${wait?' <i title="같은 줄 카드를 한 장 더 고르면 합쳐져요">⇄</i>':''}</span>`);}
+  for(const l of (G.loot||[])){const c=TECH_BY[l.id];if(c)a.push(`<span class="tcO l">${c.name}</span>`);}
+  return a.join('');}
+function techOwnTog(){if(!G)return;G.techOwnOpen=!G.techOwnOpen;renderTech();}
+function rerollTech(){if(!G||!G.techOffer)return;
+  if(G.techFreeRe>0)G.techFreeRe--;else if(G.techBank>0)G.techBank--;
+  else{techShake(document.getElementById('techRe'));return;}
+  G.techOffer=drawTechOffer();G.navOffer=G.techOffer;renderTech();}
+// 같은 줄 카드 2장 → 합치기 카드 1장
+function techMerge(c){const mg=c&&c.line&&!c.merge?TECH_MERGE_BY[c.line]:null;if(!mg||techLineDone(c.line))return null;
+  const idx=[];G.techs.forEach((x,i)=>{const o=TECH_BY[x];if(o&&!o.merge&&o.line===c.line)idx.push(i);});
+  if(idx.length<2)return null;
+  const a=TECH_BY[G.techs[idx[0]]],b=TECH_BY[G.techs[idx[1]]];
+  G.techs.splice(idx[1],1);G.techs.splice(idx[0],1);G.techs.push(mg.id);
+  log(`🔧 합치기: ${a.name} + ${b.name} → <b style="color:#e0a526">${mg.name}</b> (${mg.effect})`,'#e0a526');return mg;}
+function chooseTech(i){
+  if(!G||!G.techOffer)return;const id=G.techOffer[i],c=TECH_BY[id];if(!c)return;
+  G.techPicks=(G.techPicks||0)+1;
+  if(c.now==='gold100'){G.gold+=100;log('📦 군수품 정리: +100골드','#f2cc60');}
+  else{G.techs.push(id);
+    if(c.now==='gold200')G.gold+=200;
+    if(c.now==='veteran'){const dt=mainDeckType();G.upg[dt]=(G.upg[dt]||0)+1;
+      log(`🎖 고참병 편입: <b>${DT_NAME[dt]||dt}</b> 강화 +1단계`,'#e0a526');}
+    if(c.rarity==='X')log(`⚠ 위험한 개발: <b style="color:#ec7a62">${c.name}</b> — ▲ ${c.upT} / ▼ ${c.dnT}`,'#ec7a62');
+    else log(`🔧 기술: <b style="color:#a9c95c">${c.name}</b> — ${c.effect}`,'#a9c95c');
+    techMerge(c);}
+  recalcMods();try{SFX.nav();}catch(_){}
+  G.techOffer=null;G.navOffer=null;{const el=document.getElementById('nav');if(el)el.classList.add('hidden');}
+  G.paused=false;G.opSig='';updateUI();}
+function chooseNav(i){chooseTech(i);} // 옛 이름(시뮬·smoke 호환)
+// 시뮬 봇: 합치기 가능 > 주력 갈래 > 희귀도, 위험 카드는 안 고름(opt.risk면 위험 먼저, opt.noArm이면 방깎 카드 피함)
+function techAutoPick(opt){opt=opt||{};const o=(G&&G.techOffer)||[];if(!o.length)return -1;const deck=mainDeckType();
+  let bi=0,bs=-1e9;o.forEach((id,i)=>{const c=TECH_BY[id];if(!c)return;let s=0;
+    if(c.rarity==='X')s+=opt.risk?1000:-1000;
+    if(techMergeWith(c))s+=100;if(c.branch===deck)s+=10;
+    s+=({R:3,U:2,C:1}[c.rarity]||0);if(opt.noArm&&c.arm)s-=500;if(c.id===TECH_FILLER.id)s-=50;
+    if(s>bs){bs=s;bi=i;}});
+  return bi;}
+// 전리품: 미션 보스 처치 보상에 더해 1장 (보스마다 한 판 1번) · 영구 기술 '전리품 연구'로 소수 효과 +10%/단계
+function grantLoot(m){try{if(!G||!m)return null;const c=TECH_LOOT[m.idx];if(!c)return null;
+  if((G.loot||[]).some(l=>l.id===c.id))return null;
+  let base=c.m,txt=c.effect,dt=null;
+  if(c.byType){dt=mainDeckType();base=c.byType[dt]||c.byType.phys;txt=c.byText[dt]||'';}
+  const lm=metaVal('lootMul'),mm={};
+  for(const k in base){const v=base[k];
+    if(!lm||Number.isInteger(v))mm[k]=v;
+    else if(MOD_ADD.includes(k))mm[k]=Math.round(v*(1+lm)*1e4)/1e4;
+    else mm[k]=Math.round((1+(v-1)*(1+lm))*1e4)/1e4;}
+  G.loot.push(dt?{id:c.id,m:mm,dt}:{id:c.id,m:mm});recalcMods();
+  log(`🏆 전리품: <b style="color:#b8c4c9">${c.name}</b> — ${txt}`,'#b8c4c9');
+  try{if(typeof VFX!=='undefined')VFX.banner={t0:vNow(),dur:2400,loot:c.name,wave:G.wave};}catch(_){}
+  return c;}catch(e){return null;}}
+// 화신의 불씨: 넘쳐서 질 뻔한 순간 1번 살려줌 (모든 좀비 정지 + 수용 한계 +2 + 3초 유예)
+function tryAvatarSave(){if(!G||G.avatarUsed||!(G.loot||[]).some(l=>l.id==='tl_avatar'))return false;
+  G.avatarUsed=true;G.avatarGrace=G.t+3000;
+  for(const e of G.enemies)e.stunT=Math.max(e.stunT||0,e.boss?1500:3000);
+  recalcMods();log('🔥 <b style="color:#ff9f6e">화신의 불씨</b>! 모든 좀비가 멈췄어요 — 수용 한계 +2','#ff9f6e');
+  try{SFX.boss();}catch(_){}
+  return true;}
+// 강화 현황 창: 고른 기술·전리품·영구 기술 목록
+function techBuffSection(stat){if(!G)return '';
+  const t=(G.techs||[]).map(id=>TECH_BY[id]).filter(Boolean),l=(G.loot||[]).filter(x=>TECH_BY[x.id]);
+  const mm=G.metaMode||'off',ml=Object.keys(G.metaLv||{}).filter(k=>G.metaLv[k]>0&&META_BY[k]);
+  if(!t.length&&!l.length&&(mm==='off'||!ml.length))return '';
+  let h='<h3 class="bfH">기술<em>카드·전리품</em></h3>';
+  for(const c of t)h+=c.rarity==='X'?stat(c.name,'▲ '+c.upT,'▼ '+c.dnT):stat(c.name,c.effect,'');
+  for(const x of l){const c=TECH_BY[x.id];h+=stat('🏆 '+c.name,c.byText?(c.byText[x.dt]||''):c.effect,'');}
+  if(mm!=='off'&&ml.length)h+=stat('🎖 영구 기술',ml.length+'종'+(mm==='half'?' · 신 난이도라 절반':''),ml.map(k=>META_BY[k].name+' '+G.metaLv[k]+'단계').join(' · '));
+  return h;}
+// ----- 영구 기술 화면 (시작 화면에서만 열림 · 휴대폰은 갈래 탭, 넓은 화면은 4열) -----
+function metaOpenable(){return !(G&&G.started&&!G.over);}
+function openMeta(){if(!metaOpenable())return;metaLoad();metaAsk=false;renderMeta();
+  const el=document.getElementById('meta');if(el)el.classList.remove('hidden');}
+function closeMeta(){const el=document.getElementById('meta');if(el)el.classList.add('hidden');metaAsk=false;
+  try{if(!(G&&G.started))showStart();}catch(e){}}
+function metaTabPick(b){metaTab=b;renderMeta();}
+function metaBrSpent(b){const M=metaLoad();let s=0,t=0;
+  for(const x of META_TREE)if(x.br===b){const n=M.lv[x.id]|0;for(let i=0;i<x.max;i++){t+=x.cost[i];if(i<n)s+=x.cost[i];}}return [s,t];}
+function metaTechRow(t){const M=metaLoad(),n=M.lv[t.id]|0,mx=n>=t.max,c=mx?0:t.cost[n],ok=!mx&&c<=M.pts;
+  const val=k=>t.per[Object.keys(t.per)[0]]*k;
+  const pips=Array.from({length:t.max},(_,i)=>`<span class="mtPip${i<n?' on':''}"></span>`).join('');
+  const eff=n===0?`${t.txt(val(1))} <span class="mtStep">— 단계마다</span>`
+    :mx?`${t.txt(val(n))}`:`지금 ${t.txt(val(n))} <span class="mtArrow">→</span> <b>${t.txt(val(n+1))}</b>`;
+  return `<div class="mtTech${mx?' maxed':''}${ok||mx?'':' dim'}"><div class="mtRow1"><span class="mtName">${t.name}</span><span class="mtPips">${pips}</span>${mx?'<span class="mtMax">완료</span>':''}</div>`
+    +`<div class="mtEff">${eff}</div>`
+    +(mx?'':`<div class="mtRow3"><span class="mtCost">${c}<small>점</small></span><button class="mtBuy" id="mtb_${t.id}" onclick="metaBuy('${t.id}')">다음 단계</button></div>`)+`</div>`;}
+function renderMeta(){const box=document.getElementById('metaBody');if(!box)return;const M=metaLoad();
+  const tabs=META_BR.map(b=>{const [s,t]=metaBrSpent(b);
+    return `<button class="mtTab${b===metaTab?' on':''}" onclick="metaTabPick('${b}')">${b}<span>${s}/${t}</span></button>`;}).join('');
+  const cols=META_BR.map(b=>`<div class="mtCol${b===metaTab?' on':''}"><div class="mtColHd">${b}</div>`
+    +META_TREE.filter(t=>t.br===b).map(metaTechRow).join('')+`</div>`).join('');
+  const spent=metaSpent(M.lv);
+  const reset=metaAsk?`<span class="mtAsk">쓴 ${spent}점을 모두 돌려받을까요?</span> <button class="mtReset go" onclick="metaReset()">네, 되돌리기</button> <button class="mtReset" onclick="metaAsk=false;renderMeta()">아니요</button>`
+    :(spent>0?`<button class="mtReset" onclick="metaAsk=true;renderMeta()">쓴 점수 전부 되돌리기 (무료)</button>`:'');
+  box.innerHTML=`<div class="mtHaz"></div><div class="mtHead"><div class="mtSten">ZOMBIE LINE DEFENSE · META</div>`
+    +`<div class="mtTitleRow"><h2>영구 기술</h2><button class="mtClose" onclick="closeMeta()">✕ 닫기</button></div>`
+    +`<div class="mtPts"><span>보유 점수</span><b id="mtPts">${M.pts}</b><span>점</span></div></div>`
+    +`<div class="mtTabs">${tabs}</div><div class="mtGrid">${cols}</div>`
+    +`<div class="mtFoot"><p>판이 끝날 때마다 도달한 웨이브·승리에 따라 <b>기술 점수</b>가 쌓여요. 난이도마다 첫 승리는 보너스.</p>`
+    +`<p>전부 최대로 올려도 체감 전투력은 약 <b>+10%</b> — 천천히 모아도 괜찮아요.</p>`
+    +`<p class="god">신 난이도에서는 영구 기술 효과가 절반만 적용돼요.</p>`
+    +`<p>시작 화면에서 <b>영구 기술 사용</b>을 끄면 기록에 <b>순수</b> 표시가 붙어요.</p>`
+    +(metaSaveOk?'':`<p class="god">이 기기에서는 저장이 막혀 있어 이번 화면에서만 적용돼요.</p>`)
+    +`<div class="mtResetRow">${reset}</div></div>`;}
+function metaBuy(id){const t=META_BY[id];if(!t||!metaOpenable())return false;const M=metaLoad(),n=M.lv[id]|0;
+  if(n>=t.max||t.cost[n]>M.pts){techShake(document.getElementById('mtb_'+id));return false;}
+  M.pts-=t.cost[n];M.lv[id]=n+1;metaSave();try{SFX.nav();}catch(_){}renderMeta();return true;}
+function metaReset(){if(!metaOpenable())return;const M=metaLoad();M.pts+=metaSpent(M.lv);M.lv={};
+  if(M.pts>M.earned)M.pts=M.earned;metaAsk=false;metaSave();renderMeta();}
+function metaToggle(){const M=metaLoad();M.on=!M.on;metaSave();try{showStart();}catch(e){}}
+// 시작 화면 링크 줄: 영구 기술 버튼 + 사용 스위치
+function metaStartLinks(){try{const M=metaLoad();
+  return `<button class="linkBtn" onclick="openMeta()">🎖 영구 기술 <b style="color:var(--amber)">${M.pts}</b>점${metaCanBuy()?'<i class="mtDot"></i>':''}</button>`
+    +`<button class="linkBtn mtSw${M.on?' on':''}" onclick="metaToggle()">영구 기술 사용: <b>${M.on?'켬':'끔'}</b></button>`;}catch(e){return '';}}
 
 let G;
 // 판 번호(S26): 소환 순서·웨이브 구성·항법 카드 같은 "운"을 번호 하나로 재현 → 같은 조건으로 다시 도전 가능
@@ -992,7 +1453,7 @@ function retrySame(){if(!G)return;nextSeed=G.seed;startGame();}
 function newGame(diff){const d=DIFF[diff];return{diff,dcfg:d,gold:START_GOLD,wave:0,score:0,tp:0,seed:0,rng:null,goals:[],craftConfirm:null,
   speed:1,nextWaveT:WAVE_PREP,upg:{phys:0,magic:0,pierce:0},
   kills:0,crafts:0,quest:null,questDone:0,pendingReward:null,
-  missionsDone:0,activeMission:null,freeSummons:0,bag:[],discovered:{},uran:0,parts:0,uranGot:0,bossK:0,labN:0,labLast:null,nukeN:0,labPity:{rare:0,secret:0},lapHeal:0,
+  missionsDone:0,activeMission:null,freeSummons:0,techs:[],loot:[],techOffer:null,techFreeRe:0,techBank:0,techPicks:0,techWave:0,techOwnOpen:false,avatarUsed:false,avatarGrace:0,metaMode:'off',metaLv:{},metaAwarded:0,metaGain:0,metaFW:false,bag:[],discovered:{},uran:0,parts:0,uranGot:0,bossK:0,labN:0,labLast:null,nukeN:0,labPity:{rare:0,secret:0},lapHeal:0,
   doctrine:chosenDoctrine,navs:[],mod:Object.assign({},MOD_BASE),paused:false,navOffer:null,endless:false,
   nextQueue:null,nextQueueW:0,celebrate:null,
   enemies:[],shots:[],floats:[],fx:[],selected:null,queue:[],queueW:[],waveDone:0,rewardQueue:[],spawnT:0,waveActive:false,
@@ -1063,6 +1524,7 @@ function showStart(){
     <div class="docGrid">${docBtns}</div>${docDetail}
     <button class="btn-wave" style="max-width:220px" onclick="startGame()">게임 시작</button>
     <button class="linkBtn" onclick="openRecords()">📋 내 기록${recCount()?` <span style="color:var(--mute);font-weight:400">(${recCount()}판)</span>`:''}</button>
+    ${metaStartLinks()}
     <a class="linkBtn refLink" id="refLinkStart" href="자료/" target="_blank" rel="noopener">📚 전체 도감 보기</a>`;
 }
 function pickDiff(d){chosenDiff=d;showStart();}
@@ -1070,7 +1532,7 @@ function pickDoctrine(k){chosenDoctrine=k;showStart();}
 function startGame(){if(G&&G.started&&!G.over&&G.wave>=1)recSave('quit'); // S28: 진행 중에 새로 시작하면 '중단'으로 기록
   G=newGame(chosenDiff);G.started=true;SLOTS.forEach(s=>s.tower=null);
   G.seed=nextSeed||Math.floor(100000+Math.random()*900000);nextSeed=null;G.rng=mkRng(G.seed);
-  recalcMods();G.gold=Math.max(0,START_GOLD+G.mod.startGold);
+  metaStart();recalcMods();G.gold=Math.max(0,START_GOLD+G.mod.startGold);
   document.getElementById('overlay').classList.add('hidden');
   document.getElementById('wispMenu').classList.add('hidden');renderOdds();assignQuest();renderWarn();renderGoals();
   document.getElementById('rewardBox').classList.add('hidden');
@@ -1078,6 +1540,7 @@ function startGame(){if(G&&G.started&&!G.over&&G.wave>=1)recSave('quit'); // S28
   document.getElementById('mission').classList.add('hidden');
   {const lb=document.getElementById('lab');if(lb)lb.classList.add('hidden');}
   document.getElementById('nav').classList.add('hidden');
+  {const mt=document.getElementById('meta');if(mt)mt.classList.add('hidden');}
   document.getElementById('rewardPop').classList.add('hidden');
   // 시작 보너스: 작전이 정한 등급 유닛 1개 지급 (기본 특별 / 정예소수는 희귀)
   const gt=G.mod.startTier,sp=Object.keys(U).filter(n=>U[n].t===gt);
@@ -1269,7 +1732,7 @@ const MISSION_HP={'쉬움':1,'보통':1,'어려움':2,'지옥':2.3,'신':1.2};
 function missionHpMul(){return MISSION_HP[G.diff]||1;}
 // 실제 제한: 30웨이브를 넘길 수 없으므로 남은 웨이브가 적으면 줄어듦
 function missionLimit(m){return (G&&!G.endless)?Math.max(0,Math.min(m.limit,MAX_WAVE-G.wave)):m.limit;}
-function openMissions(){if(G&&G.paused){log('🧭 항법을 먼저 선택하세요.','#ff7b72');return;}
+function openMissions(){if(G&&G.paused){log('🔧 기술 카드를 먼저 골라 주세요','#e0a526');return;}
   renderMissions();document.getElementById('mission').classList.remove('hidden');}
 function closeMissions(){document.getElementById('mission').classList.add('hidden');}
 function renderMissions(){
@@ -1323,6 +1786,7 @@ function missionWarnTick(){const left=missionLeft();if(left==null||!G.enemies.so
   try{SFX.boss();}catch(_){}}
 function grantMissionReward(m){
   G.missionsDone=Math.max(G.missionsDone,m.idx+1);G.activeMission=null;
+  grantLoot(m); // S36b 전리품
   SFX.reward();
   if(m.reward.type==='summon'){G.freeSummons+=m.reward.n;
     log(`🎁 미션 보상: <b style="color:#f2cc60">흔함 뽑기권 ×${m.reward.n}</b> 획득!`,'#f2cc60');}
@@ -1331,39 +1795,15 @@ function grantMissionReward(m){
     log(`🎁 미션 보상: <b style="color:${rc.color}">${rc.name} 선택권${n>1?' ×'+n:''}</b>${m.reward.gold?` + <b style="color:#f2cc60">${m.reward.gold}골드</b>`:''}!`,rc.color);renderReward();}
 }
 
-// ===== 항법 (5·10·15·20·25웨이브 보스 클리어 후 3장 중 1택) =====
-function openNav(){
-  // 즉시효과 카드는 이미 받았으면 제외, 나머지는 중복 획득 허용(중첩 강화)
-  const pool=NAVCARDS.filter(c=>!c.now||!G.navs.some(n=>n.id===c.id));
-  const offer=[];
-  while(offer.length<3&&pool.length)offer.push(pool.splice(Math.floor(rnd()*pool.length),1)[0]);
-  G.navOffer=offer;G.paused=true; // 선택할 때까지 게임 정지
-  renderNav();document.getElementById('nav').classList.remove('hidden');
-}
-function renderNav(){
-  const b=document.getElementById('navBody');if(!b||!G.navOffer)return;
-  b.innerHTML=G.navOffer.map((c,i)=>`<button class="navCard" onclick="chooseNav(${i})">
-      <div class="nn">${c.icon} ${c.name}</div>
-      <div class="ng">＋ ${c.good}</div><div class="nb">－ ${c.bad}</div></button>`).join('');
-}
-function chooseNav(i){
-  if(!G||!G.navOffer)return;
-  const c=G.navOffer[i];if(!c)return;
-  G.navs.push(c);recalcMods();SFX.nav();
-  if(c.now==='gold120'){G.gold+=120;log('🏦 군수 지원: +120골드','#f2cc60');}
-  if(c.now==='pickSpecial'){grantPick('special');
-    log(`🎁 특별 보급: <b style="color:${RARITY.special.color}">특별 선택권</b> 획득!`,RARITY.special.color);}
-  log(`🧭 항법: <b style="color:#79c0ff">${c.icon} ${c.name}</b> — ${c.good} / ${c.bad}`,'#79c0ff');
-  G.navOffer=null;document.getElementById('nav').classList.add('hidden');
-  G.paused=false;G.opSig='';updateUI();
-}
+// S36b: 항법 카드 자리는 기술 카드(openTech·chooseTech — 위쪽 기술 블록)로 바뀜. openNav·chooseNav는 별칭
+function renderNav(){renderTech();}
 function renderOps(){
   const el=document.getElementById('opBox');if(!el||!G)return;
   const d=DOCTRINE[G.doctrine];
   el.innerHTML=`<div class="secT" style="margin:0;">🎖️ 작전 <b style="color:${d.color}">${d.icon} ${G.doctrine}</b>`
     +` <span style="color:#6e7681;font-weight:400">— ${d.good.replace(/<[^>]+>/g,'')}</span></div>`
-    +(G.navs.length?`<div style="margin-top:5px;">🧭 ${G.navs.map(n=>`<span class="chip">${n.icon} ${n.name}</span>`).join('')}</div>`
-      :`<div style="margin-top:5px;font-size:11px;color:#6e7681;">🧭 항법 — 5웨이브 보스 클리어 시 선택</div>`);
+    +((G.techs&&G.techs.length)||(G.loot&&G.loot.length)?`<div style="margin-top:5px;">🔧 ${(G.techs||[]).map(id=>TECH_BY[id]).filter(Boolean).map(c=>`<span class="chip">${c.name}</span>`).join('')}${(G.loot||[]).map(x=>TECH_BY[x.id]).filter(Boolean).map(c=>`<span class="chip">🏆 ${c.name}</span>`).join('')}</div>`
+      :`<div style="margin-top:5px;font-size:11px;color:#6e7681;">🔧 기술 카드 — 5웨이브마다 보스를 막으면 1장 선택</div>`);
 }
 
 function inventory(){const m={};SLOTS.forEach(s=>{if(s.tower&&!s.tower.locked)m[s.tower.name]=(m[s.tower.name]||0)+1;});
@@ -1512,7 +1952,7 @@ function labBuy(kind){if(!G||G.over)return null;const L=LAB[kind];if(!L)return n
   G.labLast={kind,ok:res.ok,nm:res.nm||null,txt:res.txt,n:G.labN};
   log(`☢ 연구소 ${kind==='rare'?'희귀 도박':kind==='secret'?'비밀 도박':'초월 부품'}: ${res.txt}`,res.ok?'#c6e04a':'#a39f86');
   G.invSig='';G._resSig='';updateUI();renderLab();return res;}
-function openLab(){if(!G)return;if(G.paused){log('🧭 항법을 먼저 선택하세요.','#ff7b72');return;}
+function openLab(){if(!G)return;if(G.paused){log('🔧 기술 카드를 먼저 골라 주세요','#e0a526');return;}
   renderLab();const el=document.getElementById('lab');if(el)el.classList.remove('hidden');}
 function closeLab(){const el=document.getElementById('lab');if(el)el.classList.add('hidden');}
 function renderLab(){const el=document.getElementById('labBody');if(!el||!G)return;const u=G.uran||0,room=labRoom();
@@ -1698,8 +2138,8 @@ function fieldFx(){const M=(G&&G.mod)||{},r={brk:0,brkSk:0,mbrk:0,mbrkSk:0,amp:0
       else if(k.fx==='exec'){if(add('exec',id,sl2,`${Math.round((k.th||0)*100)}%`))r.exec=Math.max(r.exec,k.th||0);}
       else if(k.fx==='pct')add('pct',id,sl2,'');
       else if(k.fx==='rally')add('rally',id,sl2,`+${pc(k.mul)}% ${k.dur/1000}초`);}}}catch(_){}
-  const cap=(v,add2,c)=>v>0?Math.min(c,v+(add2||0)):0; /* brkOf·mbrkOf와 같은 규칙(가산·상한) */
-  r.brkT=cap(r.brk+r.brkSk,M.brkAdd,BRK_CAP);r.mbrkT=cap(r.mbrk+r.mbrkSk,M.mbrkAdd,MBRK_CAP);
+  const cap=(v,add2,c,mul)=>v>0?Math.min(c,v+techBrkExtra(v,mul,add2)):0; /* brkOf·mbrkOf와 같은 규칙(기술 추가분·상한) */
+  r.brkT=cap(r.brk+r.brkSk,M.brkAdd,BRK_CAP,M.brkMul);r.mbrkT=cap(r.mbrk+r.mbrkSk,M.mbrkAdd,MBRK_CAP,M.mbrkMul);
   r.ampPct=Math.round(Math.min(AMP_CAP,r.amp)*100);r.slowPct=Math.round(Math.min(SLOW_CAP,1-r.slow)*100);
   r.execPct=r.exec?Math.round(Math.min(EXEC_CAP,r.exec)*100):0;
   const L=k=>(r.src[k]||[]);r.stun=L('stun');r.buffs=L('buff').map(o=>o.label);
@@ -1737,11 +2177,12 @@ function renderBuffs(){const el=document.getElementById('buffsBody');if(!el||!G)
     +row('exec','처형',f.execN?`체력 <b>${f.execPct}%</b> 이하`:'<b>0</b>곳',`보스 제외 · 방깎된 적은 +${Math.round(SYN.brkExec*100)}%p (최대 ${Math.round(EXEC_CAP*100)}%)`)
     +row('pct','체력 비례 피해',`<b>${f.pctN}</b>곳`,'보스는 절반');
   h+=`<h3 class="bfH">아군 강화<em>버프</em></h3>`
-    +row('buff','강화 부대',`공 <b>+${pc(f.bf.dm)}%</b> · 속 <b>+${pc(f.bf.as)}%</b>`,`방어무시 부대는 1.5배로 받음 → 공 +${pc(f.bfP.dm)}% · 속 +${pc(f.bfP.as)}%`)
+    +row('buff','강화 부대',`공 <b>+${pc(f.bf.dm)}%</b> · 속 <b>+${pc(f.bf.as)}%</b>`,`방어무시 부대는 ${+((M.pierceBuff||1.5)+(M.pierceBuffAdd||0)).toFixed(2)}배로 받음 → 공 +${pc(f.bfP.dm)}% · 속 +${pc(f.bfP.as)}%`)
     +['phys','magic','pierce'].map(dt=>{const lv=(G.upg&&G.upg[dt])||0;
       return stat(`강화 버튼 · ${DT_NAME[dt]}`,`<b>${lv}</b>단계`,lv?`공 +${Math.round(lv*UPG_DMG*100)}% · 속 +${Math.round(lv*UPG_AS*100)}%`:'',!lv);}).join('')
-    +((M.dmg||1)!==1||(M.as||1)!==1?stat('작전·항법 보정',`공 <b>${sg(pc(M.dmg||1))}%</b> · 속 <b>${sg(pc(M.as||1))}%</b>`,''):'')
+    +((M.dmg||1)!==1||(M.as||1)!==1?stat('작전·기술 보정',`공 <b>${sg(pc(M.dmg||1))}%</b> · 속 <b>${sg(pc(M.as||1))}%</b>`,''):'')
     +(f.rally&&!f.rallyN?stat('스킬 공속 강화',`<b>+${pc(f.rally.mul)}%</b> 발동 중`,`지금 ${f.rally.n}기에 적용 · 남은 ${Math.ceil(f.rally.left/1000)}초`):row('rally','스킬 공속 강화',f.rally?`<b>+${pc(f.rally.mul)}%</b> 발동 중`:'쉬는 중',f.rally?`지금 ${f.rally.n}기에 적용 · 남은 ${Math.ceil(f.rally.left/1000)}초`:''));
+  h+=techBuffSection(stat);
   h+=`<p class="labNote">줄을 누르면 어느 부대에서 왔는지 보여요 · 같은 이름(유닛·스킬)끼리는 겹치지 않고, 다른 부대끼리 더해져요 · 효과는 각 부대 사거리 안에서 적용 · 공격속도는 모두 합쳐 최대 ×${AS_CAP}</p>`;
   if(el._sig!==h){el.innerHTML=h;el._sig=h;}}
 function openBuffs(){if(!G)return;const el=document.getElementById('buffs');if(!el)return;bfOpen={};const b=document.getElementById('buffsBody');if(b)b._sig=null;renderBuffs();el.classList.remove('hidden');}
@@ -1824,12 +2265,12 @@ function toggleSpeed(){if(!G)return;const i=SPEEDS.indexOf(G.speed);G.speed=SPEE
 const BUFF_CAP=1.8; // 버프 중첩 상한 — 통신병 도배 스노볼 방지
 function buffMult(t){let dm=1,as=1;const seen={};
   for(const s of SLOTS){const b=s.tower;if(!b||b===t||seen[b.name])continue;const bu=U[b.name].buff;
-    if(bu&&Math.hypot(b.x-t.x,b.y-t.y)<=U[b.name].range){seen[b.name]=1;dm*=bu.dmg;as*=bu.as;}} // S35 같은 유닛 이름은 안 겹침
+    if(bu&&Math.hypot(b.x-t.x,b.y-t.y)<=U[b.name].range*((G&&G.mod&&G.mod.buffRange)||1)){seen[b.name]=1;dm*=bu.dmg;as*=bu.as;}} // S35 같은 유닛 이름은 안 겹침
   return buffCap(dm,as,buffAmpOf(t,(G&&G.mod)||{}));}
 // S35b 버프 배율 → 상한 적용 (전투·버프 패널 공용)
-function buffCap(dm,as,amp){const cap=1+(BUFF_CAP-1)*amp;return{dm:Math.min(1+(dm-1)*amp,cap),as:Math.min(1+(as-1)*amp,cap)};}
+function buffCap(dm,as,amp){const cap=Math.min(BUFF_HARD,1+(BUFF_CAP-1)*amp);return{dm:Math.min(1+(dm-1)*amp,cap),as:Math.min(1+(as-1)*amp,cap)};}
 // S35 방무 유닛은 강화(버프) 효과를 더 크게 받음 — 방무 덱의 짝은 '강화'
-function buffAmpOf(t,M){M=M||(G&&G.mod)||{};const u=t&&U[t.name];return (M.buffAmp||1)*(u&&u.dt==='pierce'?(M.pierceBuff||1):1);}
+function buffAmpOf(t,M){M=M||(G&&G.mod)||{};const u=t&&U[t.name];return (M.buffAmp||1)*(u&&u.dt==='pierce'?(M.pierceBuff||1)+(M.pierceBuffAdd||0):1);}
 function update(dt){
   G.t+=dt;
   // 자동 웨이브 카운트다운
@@ -1860,6 +2301,7 @@ function update(dt){
     moveEnemy(e,dt); // 순환 — 빠져나가지 않음
   }
   // 수용 한계 초과 = 패배 (제때 처리 못하면 좀비가 트랙에 쌓임)
+  if(G.enemies.length>capNow())tryAvatarSave(); // S36b 화신의 불씨(한 판 1번)
   if(G.enemies.length>capNow()){gameOver();return;}
   for(const s of SLOTS){const t=s.tower;if(!t)continue;const u=U[t.name];
     if(u.cd>=9999){t.cool=0;continue;}
@@ -1872,7 +2314,7 @@ function update(dt){
       else{if(d<best){best=d;target=e;}}
     }
     if(target){const up=G.upg[u.dt]||0,upDmg=1+up*UPG_DMG,upAs=1+up*UPG_AS;
-      t.cool=u.cd/Math.min(AS_CAP,bm.as*upAs*(G.mod.as||1)*(t.rallyUntil>G.t?(t.rallyMul||1):1));let dmg=(u.dmg+t.bonus)*bm.dm*upDmg*G.mod.dmg;
+      t.cool=u.cd/Math.min(AS_CAP,bm.as*upAs*(G.mod.as||1)*(u.dt==='pierce'?(G.mod.asPierce||1):1)*(t.rallyUntil>G.t?(t.rallyMul||1):1));let dmg=(u.dmg+t.bonus)*bm.dm*upDmg*G.mod.dmg*techDtDmg(u.dt);
       t.angle=Math.atan2(target.y-t.y,target.x-t.x);t.flash=G.t;
       const dotUp=u.dot?{dps:u.dot.dps*upDmg,dur:u.dot.dur}:null; // 지속피해도 강화 반영
       G.shots.push({x:t.x,y:t.y,tx:target.x,ty:target.y,target,owner:t,dmg,dt:u.dt,
@@ -1893,14 +2335,14 @@ function update(dt){
     const w=G.waveDone+1;
     if(G.queueW.includes(w)||G.enemies.some(e=>e.wave===w))break;
     G.waveDone=w;if(w===G.wave)G.waveActive=false;
-    const rw=waveReward(),sc=Math.round(w*10*G.mod.score);
-    G.gold+=rw;G.score+=sc;G.tp+=1;
+    const rw=waveReward(),sc=Math.round(w*10*G.mod.score),it=techInterest();
+    G.gold+=rw+it;G.score+=sc;G.tp+=1;
     const sup=SLOTS.reduce((a,s)=>a+((s.tower&&U[s.tower.name].supply)||0),0);
     if(sup){G.gold+=sup*8;log(`보급 유닛 +${sup*8}골드`,'#7ee787');}
-    log(`${w}웨이브 클리어! 보상 +${rw}골드 · 점수 +${sc} · 특성포인트 +1`,'#2ea043');
+    log(`${w}웨이브 클리어! 보상 +${rw}골드${it?` · 이자 +${it}`:''} · 점수 +${sc} · 특성포인트 +1`,'#2ea043');
     if(w>=MAX_WAVE&&!G.endless){gameWin();break;}
     // 항법: 5의 배수 웨이브(보스) 클리어 → 일시정지 후 카드 3장 중 1택 (무한 모드에서도 계속)
-    else if(w%5===0)openNav();
+    else if(w%5===0)openTech(); // S36b 기술 카드
     if(G.endless)saveEndless(); // 무한 기록은 실시간 갱신 (중간 이탈 대비)
   }
   updateUI();
@@ -1939,7 +2381,7 @@ function toggleStrike(){if(!G||G.over)return;
   G.aiming=true;G.selected=null;log('💥 포격 조준 — 트랙에서 좀비가 몰린 곳을 누르세요 (버튼을 다시 누르면 취소)','#f0883e');updateUI();}
 function fireStrike(x,y){if(!G||G.over)return false;
   const cost=strikeCost();if(G.t<G.strikeCd||G.gold<cost){G.aiming=false;updateUI();return false;}
-  G.gold-=cost;G.strikeN++;G.strikeGold+=cost;G.strikeCd=G.t+STRIKE_CD;G.aiming=false;
+  G.gold-=cost;G.strikeN++;G.strikeGold+=cost;G.strikeCd=G.t+strikeCdNow();G.aiming=false;
   G.strikes.push({x,y,t:STRIKE_DELAY,max:STRIKE_DELAY,r:STRIKE_R,dmg:strikeDmg()});
   log(`💥 지정 포격 요청! −${cost}G (다음 ${strikeCost()}G)`,'#f0883e');updateUI();return true;}
 function updateStrikes(dt,transport){
@@ -1958,17 +2400,17 @@ function fxKey(s){return s.skey||(s.owner&&s.owner.name)||'_';}
 // 감속: 같은 출처(유닛·스킬 이름)는 가장 센 것 하나, 다른 출처끼리는 곱해지되 최대 SLOW_CAP(60%)까지. 보스는 효과 절반
 function slowCalc(e){let m=1,T=0;const w=e.slw;if(w)for(const k in w){const o=w[k];if(o.t>0){m*=o.m;if(o.t>T)T=o.t;}}
   m=Math.max(1-SLOW_CAP,m);e.slowMul=e.boss?1-(1-m)*0.5*(e.slowRes||1):m;e.slowT=T;} // slowRes: 부패 거인(감속 절반)
-function applySlow(e,mul,dur,key){if(!(mul<1))return;const w=e.slw||(e.slw={}),k=key||'_',o=w[k],live=o&&o.t>0;
+function applySlow(e,mul,dur,key){if(!(mul<1))return;if(G&&G.mod&&G.mod.slowMul>1)mul=Math.max(0.05,1-(1-mul)*G.mod.slowMul);const w=e.slw||(e.slw={}),k=key||'_',o=w[k],live=o&&o.t>0;
   if(!live||mul<=o.m)w[k]={m:mul,t:Math.max(live?o.t:0,dur||1000)};slowCalc(e);}
 // S35 방깎(점수): 같은 출처(유닛·스킬 이름)는 센 것 하나, 다른 출처끼리는 더함, 합계 최대 BRK_CAP(=풀깎 223). 보스도 똑같이 깎임
-function applyBrk(e,key,v,dur){if(!(v>0))return;const w=e.brk||(e.brk={}),o=w[key],until=G.t+(dur||3000);
+function applyBrk(e,key,v,dur){if(!(v>0))return;const w=e.brk||(e.brk={}),o=w[key],until=G.t+(dur||3000)+((G.mod&&G.mod.brkDur)||0);
   if(!o||o.until<=G.t||v>o.v)w[key]={v,until};else if(v===o.v)o.until=Math.max(o.until,until);}
-function brkOf(e){let a=0;const w=e.brk;if(w)for(const k in w){const o=w[k];if(o.until>G.t)a+=o.v;}if(a>0&&G.mod)a+=G.mod.brkAdd||0;return Math.min(BRK_CAP,a);}
+function brkOf(e){let a=0;const w=e.brk;if(w)for(const k in w){const o=w[k];if(o.until>G.t)a+=o.v;}if(!(a>0))return 0;if(G.mod)a+=techBrkExtra(a,G.mod.brkMul,G.mod.brkAdd);return Math.min(BRK_CAP,a);}
 // S34→S35 마방깎(점수): 방깎과 같은 규칙 — 같은 출처는 센 것 하나, 다른 출처끼리 더함, 합계 최대 MBRK_CAP(=풀깎 223)
 // 방깎은 물리 피해만, 마방깎은 마법 피해만 늘림 (방어무시 피해는 둘 다 영향 없음)
-function applyMbrk(e,key,v,dur){if(!(v>0))return;const w=e.mbrk||(e.mbrk={}),o=w[key],until=G.t+(dur||3000);
+function applyMbrk(e,key,v,dur){if(!(v>0))return;const w=e.mbrk||(e.mbrk={}),o=w[key],until=G.t+(dur||3000)+((G.mod&&G.mod.mbrkDur)||0);
   if(!o||o.until<=G.t||v>o.v)w[key]={v,until};else if(v===o.v)o.until=Math.max(o.until,until);}
-function mbrkOf(e){let a=0;const w=e.mbrk;if(w)for(const k in w){const o=w[k];if(o.until>G.t)a+=o.v;}if(a>0&&G.mod)a+=G.mod.mbrkAdd||0;return Math.min(MBRK_CAP,a);}
+function mbrkOf(e){let a=0;const w=e.mbrk;if(w)for(const k in w){const o=w[k];if(o.until>G.t)a+=o.v;}if(!(a>0))return 0;if(G.mod)a+=techBrkExtra(a,G.mod.mbrkMul,G.mod.mbrkAdd);return Math.min(MBRK_CAP,a);}
 // 받는 피해 증가: 표적지정 유닛(같은 이름은 1번만) + 표식 스킬, 합계 최대 AMP_CAP(25%)
 function applyMark(e,key,v,dur){if(!(v>0))return;const w=e.mk||(e.mk={}),o=w[key],until=G.t+(dur||4000);
   if(!o||o.until<=G.t||v>o.v)w[key]={v,until};else if(v===o.v)o.until=Math.max(o.until,until);}
@@ -1977,13 +2419,14 @@ function ampOf(e){let a=0,seen=null;
     if(Math.hypot(tt.x-e.x,tt.y-e.y)>U[tt.name].range)continue;
     if(seen){if(seen.includes(tt.name))continue;seen.push(tt.name);}else seen=[tt.name];a+=d-1;}
   const w=e.mk;if(w)for(const k in w){const o=w[k];if(o.until>G.t)a+=o.v;}
+  if(a>0&&G.mod)a+=G.mod.ampAdd||0; // S36b 표적 지시
   return Math.min(AMP_CAP,a);}
 // 체력 비례 피해: 보스는 절반 + 1초 동안 최대체력의 BOSS_PCT_SEC(5%)까지만
 function bossPct(e,raw){if(!e.boss)return raw;raw*=0.5;
   if(e.pctW==null||G.t-e.pctW>=1000){e.pctW=G.t;e.pctSum=0;}
   const v=Math.min(raw,Math.max(0,e.maxhp*BOSS_PCT_SEC-e.pctSum));e.pctSum+=v;return v;}
 // 지속피해: 더 센 불이 우선(약한 불이 센 불을 덮지 않음), 같은 세기는 시간 갱신
-function applyDot(e,dps,dur){if(!(dps>0))return;if(!(e.dotT>0)||dps>=e.dotDps){e.dotT=dur;e.dotDps=dps;}}
+function applyDot(e,dps,dur){if(!(dps>0))return;if(G&&G.mod)dps*=G.mod.dotMul||1;if(!(e.dotT>0)||dps>=e.dotDps){e.dotT=dur;e.dotDps=dps;}}
 function dealDamage(e,s){
   // S35 깎기: 맞힐 때마다 방어력 점수를 3초간 깎음 (같은 유닛 이름은 1번만, 다른 유닛끼리는 합산)
   if(s.armBrk)applyBrk(e,fxKey(s),s.armBrk,3000);
@@ -1991,6 +2434,7 @@ function dealDamage(e,s){
   const am=dmgMult(s.dt,e); // 깎인 뒤 방어력으로 계산된 배율
   let dmg=s.dmg*am;
   if(e.boss&&s.bossBonus)dmg*=s.bossBonus;
+  if(e.boss&&G.mod)dmg*=G.mod.bossDmg||1; // S36b 보스 피해
   const brk=brkOf(e),mbrk=mbrkOf(e);
   const amp=ampOf(e);if(amp)dmg*=1+amp;          // 받는 피해 증가 (합계 상한)
   if(e.stunT>0)dmg*=SYN.stun;                    // 시너지① 기절한 적
@@ -2022,7 +2466,7 @@ function hit(s){
 }
 // ===== S31 스킬 발동·효과 (기절·둔화 규칙은 일반 공격과 같은 함수 사용) =====
 // 기절: 보스는 시간 절반 + 풀린 뒤 1.5초 면역(moveEnemy) → 영구 기절 불가
-function applyStun(e,ms){if(!(ms>0)||e.stunImmT>0||e.stunImm)return; /* stunImm: 파멸의 타이탄 */e.stunT=Math.max(e.stunT||0,e.boss?ms*0.5:ms);}
+function applyStun(e,ms){if(!(ms>0)||e.stunImmT>0||e.stunImm)return; /* stunImm: 파멸의 타이탄 */if(G&&G.mod)ms*=G.mod.stunMul||1;e.stunT=Math.max(e.stunT||0,e.boss?ms*0.5:ms);}
 // 감속(applySlow)은 위 S32 역할 규칙에 있음
 // S35: 등급 강등·보스 +15% 약화는 없어지고 모두 점수형 깎기로 통일 (예전 이름은 호환용으로 남김)
 function applyShred(e,v,key){applyBrk(e,key||'약화',v||10,4000);}
@@ -2132,15 +2576,16 @@ function defeatDiag(){
   return `<br><span style="font-size:12px;color:#d29922">💡 붕괴 원인: ${tip}</span>`;
 }
 function gameOver(){G.over=true;G.reserve=[];G.resSel=null;G.sellAsk=null;saveScore();SFX.lose(); // S30: 대기소 비움
+  metaAward(); // S36b 기술 점수
   recSave('loss',G.lostBy||defeatDiag().replace(/<[^>]+>/g,'').replace(/^[\s\S]*붕괴 원인:\s*/,'').trim()); // S28 내 기록
   if(G.endless){saveEndless();showResult('🌀 무한 모드 종료',
     `난이도 <b>${G.diff}</b> · <b style="color:#a371f7">${G.wave}웨이브</b>까지 버텼습니다! (최고 ${getEndlessBest(G.diff)})${defeatDiag()}`,true);return;}
   showResult('💀 방어선 붕괴',
   `난이도 <b>${G.diff}</b> · 도달 웨이브 <b style="color:#79c0ff">${G.wave}/${MAX_WAVE}</b><br>좀비가 수용 한계를 넘어섰습니다.${defeatDiag()}`,true);}
-function gameWin(){if(G.won)return;G.won=true;G.over=true;saveScore();SFX.win();recSave('win');
+function gameWin(){if(G.won)return;G.won=true;G.over=true;saveScore();SFX.win();metaAward();recSave('win');
   const ov=document.getElementById('overlay');ov.classList.remove('hidden');
   ov.innerHTML=`<h2>🎉 클리어!</h2>
-    <p>난이도 <b>${G.diff}</b> · 30웨이브 방어 성공! 육군 만세!<br>점수 <b style="color:#7ee787">${G.score}</b> · 최고 ${getBest(G.diff)}</p>${recMeLine()}
+    <p>난이도 <b>${G.diff}</b> · 30웨이브 방어 성공! 육군 만세!<br>점수 <b style="color:#7ee787">${G.score}</b> · 최고 ${getBest(G.diff)}</p>${metaLine()}${recMeLine()}
     <button class="btn-wave" style="max-width:260px;background:linear-gradient(135deg,#a371f7,#8957e5)" onclick="enterEndless()">🌀 무한 모드 계속 (31웨이브~)</button>
     <p style="font-size:12px;color:#8b949e;">덱·골드·작전 그대로 이어서, 몇 웨이브까지 버티나 도전! (현 기록: ${getEndlessBest(G.diff)}웨이브)</p>
     <button class="btn-wave" style="max-width:220px" onclick="showStart()">난이도 선택</button>
@@ -2178,7 +2623,8 @@ function recSave(result,cause){try{if(!G||!G.started)return null;
     gold:Math.floor(G.gold),score:G.score,kills:G.kills,strikes:G.strikeN,strikeGold:G.strikeGold||0,
     missionTry:G.missionTries||0,missionOk:G.missionsDone,missionFail:G.missionFails||0,
     crafts:G.crafts,warns:G.warnShown||0,autoClaim:G.autoClaimed||0,topTier:top.tier,topUnit:top.unit,
-    deck:G.deck||'',goals:G.goals.slice(),navs:G.navs.map(n=>n.name||n.id)};
+    deck:G.deck||'',goals:G.goals.slice(),navs:(G.techs||[]).map(id=>(TECH_BY[id]||{}).name||id),
+    techs:(G.techs||[]).slice(),loot:(G.loot||[]).map(x=>x.id),meta:G.metaMode||'off',pts:G.metaAwarded||0};
   const i=G.recId?a.findIndex(x=>x.id===G.recId):-1;
   if(i>=0){const old=a[i];
     if(old.result==='win'&&result!=='win')Object.assign(r,{result:'win',wave:old.wave,cleared:old.cleared,cause:'',date:old.date,endlessWave:G.wave,endlessCause:cause||''});
@@ -2221,7 +2667,7 @@ function renderRecords(){const body=document.getElementById('recBody');if(!body)
       const res=r.result==='win'?'<span class="w">승리</span>':r.result==='loss'?'<span class="l">패배</span>':'<span class="q">중단</span>';
       const why=r.cause?' · '+recEsc(String(r.cause).split(' — ')[0]):'';
       h+=`<div class="recLine">${recEsc(String(r.date||'').slice(5))} · ${recEsc(r.diff)} · ${recEsc(r.doctrine)} · ${res} ${r.wave|0}웨이브`
-        +(r.endlessWave?` (무한 ${r.endlessWave|0})`:'')+why+` · ${r.min||0}분 · 점수 ${r.score|0}</div>`;});
+        +(r.endlessWave?` (무한 ${r.endlessWave|0})`:'')+(r.meta==='off'?'<span class="pureBadge">순수</span>':'')+why+` · ${r.min||0}분 · 점수 ${r.score|0}</div>`;});
   }
   h+=`<div class="recAct"><button class="linkBtn" onclick="recCopy()">기록 복사</button>`
     +(a.length?`<button class="linkBtn" style="color:#ec7a62" onclick="recClearAsk()">기록 지우기</button>`:'')+`</div><div id="recMsg"></div>`;
@@ -2245,7 +2691,7 @@ function showResult(title,body,showBoss){const ov=document.getElementById('overl
       <img src="assets/${encodeURIComponent('보스.png')}" style="width:100%;height:100%;object-fit:cover;display:block;">
       <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,17,23,0) 50%,rgba(13,17,23,.9));"></div>
     </div>`:'';
-  ov.innerHTML=`${art}<h2>${title}</h2><p>${body}<br>점수 <b style="color:#7ee787">${G.score}</b> · 최고 ${best}</p>${recMeLine()}
+  ov.innerHTML=`${art}<h2>${title}</h2><p>${body}<br>점수 <b style="color:#7ee787">${G.score}</b> · 최고 ${best}</p>${metaLine()}${recMeLine()}
     <button class="btn-wave" style="max-width:260px;background:linear-gradient(135deg,#d29922,#9e6a03)" onclick="retrySame()">🔁 같은 조건으로 재도전 (판 #${G.seed})</button>
     <p style="font-size:11px;color:#8b949e;">같은 소환 순서·같은 웨이브로 다시 — 이번엔 다른 판단을 시험해 보세요</p>
     <button class="btn-wave" style="max-width:220px" onclick="showStart()">난이도 선택</button>
@@ -2531,7 +2977,7 @@ function vTick(){const now=vNow();VFX.rdt=Math.max(0,Math.min(100,now-(VFX.lastR
   if(!G){VFX.gdt=0;return;}
   VFX.gdt=Math.max(0,Math.min(120,G.t-VFX.lastGT));VFX.lastGT=G.t;const gd=VFX.gdt;
   if(G.started){
-    if(G.wave>VFX.lastWave){VFX.lastWave=G.wave;if(!(VFX.banner&&VFX.banner.boss))VFX.banner={t0:now,dur:1700,wave:G.wave,boss:false};}
+    if(G.wave>VFX.lastWave){VFX.lastWave=G.wave;if(!(VFX.banner&&(VFX.banner.boss||VFX.banner.loot)))VFX.banner={t0:now,dur:1700,wave:G.wave,boss:false};}
     const cur=new Set(G.enemies);for(const e of VFX.prevE)if(!cur.has(e)&&e.hp<=0)vOnDeath(e);VFX.prevE=G.enemies.slice();
     for(const e of G.enemies)if(e.boss&&!VFX.seenBoss.has(e)){VFX.seenBoss.add(e);if(G.t-(e.spawnAt||0)<400){VFX.shake=Math.max(VFX.shake,9);VFX.banner={t0:now,dur:2200,boss:true,name:e.name||'보스',wave:G.wave};}}
     for(const f of G.fx)if(!VFX.seenFx.has(f)){VFX.seenFx.add(f);vOnFx(f);}
@@ -2566,14 +3012,14 @@ function vHud(){if(!G||!G.started)return;const c=ctx;c.save();
 // ----- 웨이브 시작 / 보스 출현 띠 -----
 function vBanner(){const b=VFX.banner;if(!b)return;const el=vNow()-b.t0;if(el>b.dur||el<0){VFX.banner=null;return;}
   const a=Math.min(1,el/220,(b.dur-el)/300),y=H*.36,c=ctx,bh=b.boss?64:54;c.save();c.globalAlpha=Math.max(0,a);
-  const col=b.boss?'110,14,12':'14,16,8',gr=c.createLinearGradient(0,0,W,0);gr.addColorStop(0,`rgba(${col},0)`);gr.addColorStop(.2,`rgba(${col},.84)`);gr.addColorStop(.8,`rgba(${col},.84)`);gr.addColorStop(1,`rgba(${col},0)`);
-  c.fillStyle=gr;c.fillRect(0,y-bh/2,W,bh);c.fillStyle=b.boss?'#ff5a4a':'#e0a526';c.fillRect(W*.16,y-bh/2,W*.68,2);c.fillRect(W*.16,y+bh/2-2,W*.68,2);
+  const col=b.boss?'110,14,12':b.loot?'38,42,44':'14,16,8',gr=c.createLinearGradient(0,0,W,0);gr.addColorStop(0,`rgba(${col},0)`);gr.addColorStop(.2,`rgba(${col},.84)`);gr.addColorStop(.8,`rgba(${col},.84)`);gr.addColorStop(1,`rgba(${col},0)`);
+  c.fillStyle=gr;c.fillRect(0,y-bh/2,W,bh);c.fillStyle=b.boss?'#ff5a4a':b.loot?'#b8c4c9':'#e0a526';c.fillRect(W*.16,y-bh/2,W*.68,2);c.fillRect(W*.16,y+bh/2-2,W*.68,2);
   if(b.boss&&VS.haz){c.fillStyle=VS.haz;c.fillRect(W*.16,y-bh/2-9,W*.68,6);c.fillRect(W*.16,y+bh/2+3,W*.68,6);}
   const e=Math.pow(1-Math.min(1,el/280),2);c.textAlign='center';c.textBaseline='middle';
-  const title=b.boss?'BOSS':'WAVE '+String(b.wave).padStart(2,'0');c.font=(b.boss?'40px ':'34px ')+FNT_STEN;
+  const title=b.boss?'BOSS':b.loot?'LOOT':'WAVE '+String(b.wave).padStart(2,'0');c.font=(b.boss?'40px ':'34px ')+FNT_STEN;
   c.fillStyle='rgba(0,0,0,.6)';c.fillText(title,W/2-e*120+2,y-8);c.fillStyle=b.boss?'#ffd8cc':'#f1ead0';c.fillText(title,W/2-e*120,y-10);
   c.font='14px '+FNT_HEAD;c.fillStyle=b.boss?'#ffb0a0':'#c2b27a';
-  c.fillText(b.boss?`${b.name} 출현 — 화력을 집중하세요`:((G&&G.endless)?'무한 모드 · ':'')+'좀비 무리 접근 중',W/2+e*120,y+18);
+  c.fillText(b.boss?`${b.name} 출현 — 화력을 집중하세요`:b.loot?`🏆 전리품: ${b.loot}`:((G&&G.endless)?'무한 모드 · ':'')+'좀비 무리 접근 중',W/2+e*120,y+18);
   c.restore();}
 
 function draw(){
@@ -3200,7 +3646,7 @@ function updateUI(){
   sbtn.textContent=G.freeSummons>0?`소환 (무료 ×${G.freeSummons})`:`소환 (${sc}G)`;
   updateS27Btns(); // 지정 포격·받을 보상 버튼
   // 작전·항법 상태 카드 (변할 때만 재렌더)
-  const opSig=G.doctrine+'|'+G.navs.length;
+  const opSig=G.doctrine+'|'+G.navs.length+'|'+(G.techs||[]).length+'|'+(G.loot||[]).length;
   if(opSig!==G.opSig){G.opSig=opSig;renderOps();}
   // 웨이브 미리보기 (다음 웨이브 번호 변할 때만)
   const pvSig=G.nextQueueW+'|'+(G.nextQueue?G.nextQueue.length:0);
@@ -3578,7 +4024,7 @@ function bookTreeHtml(target,inv,depth){
   return html;
 }
 let bookOpenUnit=null; // 도감에서 펼친 유닛
-function openBook(){if(G&&G.paused){log('🧭 항법을 먼저 선택하세요.','#ff7b72');return;}
+function openBook(){if(G&&G.paused){log('🔧 기술 카드를 먼저 골라 주세요','#e0a526');return;}
   bookOpenUnit=null;renderBook();document.getElementById('book').classList.remove('hidden');}
 function closeBook(){document.getElementById('book').classList.add('hidden');}
 function bookToggle(name){bookOpenUnit=(bookOpenUnit===name)?null:name;renderBook();}
