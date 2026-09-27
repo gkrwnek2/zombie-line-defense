@@ -479,7 +479,8 @@
       <summary>피해 상성 빠른표</summary>
       <div style="font-size:12.5px;color:#a9b3bf;line-height:1.7;">
         🟠<b style="color:#ff9f6e">물리</b> · 🔵<b style="color:#79c0ff">마법</b> · 🟡<b style="color:#f2cc60">방어무시</b><br>
-        강시(중장갑)=<b style="color:#79c0ff">마법</b> / 비행=<b style="color:#ff9f6e">물리·대공</b> / 자폭·보스=<b style="color:#f2cc60">방어무시</b></div>
+        강시·방패병(방어력↑)=<b style="color:#79c0ff">마법</b> 또는 물리+<b style="color:#f0955e">방깎</b> / 치유체(마방↑)=<b style="color:#ff9f6e">물리</b> 또는 마법+<b style="color:#38c9d6">마방깎</b> / 철갑귀·보스=<b style="color:#f2cc60">방어무시</b><br>
+        괴성꾼 = 주변 좀비를 광분(빨라짐)시킴 → 기절·감속으로 대응 · 1~10웨이브는 방어력 0</div>
     </details>
     <details class="card fold" data-k="log">
       <summary>전투 기록</summary>
@@ -556,83 +557,83 @@ function dmgMult(dt,e){
 
 // 유닛 도감 — dt=데미지타입
 const U={
-  // ===== 흔함 common (12) — 소환 전용 =====
-  'K2소총수':{t:'common',dt:'phys',dmg:11,range:95,cd:600,execute:0.06,role:'처형'},
-  'K3기관총사수':{t:'common',dt:'phys',dmg:7,range:88,cd:300,slow:0.85,short:'K3기관총',role:'감속'},
-  '판처파우스트':{t:'common',dt:'pierce',dmg:14,range:98,cd:1150,bossBonus:1.2,short:'판처',role:'보스'},
-  '신궁사수':{t:'common',dt:'phys',dmg:14,range:128,cd:850,air:true,mode:'air',role:'대공'},
-  '척탄병':{t:'common',dt:'magic',dmg:12,range:90,cd:820,splash:28,mBrk:10,role:'광역',roles:['마방깎']},
-  '통신병':{t:'common',dt:'phys',dmg:0,range:108,cd:9999,buff:{dmg:1.15,as:1.15},role:'강화'},
-  '의무병':{t:'common',dt:'phys',dmg:6,range:88,cd:1100,supply:1,role:'경제'},
-  '수송병':{t:'common',dt:'phys',dmg:7,range:85,cd:900,gold:0.15,role:'경제'},
-  '공병':{t:'common',dt:'phys',dmg:9,range:84,cd:800,slow:0.7,armBrk:12,role:'방깎',roles:['감속']},
-  '군견병':{t:'common',dt:'phys',dmg:8,range:76,cd:480,stun:300,stunP:0.15,role:'기절'},
-  '경계병':{t:'common',dt:'phys',dmg:14,range:122,cd:880,mode:'strong',curHpPct:0.008,role:'현재%'},
-  '정비병':{t:'common',dt:'phys',dmg:5,range:82,cd:1000,gold:0.1,supply:1,role:'경제'},
+  // ===== 흔함 common (12) — 소환 전용 · S36: 흔함~특별은 특수능력 없음(기본 공격만) =====
+  'K2소총수':{t:'common',dt:'phys',dmg:11,range:95,cd:600},
+  'K3기관총사수':{t:'common',dt:'phys',dmg:7,range:88,cd:320,short:'K3기관총'},
+  '판처파우스트':{t:'common',dt:'pierce',dmg:16,range:98,cd:1100,short:'판처'},
+  '신궁사수':{t:'common',dt:'phys',dmg:14,range:128,cd:850},
+  '척탄병':{t:'common',dt:'magic',dmg:15,range:90,cd:820},
+  '통신병':{t:'common',dt:'phys',dmg:10,range:108,cd:560},
+  '의무병':{t:'common',dt:'phys',dmg:13,range:88,cd:760},
+  '수송병':{t:'common',dt:'phys',dmg:12,range:85,cd:650},
+  '공병':{t:'common',dt:'phys',dmg:13,range:84,cd:700},
+  '군견병':{t:'common',dt:'phys',dmg:9,range:76,cd:450},
+  '경계병':{t:'common',dt:'phys',dmg:15,range:122,cd:880},
+  '정비병':{t:'common',dt:'phys',dmg:11,range:82,cd:620},
   // ===== 안흔함 uncommon (14) — 흔함 2종 =====
-  '저격수':{t:'uncommon',dt:'pierce',dmg:33,range:160,cd:900,mode:'strong',bossBonus:1.5,curHpPct:0.015,role:'현재%',roles:['보스']},
-  '지정사수':{t:'uncommon',dt:'phys',dmg:32,range:145,cd:520,mode:'strong',maxHpPct:0.006,role:'최대%'},
-  'K3기관총반':{t:'uncommon',dt:'phys',dmg:13,range:100,cd:230,slow:0.8,short:'K3반',role:'감속'},
-  '박격포반':{t:'uncommon',dt:'magic',dmg:30,range:120,cd:1050,splash:48,mBrk:15,role:'광역',roles:['마방깎']},
-  '발칸포반':{t:'uncommon',dt:'phys',dmg:26,range:134,cd:220,air:true,mode:'air',short:'발칸',role:'대공'},
-  '정찰드론':{t:'uncommon',dt:'phys',dmg:22,range:140,cd:520,air:true,gold:0.05,slow:0.85,role:'감속',roles:['대공','경제']},
-  '화염방사병':{t:'uncommon',dt:'magic',dmg:16,range:86,cd:340,dot:{dps:38,dur:1500},splash:34,short:'화염병',role:'지속',roles:['광역']},
-  '미사일반':{t:'uncommon',dt:'pierce',dmg:44,range:155,cd:1150,bossBonus:1.5,short:'미사일',role:'보스'},
-  '정찰병':{t:'uncommon',dt:'phys',dmg:17,range:112,cd:680,debuff:1.2,gold:0.1,role:'증폭',roles:['경제']},
-  '화생방병':{t:'uncommon',dt:'pierce',dmg:10,range:100,cd:880,dot:{dps:18,dur:3000},role:'지속'},
-  '의무지원반':{t:'uncommon',dt:'phys',dmg:8,range:104,cd:1000,supply:2,short:'의무반',role:'경제'},
-  '공병중대':{t:'uncommon',dt:'phys',dmg:16,range:96,cd:760,slow:0.65,armBrk:18,short:'공병대',role:'방깎',roles:['감속']},
-  '통신중대':{t:'uncommon',dt:'phys',dmg:0,range:118,cd:9999,buff:{dmg:1.25,as:1.2},short:'통신대',role:'강화'},
-  '수색대':{t:'uncommon',dt:'phys',dmg:26,range:120,cd:440,stun:300,stunP:0.12,short:'수색',role:'기절'},
+  '저격수':{t:'uncommon',dt:'pierce',dmg:38,range:160,cd:900},
+  '지정사수':{t:'uncommon',dt:'phys',dmg:32,range:145,cd:540},
+  'K3기관총반':{t:'uncommon',dt:'phys',dmg:13,range:100,cd:230,short:'K3반'},
+  '박격포반':{t:'uncommon',dt:'magic',dmg:44,range:120,cd:900},
+  '발칸포반':{t:'uncommon',dt:'phys',dmg:16,range:134,cd:300,short:'발칸'},
+  '정찰드론':{t:'uncommon',dt:'phys',dmg:24,range:140,cd:480},
+  '화염방사병':{t:'uncommon',dt:'magic',dmg:18,range:86,cd:340,short:'화염병'},
+  '미사일반':{t:'uncommon',dt:'pierce',dmg:48,range:155,cd:1100,short:'미사일'},
+  '정찰병':{t:'uncommon',dt:'phys',dmg:30,range:112,cd:600},
+  '화생방병':{t:'uncommon',dt:'pierce',dmg:36,range:100,cd:860},
+  '의무지원반':{t:'uncommon',dt:'phys',dmg:26,range:104,cd:520,short:'의무반'},
+  '공병중대':{t:'uncommon',dt:'phys',dmg:30,range:96,cd:600,short:'공병대'},
+  '통신중대':{t:'uncommon',dt:'phys',dmg:28,range:118,cd:560,short:'통신대'},
+  '수색대':{t:'uncommon',dt:'phys',dmg:26,range:120,cd:440,short:'수색'},
   // ===== 특별 special (12) — 안흔함 3종 =====
-  'K200 APC':{t:'special',dt:'phys',dmg:52,range:120,cd:560,splash:34,stun:300,stunP:0.15,short:'K200',role:'기절',roles:['광역']},
-  'K808 백호':{t:'special',dt:'phys',dmg:64,range:128,cd:680,splash:40,armBrk:25,short:'K808',role:'방깎',roles:['광역']},
-  'KH179 견인포':{t:'special',dt:'magic',dmg:82,range:150,cd:1250,splash:64,mBrk:22,short:'KH179',role:'마방깎',roles:['광역']},
-  'K105A1 자주포':{t:'special',dt:'magic',dmg:70,range:160,cd:1050,splash:54,bossBonus:1.3,short:'K105',role:'보스',roles:['광역']},
-  '비호':{t:'special',dt:'phys',dmg:34,range:135,cd:220,air:true,mode:'air',role:'대공'},
-  '천마':{t:'special',dt:'pierce',dmg:78,range:158,cd:900,air:true,bossBonus:1.3,short:'천마',role:'대공',roles:['보스']},
-  '송골매':{t:'special',dt:'phys',dmg:46,range:165,cd:430,air:true,debuff:1.15,role:'증폭'},
-  '500MD':{t:'special',dt:'magic',dmg:60,range:150,cd:620,air:true,splash:40,mBrk:18,role:'광역',roles:['마방깎']},
-  '화룡 화염장갑차':{t:'special',dt:'magic',dmg:34,range:100,cd:420,dot:{dps:46,dur:1500},splash:46,short:'화룡',role:'지속',roles:['광역']},
-  '제독차':{t:'special',dt:'pierce',dmg:24,range:116,cd:980,dot:{dps:48,dur:3000},splash:54,slow:0.75,role:'감속',roles:['지속']},
-  '특공대':{t:'special',dt:'pierce',dmg:48,range:108,cd:520,bossBonus:1.8,execute:0.1,short:'특공',role:'처형',roles:['보스']},
-  '수리온':{t:'special',dt:'phys',dmg:30,range:140,cd:480,air:true,supply:2,buff:{dmg:1.15,as:1.15},short:'수리온',role:'강화',roles:['경제']},
+  'K200 APC':{t:'special',dt:'phys',dmg:56,range:120,cd:560,short:'K200'},
+  'K808 백호':{t:'special',dt:'phys',dmg:68,range:128,cd:680,short:'K808'},
+  'KH179 견인포':{t:'special',dt:'magic',dmg:110,range:150,cd:1100,short:'KH179'},
+  'K105A1 자주포':{t:'special',dt:'magic',dmg:100,range:160,cd:1000,short:'K105'},
+  '비호':{t:'special',dt:'phys',dmg:26,range:135,cd:260},
+  '천마':{t:'special',dt:'pierce',dmg:80,range:158,cd:900,short:'천마'},
+  '송골매':{t:'special',dt:'phys',dmg:46,range:165,cd:430},
+  '500MD':{t:'special',dt:'magic',dmg:62,range:150,cd:620},
+  '화룡 화염장갑차':{t:'special',dt:'magic',dmg:42,range:100,cd:420,short:'화룡'},
+  '제독차':{t:'special',dt:'pierce',dmg:74,range:116,cd:860},
+  '특공대':{t:'special',dt:'pierce',dmg:46,range:108,cd:520,short:'특공'},
+  '수리온':{t:'special',dt:'phys',dmg:48,range:140,cd:480,short:'수리온'},
   // ===== 희귀 rare (10) — 특별 3종 =====
   'K1A2 전차':{t:'rare',dt:'phys',dmg:185,range:124,cd:880,splash:30,bossBonus:1.3,armBrk:20,short:'K1A2',role:'방깎',roles:['보스']},
   'K21 보병전투차':{t:'rare',dt:'phys',dmg:78,range:122,cd:380,rampage:2,stun:250,stunP:0.1,short:'K21',role:'기절'},
   'K9 천둥':{t:'rare',dt:'magic',dmg:150,range:215,cd:1350,splash:70,short:'K9',role:'광역'},
-  '천호 방공복합':{t:'rare',dt:'phys',dmg:84,range:148,cd:330,air:true,slow:0.55,splash:42,short:'천호',role:'감속',roles:['대공']},
-  'LAMD 요격체계':{t:'rare',dt:'magic',dmg:124,range:180,cd:850,air:true,splash:52,short:'LAMD',role:'대공',roles:['광역']},
-  'AH-1S 코브라':{t:'rare',dt:'magic',dmg:120,range:175,cd:540,air:true,splash:48,dot:{dps:50,dur:2000},mBrk:15,short:'코브라',role:'지속',roles:['마방깎','광역']},
+  '천호 방공복합':{t:'rare',dt:'phys',dmg:84,range:148,cd:330,slow:0.55,splash:42,short:'천호',role:'감속',roles:['광역']},
+  'LAMD 요격체계':{t:'rare',dt:'magic',dmg:124,range:180,cd:850,splash:52,mBrk:15,short:'LAMD',role:'마방깎',roles:['광역']},
+  'AH-1S 코브라':{t:'rare',dt:'magic',dmg:120,range:175,cd:540,splash:48,dot:{dps:50,dur:2000},mBrk:15,short:'코브라',role:'지속',roles:['마방깎','광역']},
   '특전여단':{t:'rare',dt:'pierce',dmg:125,range:114,cd:520,bossBonus:2.0,execute:0.12,short:'특전',role:'처형',roles:['보스']},
   '현무-2':{t:'rare',dt:'magic',dmg:240,range:230,cd:1700,splash:60,bossBonus:1.3,short:'현무2',role:'보스',roles:['광역']},
-  '무인수색차':{t:'rare',dt:'phys',dmg:72,range:150,cd:300,rampage:1,buff:{dmg:1.2,as:1.15},short:'무인차',role:'강화',roles:['증폭']},
-  '비호복합':{t:'rare',dt:'phys',dmg:70,range:150,cd:200,air:true,mode:'air',short:'비호복합',role:'대공'},
+  '무인수색차':{t:'rare',dt:'phys',dmg:72,range:150,cd:300,rampage:1,buff:{dmg:1.2,as:1.15},debuff:1.1,short:'무인차',role:'강화',roles:['증폭']},
+  '비호복합':{t:'rare',dt:'phys',dmg:70,range:150,cd:200,armBrk:12,short:'비호복합',role:'방깎'},
   '현무-2A':{t:'rare',dt:'magic',dmg:210,range:235,cd:1500,splash:62,maxHpPct:0.02,short:'현무2A',role:'최대%',roles:['광역']},
-  'K30 비호Ⅱ':{t:'rare',dt:'phys',dmg:88,range:152,cd:210,air:true,armBrk:15,short:'비호2',role:'대공',roles:['방깎']},
+  'K30 비호Ⅱ':{t:'rare',dt:'phys',dmg:88,range:152,cd:210,armBrk:15,slow:0.8,short:'비호2',role:'방깎',roles:['감속']},
   // ===== 전설 legend (10) — 희귀 3종 · 특수능력 보유 =====
   'K2 흑표':{t:'legend',dt:'phys',dmg:420,range:132,cd:820,splash:48,bossBonus:1.3,armBrk:30,short:'K2흑표',role:'방깎',roles:['보스','광역']},
   '천무 다연장':{t:'legend',dt:'magic',dmg:230,range:232,cd:1550,splash:96,maxHpPct:0.03,mBrk:30,short:'천무',role:'광역',roles:['마방깎','최대%']},
-  'AH-64E 아파치':{t:'legend',dt:'magic',dmg:175,range:170,cd:480,air:true,splash:58,mBrk:35,curHpPct:0.01,short:'아파치',role:'현재%',roles:['마방깎']},
+  'AH-64E 아파치':{t:'legend',dt:'magic',dmg:175,range:170,cd:480,splash:58,mBrk:35,curHpPct:0.01,short:'아파치',role:'현재%',roles:['마방깎']},
   '707특임대':{t:'legend',dt:'pierce',dmg:260,range:120,cd:480,bossBonus:3.0,execute:0.1,stun:500,short:'707',role:'처형',roles:['보스','기절']},
   '현무-3':{t:'legend',dt:'magic',dmg:1050,range:250,cd:2150,splash:54,bossBonus:1.5,curHpPct:0.04,short:'현무3',role:'보스',roles:['현재%']},
-  'K10 탄약운반':{t:'legend',dt:'phys',dmg:140,range:170,cd:150,buff:{dmg:1.2,as:1.25},short:'K10',role:'강화',roles:['경제']},
-  '드론봇중대':{t:'legend',dt:'phys',dmg:230,range:195,cd:230,air:true,splash:42,slow:0.8,armBrk:20,short:'드론봇',role:'감속',roles:['방깎']},
-  '미사일여단':{t:'legend',dt:'pierce',dmg:340,range:205,cd:760,air:true,bossBonus:1.6,stun:450,short:'미여단',role:'보스',roles:['기절']},
+  'K10 탄약운반':{t:'legend',dt:'phys',dmg:140,range:170,cd:150,buff:{dmg:1.2,as:1.25},supply:2,short:'K10',role:'강화',roles:['경제']},
+  '드론봇중대':{t:'legend',dt:'phys',dmg:230,range:195,cd:230,splash:42,slow:0.8,armBrk:20,short:'드론봇',role:'감속',roles:['방깎']},
+  '미사일여단':{t:'legend',dt:'pierce',dmg:340,range:205,cd:760,bossBonus:1.6,stun:450,short:'미여단',role:'보스',roles:['기절']},
   'K808A 천산':{t:'legend',dt:'phys',dmg:300,range:140,cd:600,splash:54,stun:400,short:'천산',role:'기절',roles:['광역']},
   '현궁 대전차':{t:'legend',dt:'pierce',dmg:520,range:200,cd:900,bossBonus:1.8,maxHpPct:0.03,short:'현궁',role:'최대%',roles:['보스']},
   // ===== 신화 mythic (6) — 전설 3종 · 강력 특수능력 =====
   '현무-5':{t:'mythic',dt:'magic',dmg:2900,range:999,cd:3800,splash:140,bossBonus:1.5,maxHpPct:0.05,stun:600,short:'현무5',role:'최대%',roles:['기절','보스']},
-  '천광 레이저포대':{t:'mythic',dt:'pierce',dmg:430,range:215,cd:340,air:true,splash:74,bossBonus:1.3,stun:350,dot:{dps:120,dur:2000},short:'천광',role:'지속',roles:['대공','기절']},
-  '드론봇 전투단':{t:'mythic',dt:'phys',dmg:360,range:200,cd:210,air:true,splash:46,slow:0.75,stun:300,armBrk:25,short:'드론봇단',role:'감속',roles:['방깎','기절']},
+  '천광 레이저포대':{t:'mythic',dt:'pierce',dmg:430,range:215,cd:340,splash:74,bossBonus:1.3,stun:350,dot:{dps:120,dur:2000},short:'천광',role:'지속',roles:['기절','광역']},
+  '드론봇 전투단':{t:'mythic',dt:'phys',dmg:360,range:200,cd:210,splash:46,slow:0.75,stun:300,armBrk:25,short:'드론봇단',role:'감속',roles:['방깎','기절']},
   'ATACMS':{t:'mythic',dt:'magic',dmg:1500,range:280,cd:2400,splash:120,curHpPct:0.06,mBrk:30,short:'ATACMS',role:'현재%',roles:['마방깎','광역']},
-  'LAH 편대':{t:'mythic',dt:'phys',dmg:480,range:185,cd:300,air:true,splash:52,armBrk:35,short:'LAH',role:'방깎'},
-  '천검 무인편대':{t:'mythic',dt:'magic',dmg:620,range:230,cd:380,air:true,splash:60,maxHpPct:0.03,debuff:1.15,stun:300,mBrk:40,short:'천검',role:'증폭',roles:['마방깎','최대%','기절']},
+  'LAH 편대':{t:'mythic',dt:'phys',dmg:480,range:185,cd:300,splash:52,armBrk:35,short:'LAH',role:'방깎'},
+  '천검 무인편대':{t:'mythic',dt:'magic',dmg:620,range:230,cd:380,splash:60,maxHpPct:0.03,debuff:1.15,stun:300,mBrk:40,short:'천검',role:'증폭',roles:['마방깎','최대%','기절']},
   // ===== 최상위 조합 (4) — 신화 3종 조합의 정점 =====
   '수도기계화사단':{t:'apex',dt:'phys',dmg:780,range:235,cd:560,splash:88,buff:{dmg:1.4,as:1.3},stun:400,armBrk:40,short:'수기사',role:'강화',roles:['방깎','기절']},
   '신속대응사단':{t:'apex',dt:'pierce',dmg:1800,range:150,cd:680,bossBonus:4,execute:0.15,stun:500,short:'신대사',role:'처형',roles:['보스','기절']},
-  '백두금강정찰':{t:'apex',dt:'phys',dmg:1500,range:240,cd:170,air:true,splash:50,debuff:1.3,armBrk:45,short:'백두금강',role:'증폭',roles:['방깎']},
-  '드론봇 군단':{t:'apex',dt:'magic',dmg:1600,range:245,cd:300,air:true,splash:70,slow:0.7,maxHpPct:0.04,stun:350,mBrk:55,short:'드론군단',role:'감속',roles:['마방깎','최대%','기절']},
+  '백두금강정찰':{t:'apex',dt:'phys',dmg:1500,range:240,cd:170,splash:50,debuff:1.3,armBrk:45,short:'백두금강',role:'증폭',roles:['방깎']},
+  '드론봇 군단':{t:'apex',dt:'magic',dmg:1600,range:245,cd:300,splash:70,slow:0.7,maxHpPct:0.04,stun:350,mBrk:55,short:'드론군단',role:'감속',roles:['마방깎','최대%','기절']},
   // ===== 히든 hidden (3) — 비밀 조합, 첫 재료만 노출 =====
   '국군통수권':{t:'hidden',dt:'magic',dmg:5200,range:340,cd:1500,splash:90,buff:{dmg:1.2,as:1.2},bossBonus:2.5,maxHpPct:0.06,stun:800,short:'통수권',role:'강화',roles:['최대%','기절']},
   '비밀정보부':{t:'hidden',dt:'pierce',dmg:4000,range:280,cd:700,bossBonus:5,execute:0.25,curHpPct:0.08,stun:600,short:'정보부',role:'현재%',roles:['처형','보스']},
@@ -640,9 +641,9 @@ const U={
   '코드네임 유령':{t:'hidden',dt:'magic',dmg:4800,range:320,cd:1300,splash:80,mBrk:35,maxHpPct:0.05,stun:600,short:'유령',role:'마방깎',roles:['최대%','광역']},
   // ===== S34 비밀 secret (4) — ☢ 우라늄 연구소 비밀 도박에서만. 전설과 신화 사이 힘 =====
   '특수정찰대':{t:'secret',dt:'phys',dmg:320,range:190,cd:360,debuff:1.2,armBrk:20,short:'특정대',role:'증폭',roles:['방깎']},
-  '전자전 부대':{t:'secret',dt:'magic',dmg:380,range:200,cd:520,air:true,splash:64,slow:0.75,mBrk:30,short:'전자전',role:'마방깎',roles:['감속']},
+  '전자전 부대':{t:'secret',dt:'magic',dmg:380,range:200,cd:520,splash:64,slow:0.75,mBrk:30,short:'전자전',role:'마방깎',roles:['감속']},
   '스텔스 저격조':{t:'secret',dt:'pierce',dmg:850,range:300,cd:1200,mode:'strong',bossBonus:2,maxHpPct:0.03,short:'스텔스',role:'최대%',roles:['보스']},
-  '자폭드론팀':{t:'secret',dt:'magic',dmg:560,range:220,cd:900,air:true,splash:90,stun:300,short:'자폭드론',role:'광역',roles:['기절']},
+  '자폭드론팀':{t:'secret',dt:'magic',dmg:560,range:220,cd:900,splash:90,stun:300,short:'자폭드론',role:'광역',roles:['기절']},
   // 도박 실패물: 공격 안 함 · 칸 차지 · 판매 0골드 · 보통 조합 재료 아님
   '핵폐기물':{t:'waste',dt:'pierce',dmg:0,range:0,cd:9999,junk:true,short:'폐기물'},
 };
@@ -650,7 +651,7 @@ const U={
 // on: 'hit'=공격할 때 p 확률 · 'count'=n번 공격마다 · 'time'=공격 중 sec초마다
 const SKILL_N={rare:1,legend:2,mythic:3,apex:4,hidden:5,secret:3};
 function SK(nm,on,v,fx,o){const s={nm,on,fx};if(on==='hit')s.p=v;else if(on==='count')s.n=v;else s.sec=v;return Object.assign(s,o||{});}
-// fx: stun(기절) bomb(폭발) barrage(연속 낙하) slow(감속) shred(방어력 감소) rally(아군 공속↑) aa(대공 폭발, 비행 2배) snipe(가장 튼튼한 1마리)
+// fx: stun(기절) bomb(폭발) barrage(연속 낙하) slow(감속) shred(방어력 감소) rally(아군 공속↑) snipe(가장 튼튼한 1마리)
 //     S32 추가: mark(받는 피해 증가 표식) pct(체력 비례 폭발) exec(처형) burn(불붙이기) gold(골드 보급)
 // r=범위(px, 지도 기준) · k=그 순간 1타 공격력의 배수 · ms=기절 시간 · hits=낙하 발수 · mul=감속 속도배율/공속배율 · dur=지속(ms)
 // v=방깎·마방깎 점수(S35: 방어력에서 빼는 수치)·표식 세기 · mp/cp=최대·현재 체력 비례 · th=처형 기준 · bp=보스 우선 조준 · g=골드
@@ -733,11 +734,11 @@ const SKD={
   '자폭 드론 군집':['count',15,'barrage',{r:35,k:0.4,hits:5}],
   '집속탄 세례':['hit',0.15,'barrage',{r:40,k:0.2,hits:6}],
   '공대지 로켓 세례':['count',20,'barrage',{r:35,k:0.6,hits:4}],
-  // 대공
-  '요격 탄막':['hit',0.12,'aa',{r:70,k:1.0}],
-  '대공 연사':['count',25,'aa',{r:60,k:1.5}],
-  '대공 레이저망':['count',20,'aa',{r:90,k:1.2}],
-  '대공 드론망':['count',25,'aa',{r:100,k:1.5}],
+  // S36: 옛 방공 기술 → 폭발·방어력 파쇄로 전환
+  '파편 탄막':['hit',0.12,'bomb',{r:70,k:1.0}],
+  '철갑 연사':['count',20,'shred',{r:60,k:1.2,v:20}],
+  '레이저 섬멸망':['count',20,'bomb',{r:90,k:1.2}],
+  '드론 포위망':['count',25,'bomb',{r:100,k:1.5}],
   // 지속피해 (초당 공격력 k배, dur 동안)
   '소이 로켓 세례':['count',12,'burn',{r:40,k:0.5,dur:3000}],
   '레이저 소각':['count',15,'burn',{r:80,k:0.6,dur:3000}],
@@ -759,14 +760,14 @@ const SKILLS_BY={
   'K21 보병전투차':['하차 돌격'],
   'K9 천둥':['포병 집중사격'],
   '천호 방공복합':['방공 제압탄'],
-  'LAMD 요격체계':['요격 탄막'],
+  'LAMD 요격체계':['파편 탄막'],
   'AH-1S 코브라':['소이 로켓 세례'],
   '특전여단':['소탕 작전'],
   '현무-2':['탄도탄 정밀타격'],
   '무인수색차':['표적 지정 레이저'],
-  '비호복합':['대공 연사'],
+  '비호복합':['철갑 연사'],
   '현무-2A':['관통 탄두'],
-  'K30 비호Ⅱ':['대공 연사'],
+  'K30 비호Ⅱ':['철갑 연사'],
   // 전설 (2개)
   'K2 흑표':['전차포 일제사격','장갑 파쇄'],
   '천무 다연장':['다연장 로켓 세례','자탄 살포'],
@@ -780,7 +781,7 @@ const SKILLS_BY={
   '현궁 대전차':['관통 탄두','정밀 유도 일격'],
   // 신화 (3개)
   '현무-5':['관통 탄두Ⅱ','충격파 탄두Ⅱ','자탄 살포'],
-  '천광 레이저포대':['레이저 소각','섬광 교란','대공 레이저망'],
+  '천광 레이저포대':['레이저 소각','섬광 교란','레이저 섬멸망'],
   '드론봇 전투단':['자폭 드론 편대','전파 교란Ⅱ','드론 전술 연동'],
   'ATACMS':['집속탄 세례','약점 저격Ⅱ','충격파 탄두'],
   'LAH 편대':['공대지 로켓 세례','장갑 파쇄','철갑탄 일제사격'],
@@ -789,7 +790,7 @@ const SKILLS_BY={
   '수도기계화사단':['기갑 돌파','포병 일제사격','기갑 독려','장갑 파쇄Ⅱ'],
   '신속대응사단':['소탕 작전Ⅱ','저격 일격','강습 섬광탄','신속 전개'],
   '백두금강정찰':['표적 지정Ⅱ','정밀 폭격 유도','연막 제압','정찰 정보 공유'],
-  '드론봇 군단':['전파 교란Ⅲ','자폭 드론 군집','드론 집중 폭격','대공 드론망'],
+  '드론봇 군단':['전파 교란Ⅲ','자폭 드론 군집','드론 집중 폭격','드론 포위망'],
   // 히든 (5개)
   '국군통수권':['전군 비상령','합동 화력 집중','다연장 로켓 세례','충격파 탄두Ⅲ','전군 표적 지정'],
   '비밀정보부':['암살 저격','제거 명령','섬광 교란Ⅱ','첩보 지원','표적 지정Ⅱ'],
@@ -888,35 +889,38 @@ window.addEventListener('pointerdown',initAudio); // 브라우저 정책: 첫 �
 const UPG_BASE=30, UPG_DMG=0.12, UPG_AS=0.13, AS_CAP=4; // 레벨당 공격력+12%, 공속+13% (S35 공속 상향) · 공속 합계 최대 4배
 function upgCost(lv){return Math.max(1,Math.round(UPG_BASE*Math.pow(1.45,lv)*(G&&G.mod?G.mod.upgCost:1)));}
 // 좀비: armP·mresP = 방어력·마법방어력 성향(1.0=그 난이도 최고치). 실제 숫자는 zArmor()가 난이도·웨이브로 계산(S35)
+// S36 괴성꾼: SCREAM_EVERY마다 반경 SCREAM_R 안 좀비를 SCREAM_DUR 동안 광분(이속 ×FRENZY_MUL). 감속은 광분 중에도 그대로 걸림
+const SCREAM_EVERY=4000,SCREAM_R=90,SCREAM_DUR=3000,FRENZY_MUL=1.35;
 const ZTYPE={
   normal:{name:'좀비',color:'#7ee787',hp:1.0,spd:0.9,r:9,armP:0.35,mresP:0.35},
   runner:{name:'광란',color:'#f0883e',hp:0.5,spd:1.7,r:8,armP:0.25,mresP:0.25},
   tank:{name:'강시',color:'#aeb6bf',hp:3.6,spd:0.55,r:13,armP:1,mresP:0.3},
-  bomber:{name:'자폭',color:'#ff7b72',hp:1.2,spd:0.95,r:10,boom:4,armP:0.9,mresP:0.9},
-  flyer:{name:'비행변종',color:'#79c0ff',hp:0.8,spd:1.05,r:9,fly:true,armP:0.3,mresP:1},
+  armored:{name:'철갑귀',color:'#9aa4ae',hp:1.4,spd:0.8,r:11,armP:0.8,mresP:0.8}, // S36: 방어력·마법방어력 둘 다 높음 → 방어무시·깎기
   // 특수 능력 좀비
   splitter:{name:'분열체',color:'#d29922',hp:1.6,spd:0.85,r:11,armP:0.45,mresP:0.45,split:2},
   shielded:{name:'방패병',color:'#58a6ff',hp:1.4,spd:0.8,r:11,armP:1,mresP:0.35,shield:0.5},
   healer:{name:'치유체',color:'#3fb950',hp:1.3,spd:0.7,r:11,armP:0.35,mresP:1,healAura:0.03},
-  runnerKing:{name:'질주군주',color:'#ff7b72',hp:1.1,spd:1.2,r:10,armP:0.5,mresP:0.5,hasteAura:1.4},
+  screamer:{name:'괴성꾼',color:'#ff7b72',hp:1.1,spd:1.0,r:10,armP:0.5,mresP:0.5,scream:1}, // S36: 주기적으로 괴성 → 주변 좀비 광분(잠깐 빨라짐). 기절시키면 못 지름
   boss:{name:'보스',color:'#da3633',hp:10.5,spd:0.5,r:18,boss:true,armP:1,mresP:1},
   final:{name:'변종 군주',color:'#a371f7',hp:34,spd:0.42,r:24,boss:true,armP:1,mresP:1},
 };
 // S22 재조정: 실코드 시뮬 기반 (초보AI 쉬움~보통 100%·어려움 75% / 사람AI 어려움 100%·지옥 75%·신 38%)
 const DIFF={
   '쉬움':{hp:1.3,late:1.2,reward:1.15,cap:44,arm:25,spd:1.0,spdW:0.011,lap:0,need:0}, // S27: 초반 완충 도입과 함께 중후반 압박으로 재조정
-  '보통':{hp:3.12,late:1.6,reward:1.0,cap:36,arm:71,spd:1.03,spdW:0.013,lap:0.04,need:0.35},
-  '어려움':{hp:9,late:2.2,reward:0.9,cap:30,arm:132,spd:1.08,spdW:0.016,lap:0.07,need:0.65},
-  '지옥':{hp:8.5,late:1.5,reward:0.85,cap:20,arm:173,spd:1.14,spdW:0.019,lap:0.10,need:0.85},
-  '신':{hp:9.7,late:0.9,reward:0.8,cap:18,arm:203,spd:1.2,spdW:0.022,lap:0.12,need:1.0}, // S32: 역할·시너지로 강해진 만큼 좀비 체력 보정(보통×1.2·어려움×1.35·지옥×1.7·신×1.25)
+  '보통':{hp:1.8,late:1.6,reward:1.0,cap:36,arm:71,spd:1.03,spdW:0.013,lap:0.04,need:0.35},
+  '어려움':{hp:4.1,late:1.5,reward:0.9,cap:30,arm:132,spd:1.08,spdW:0.016,lap:0.07,need:0.65},
+  '지옥':{hp:4,late:1.5,reward:0.85,cap:20,arm:173,spd:1.14,spdW:0.019,lap:0.10,need:0.85},
+  '신':{hp:5.85,late:0.9,reward:0.8,cap:18,arm:203,spd:1.2,spdW:0.022,lap:0.12,need:1.0}, // S32: 역할·시너지로 강해진 만큼 좀비 체력 보정(보통×1.2·어려움×1.35·지옥×1.7·신×1.25)
 };
 // S35 체력 재조정(방어력·속도·회복이 붙은 만큼): 보통 그대로 · 어려움 8.37→9 · 지옥 12.92→8.5 · 신 10.75→9.7 (모의 대전 기준)
+// S36 체력 재조정(흔함~특별 능력 제거 · 방어력 오름 늦춤): 보통 3.12→1.8 · 어려움 9→4.1(후반 2.2→1.5) · 지옥 8.5→4 · 신 9.7→5.85 (모의 대전 기준)
 // S35: arm = 그 난이도 30웨이브 "가장 단단한 종류"의 방어력(보스는 ×1.1 → 신 막판 보스 ≈ 223 = 풀깎)
 // 웨이브가 오를수록 방어력이 커짐(1웨이브는 거의 0 → 30웨이브 최고치). spd·spdW = 이동속도 배율·웨이브당 증가
 // lap = 좀비가 트랙 한 바퀴를 돌 때마다 최대체력의 몇 %를 회복하는지(빠를수록 자주 회복 → 감속·기절이 중요)
 // need = 이 난이도에서 필요한 깎기·CC 비율(풀깎 223 대비) — 화면 깎기 게이지의 "필요" 표시
 function zArmor(type,w,kind){const z=ZTYPE[type]||{},T=(G&&G.dcfg&&G.dcfg.arm)||0,p=kind==='m'?(z.mresP||0):(z.armP||0);
-  const k=Math.pow(Math.min(1,Math.max(0,w)/30),1.2);
+  if(!(w>10))return 0; // S36: 1~10웨이브는 방어력·마법방어력 0 (능력 있는 희귀 유닛이 나오기 전)
+  const k=Math.pow(Math.min(1,(w-10)/20),2.2); // 11웨이브부터 천천히 올라(20웨이브 약 22%) 30웨이브에 최대 — 막판 필요 방깎은 S35 그대로
   const f=z.boss?0.1+1.0*k:0.05+0.95*k; // 보스: 30웨이브에 ×1.1
   return Math.round(T*p*f);}
 function needPts(){return Math.round(((G&&G.dcfg&&G.dcfg.need)||0)*FULL_BRK);}
@@ -977,7 +981,7 @@ function recalcMods(){
 // 모디파이어 반영 헬퍼 (상수 직접 참조 대신 이걸 사용)
 function summonCost(){return Math.max(1,Math.round(SUMMON_COST*(G&&G.mod?G.mod.summonCost:1)));}
 function waveReward(){return Math.round(WAVE_REWARD*(G&&G.mod?G.mod.waveReward:1));}
-function capNow(){return Math.max(10,G.dcfg.cap+(G.mod?G.mod.capAdd:0)-(G.capPen||0));} // capPen: 미션 실패 벌칙(S27)
+function capNow(){return Math.max(10,G.dcfg.cap+(G.mod?G.mod.capAdd:0));} // S36: 미션 실패 벌칙(capPen) 없어짐 — 실패=패배
 
 let G;
 // 판 번호(S26): 소환 순서·웨이브 구성·항법 카드 같은 "운"을 번호 하나로 재현 → 같은 조건으로 다시 도전 가능
@@ -1125,7 +1129,7 @@ function startHoldSummon(){
 function stopHoldSummon(){if(_summonHold){clearTimeout(_summonHold);_summonHold=null;}}
 function mkTower(name,slot){if(G&&G.seen)G.seen[name]=1; // S28: 이번 판에 가져 본 유닛(최고 등급 기록용)
   return{name,t:U[name].t,x:slot.x,y:slot.y,slot,cool:0,bonus:0,angle:-1.5708,flash:-9999,locked:false};}
-// 유닛 잠금(S26): 잠긴 유닛은 조합 재료·판매에서 빠짐 — 핵심 대공·버프 유닛이 실수로 녹는 것을 막음
+// 유닛 잠금(S26): 잠긴 유닛은 조합 재료·판매에서 빠짐 — 핵심 버프·깎기 유닛이 실수로 녹는 것을 막음
 function toggleLock(){if(!G||!G.selected||!G.selected.tower)return;const t=G.selected.tower;t.locked=!t.locked;
   log(t.locked?`🔒 <b>${t.name}</b> 잠금 — 조합 재료·판매에서 제외`:`🔓 <b>${t.name}</b> 잠금 해제`,'#79c0ff');
   G.invSig='';G._selSig='';updateUI();}
@@ -1215,9 +1219,8 @@ function claimReward(name){
 function pendingCount(){return G?(G.pendingReward?1:0)+G.rewardQueue.length:0;}
 function treeUses(target,name){if(target===name)return 1;const r=RECIPE[target];if(!r)return 0;let n=0;for(const ing of r)n+=treeUses(ing,name);return n;}
 function recommendPick(tier){const pool=Object.keys(U).filter(n=>U[n].t===tier);if(!pool.length)return null;
-  const hasAir=SLOTS.some(s=>s.tower&&U[s.tower.name].air);
   const score=n=>{const u=U[n];let v=0;for(const g of G.goals)v+=treeUses(g,n)*1e6;
-    if(!hasAir&&u.air)v+=5e5;return v+(u.dmg||0)/Math.max(u.cd||1000,1)*1000*(u.splash?1.5:1);};
+    return v+(u.dmg||0)/Math.max(u.cd||1000,1)*1000*(u.splash?1.5:1);};
   return pool.slice().sort((a,b)=>score(b)-score(a))[0];}
 function renderRewardPop(){const body=document.getElementById('rewardPopBody');if(!body||!G.pendingReward)return;
   const tier=G.pendingReward,rc=RARITY[tier],rec=recommendPick(tier),n=pendingCount(),empty=SLOTS.some(s=>!s.tower)||resRoom();
@@ -1250,16 +1253,22 @@ function updateS27Btns(){const rb=document.getElementById('rewardBtn'),kb=docume
     kb.disabled=!G.aiming&&(cd>0||G.gold<strikeCost()||!G.started);}}
 
 // ===== 미션 (특수 보스 도전) =====
-// limit: 제한 웨이브 수 — 그 안에 못 잡으면 난이도별 벌칙(missionFail, S27: 신만 패배)
+// limit: 제한 웨이브 수 — 그 안에 못 잡으면 모든 난이도에서 패배(S36). 보상은 전설 선택권까지(신화·초월 없음)
+// trait: 보스마다 특성 1개 — 물리+방깎 / 마법+마방깎 / 방무+강화 덱 모두 잡을 수 있게 설계
 const MISSIONS=[
-  {name:'거대 골렘 좀비',color:RARITY.common.color,hpMul:7,  limit:3,reward:{type:'summon',n:3}, rw:'흔함 뽑기권 ×3'},
-  {name:'부패 거인',     color:RARITY.uncommon.color,hpMul:12, limit:3,reward:{type:'pick',tier:'uncommon'}, rw:'안흔함 선택권'},
-  {name:'강철 골렘',     color:RARITY.special.color,hpMul:20, limit:3,reward:{type:'pick',tier:'special'},  rw:'특별 선택권'},
-  {name:'역병 군주',     color:RARITY.rare.color,hpMul:32, limit:4,reward:{type:'pick',tier:'rare'},     rw:'희귀 선택권'},
-  {name:'파멸의 타이탄', color:RARITY.legend.color,hpMul:48, limit:4,reward:{type:'pick',tier:'legend'},   rw:'전설 선택권'},
-  {name:'심연의 군주',   color:RARITY.mythic.color,hpMul:70, limit:5,reward:{type:'pick',tier:'mythic'},   rw:'신화 선택권'},
-  {name:'종말의 화신',   color:RARITY.apex.color,hpMul:100,limit:5,reward:{type:'pick',tier:'apex'},     rw:'초월 선택권'},
+  {name:'거대 골렘 좀비',color:RARITY.common.color,hpMul:7,  limit:3,reward:{type:'summon',n:3}, rw:'흔함 뽑기권 ×3',trait:'특성 없음 — 연습 상대'},
+  {name:'부패 거인',     color:RARITY.uncommon.color,hpMul:12, limit:3,reward:{type:'pick',tier:'uncommon'}, rw:'안흔함 선택권',trait:'감속이 절반만 먹힘',slowRes:0.5},
+  {name:'강철 골렘',     color:RARITY.special.color,hpMul:20, limit:3,reward:{type:'pick',tier:'special'},  rw:'특별 선택권',trait:'방어력 높음 · 마법방어력 낮음 → 마법·방어무시가 유리',armX:1.2,mresX:0.4},
+  {name:'역병 군주',     color:RARITY.rare.color,hpMul:32, limit:4,reward:{type:'pick',tier:'rare'},     rw:'희귀 선택권',trait:'주변 좀비 체력 회복 → 주변 잡몹부터 정리',healAura:0.03},
+  {name:'파멸의 타이탄', color:RARITY.legend.color,hpMul:48, limit:4,reward:{type:'pick',tier:'legend'},   rw:'전설 선택권',trait:'기절 면역',stunImm:true},
+  {name:'심연의 군주',   color:RARITY.mythic.color,hpMul:70, limit:5,reward:{type:'pick',tier:'legend',gold:300},   rw:'전설 선택권 + 300골드',trait:'마법방어력 높음 · 방어력 낮음 → 물리·방어무시가 유리',armX:0.4,mresX:1.2},
+  {name:'종말의 화신',   color:RARITY.apex.color,hpMul:84,limit:5,reward:{type:'pick',tier:'legend',n:2,gold:300},     rw:'전설 선택권 ×2 + 300골드',trait:'한 번 쓰러지면 체력 30%로 부활',revive:0.3},
 ];
+// S36 미션 보스 체력 배율(난이도별) — 옛 실패 벌칙표(MISSION_FAIL) 대신
+const MISSION_HP={'쉬움':1,'보통':1,'어려움':2,'지옥':2.3,'신':1.2};
+function missionHpMul(){return MISSION_HP[G.diff]||1;}
+// 실제 제한: 30웨이브를 넘길 수 없으므로 남은 웨이브가 적으면 줄어듦
+function missionLimit(m){return (G&&!G.endless)?Math.max(0,Math.min(m.limit,MAX_WAVE-G.wave)):m.limit;}
 function openMissions(){if(G&&G.paused){log('🧭 항법을 먼저 선택하세요.','#ff7b72');return;}
   renderMissions();document.getElementById('mission').classList.remove('hidden');}
 function closeMissions(){document.getElementById('mission').classList.add('hidden');}
@@ -1273,7 +1282,8 @@ function renderMissions(){
     else if(unlocked)btn=`<button class="btn-wave" onclick="startMission(${i})">도전</button>`;
     else btn=`<span class="lock">🔒 잠김</span>`;
     html+=`<div class="msRow"><div class="mi"><div class="mn" style="color:${m.color}">${m.name}</div>`
-      +`<div class="md">⏱ ${m.limit}웨이브 내 처치(${missionFailText()}) · 보상 <b style="color:#f2cc60">${m.rw}</b></div></div>${btn}</div>`;
+      +`<div class="md">⏱ ${missionLimit(m)}웨이브 안에 처치 — 못 잡으면 <b style="color:#ff7b72">패배</b> · 보상 <b style="color:#f2cc60">${m.rw}</b></div>`
+      +`<div class="md" style="color:#d2a8ff">특성: ${m.trait}</div></div>${btn}</div>`;
   });
   body.innerHTML=html;
 }
@@ -1281,37 +1291,44 @@ function startMission(i){
   if(!G||G.over)return;
   if(G.activeMission){log('이미 진행 중인 미션이 있습니다.','#ff7b72');return;}
   if(i!==G.missionsDone){log('순서대로 도전 가능합니다.','#ff7b72');return;}
-  const m={...MISSIONS[i],idx:i};m.deadlineWave=G.wave+m.limit;G.activeMission=m;G.missionTries++;
-  spawnMissionBoss(m);
-  log(`🎖️ 미션 시작: <b style="color:${m.color}">${m.name}</b> 등장! ${m.limit}웨이브 안에 처치하세요 (${missionFailText()})`,m.color);
+  if(G.enemies.length>=capNow()-1){log('트랙이 거의 꽉 찼어요 — 좀비를 조금 정리한 뒤 도전하세요.','#ff7b72');return;} // S36: 미션 보스 등장으로 한계를 넘지 않게
+  const lim=missionLimit(MISSIONS[i]);if(lim<1){log('남은 웨이브가 없어 미션을 시작할 수 없어요.','#ff7b72');return;}
+  const m={...MISSIONS[i],idx:i,limit:lim};m.deadlineWave=G.wave+lim;G.activeMission=m;G.missionTries++;G.missionWarn=0;
+  spawnMissionBoss(m);missionWarnTick();
+  log(`🎖️ 미션 시작: <b style="color:${m.color}">${m.name}</b> 등장! 제한 ${lim}웨이브 안에 못 잡으면 패배 · 특성: ${m.trait}`,m.color);
   closeMissions();updateUI();
 }
 function spawnMissionBoss(m){
   const w=Math.max(G.wave,1),base=26+Math.pow(w,1.95)*3.4;
-  const hp=Math.round(base*m.hpMul*G.dcfg.hp*(missionFailRule().mhp||1)); // mhp: 난이도별 미션 긴장감(S27)
-  G.enemies.push({type:'mission',seg:0,p:0,x:PATH[0].x,y:PATH[0].y,hp,maxhp:hp,
-    spd:0.4*(G.dcfg.spd||1),r:26,fly:false,boss:true,boom:0,armor:zArmor('boss',G.wave,'a'),mres:zArmor('boss',G.wave,'m'),armP:1,mresP:1,
-    reward:80,color:m.color,name:m.name,slowT:0,stunT:0,dotT:0,dotDps:0,spawnAt:G.t,wave:G.wave,mission:m});
+  const hp=Math.round(base*m.hpMul*G.dcfg.hp*missionHpMul()); // 난이도별 미션 체력(S36)
+  const e={type:'mission',seg:0,p:0,x:PATH[0].x,y:PATH[0].y,hp,maxhp:hp,
+    spd:0.4*(G.dcfg.spd||1),r:26,boss:true,armor:Math.round(zArmor('boss',G.wave,'a')*(m.armX||1)),mres:Math.round(zArmor('boss',G.wave,'m')*(m.mresX||1)),armP:m.armX||1,mresP:m.mresX||1,
+    reward:80,color:m.color,name:m.name,slowT:0,stunT:0,dotT:0,dotDps:0,spawnAt:G.t,wave:G.wave,mission:m,
+    slowRes:m.slowRes||0,stunImm:!!m.stunImm,healAura:m.healAura||0,healR:m.healAura?90:0,revive:m.revive||0};
+  G.enemies.push(e);return e;
 }
-// S27 미션 실패 규칙: 쉬움·보통=가벼운 벌칙 / 어려움·지옥=큰 벌칙 / 신=패배. 보스는 물러가고 같은 미션을 다시 도전 가능
-const MISSION_FAIL={'쉬움':{gold:0.25,cap:2},'보통':{gold:0.25,cap:2},'어려움':{gold:0.5,cap:3,mhp:2},'지옥':{gold:0.5,cap:3,mhp:2.3},'신':{lose:true,mhp:1.2}};
-function missionFailRule(){return MISSION_FAIL[G.diff]||MISSION_FAIL['보통'];}
-function missionFailText(){const r=missionFailRule();return r.lose?'실패 시 패배':`실패 시 골드 −${Math.round(r.gold*100)}% · 수용한계 −${r.cap}`;}
-function missionFail(){ // true를 돌려주면 게임이 끝난 것
-  const m=G.activeMission,r=missionFailRule();G.missionFails=(G.missionFails||0)+1;
-  if(r.lose){log(`💀 미션 실패! ${m.name}를 제한 시간 내 처치하지 못했습니다.`,'#ff4d6d');G.lostBy='미션 실패 — '+m.name;gameOver();return true;}
-  const lost=Math.floor(G.gold*r.gold);G.gold-=lost;G.capPen=(G.capPen||0)+r.cap;
-  G.enemies=G.enemies.filter(e=>!e.mission);G.activeMission=null;
-  log(`💀 미션 실패! ${m.name}가 물러갔습니다 — 벌칙: 골드 −${lost} · 수용한계 −${r.cap} (지금 ${capNow()}) · 다시 도전 가능`,'#ff4d6d');
-  SFX.boss();updateUI();return false;
+// S36 미션 실패 = 모든 난이도에서 패배 (옛 골드·수용한계 벌칙 없음)
+function missionFail(){ // 게임이 끝나므로 항상 true
+  const m=G.activeMission;G.missionFails=(G.missionFails||0)+1;
+  log(`💀 미션 실패! ${m.name}를 제한 ${m.limit}웨이브 안에 처치하지 못했습니다.`,'#ff4d6d');G.lostBy='미션 실패 — '+m.name;gameOver();return true;
 }
+// S36 남은 웨이브 경고: 1웨이브 남음 / 이번 웨이브가 마지막
+function missionLeft(){const m=G&&G.activeMission;return m?m.deadlineWave-G.wave:null;}
+function missionWarnTick(){const left=missionLeft();if(left==null||!G.enemies.some(e=>e.mission))return;
+  const lv=left<=0?2:left===1?1:0;if(!lv||(G.missionWarn||0)>=lv)return;G.missionWarn=lv;const m=G.activeMission;
+  const e=G.enemies.find(x=>x.mission);
+  if(lv===1)log(`⚠️ 미션 경고: <b>${m.name}</b> — 1웨이브 남았어요! 다음 웨이브가 끝나기 전에 못 잡으면 패배`,'#ff7b72');
+  else log(`🚨 미션 마지막 웨이브: <b>${m.name}</b> — 이번 웨이브 안에 못 잡으면 패배!`,'#ff4d6d');
+  if(e&&G.floats.length<60)G.floats.push({x:e.x,y:e.y-34,txt:lv===1?'⚠ 1웨이브 남음':'🚨 마지막 웨이브!',life:1600,boss:true});
+  try{SFX.boss();}catch(_){}}
 function grantMissionReward(m){
   G.missionsDone=Math.max(G.missionsDone,m.idx+1);G.activeMission=null;
   SFX.reward();
   if(m.reward.type==='summon'){G.freeSummons+=m.reward.n;
     log(`🎁 미션 보상: <b style="color:#f2cc60">흔함 뽑기권 ×${m.reward.n}</b> 획득!`,'#f2cc60');}
-  else{grantPick(m.reward.tier);const rc=RARITY[m.reward.tier];
-    log(`🎁 미션 보상: <b style="color:${rc.color}">${rc.name} 선택권</b>!`,rc.color);renderReward();}
+  else{const n=m.reward.n||1;for(let k=0;k<n;k++)grantPick(m.reward.tier);const rc=RARITY[m.reward.tier];
+    if(m.reward.gold)G.gold+=m.reward.gold;
+    log(`🎁 미션 보상: <b style="color:${rc.color}">${rc.name} 선택권${n>1?' ×'+n:''}</b>${m.reward.gold?` + <b style="color:#f2cc60">${m.reward.gold}골드</b>`:''}!`,rc.color);renderReward();}
 }
 
 // ===== 항법 (5·10·15·20·25웨이브 보스 클리어 후 3장 중 1택) =====
@@ -1606,19 +1623,20 @@ function buildWave(w){
     if(w>=14&&r<0.10+eb)type='healer';
     else if(w>=11&&r<0.20+eb*2)type='shielded';
     else if(w>=8&&r<0.30+eb*3)type='splitter';
-    else if(w>=6&&r<0.38+eb*3)type='runnerKing';
-    else if(w>=12&&r<0.50+eb*4)type='flyer';else if(w>=9&&r<0.62+eb*4)type='bomber';
-    else if(w>=5&&r<0.78+eb*4)type='tank';else if(w>=2&&r<0.90+eb*4)type='runner';
+    else if(w>=6&&r<0.38+eb*3)type='screamer';
+    else if(w>=9&&r<0.52+eb*4)type='armored';
+    else if(w>=5&&r<0.72+eb*4)type='tank';else if(w>=2&&r<0.88+eb*4)type='runner';
     q.push(type);}
   return q;
 }
 function nextWave(){
   if(!G||G.over||(G.wave>=MAX_WAVE&&!G.endless))return;
-  // 미션 시한 초과 체크: 보스가 살아있는데 제한 웨이브를 넘기면 난이도별 벌칙(신=패배)
+  // 미션 시한 초과 체크: 보스가 살아있는데 제한 웨이브를 넘기면 패배(S36: 모든 난이도)
   if(G.activeMission&&G.wave>=G.activeMission.deadlineWave&&G.enemies.some(e=>e.mission)){
     if(missionFail())return;
   }
   G.wave++;
+  missionWarnTick();
   // 미리 생성해둔 큐가 있으면 그대로 사용(미리보기와 실제가 일치), 없으면 즉석 생성
   const q=(G.nextQueueW===G.wave&&G.nextQueue)?G.nextQueue:buildWave(G.wave);
   G.queue=G.queue.concat(q);for(let i=0;i<q.length;i++)G.queueW.push(G.wave);G.waveActive=true;G.nextWaveT=WAVE_INTERVAL;
@@ -1732,7 +1750,9 @@ function closeBuffs(){const el=document.getElementById('buffs');if(el)el.classLi
 function zTapAt(x,y){let best=null,bd=1e9;for(const e of (G.enemies||[])){const d=Math.hypot(e.x-x,e.y-y);if(d<(e.r||10)+16&&d<bd){bd=d;best=e;}}return best;}
 function zInfo(e){const z=ZTYPE[e.type],base=e.mission?0.4:(z?z.spd:e.spd)||1,sp=Math.round((e.spd/base-1)*100);
   const nm=e.mission?e.name:(z?z.name:'좀비'),a=numArm(e.armor),m=numArm(e.mres),ea=Math.round(effArm(e)),em=Math.round(effMres(e));
-  return `🔎 <b>${nm}</b> — 방어 <b>${a}</b>${ea!==a?`→${ea}`:''} · 마방 <b>${m}</b>${em!==m?`→${em}`:''} · 물리 피해 ×${armorMul(ea).toFixed(2)} · 마법 ×${armorMul(em).toFixed(2)} · 속도 ${sp>=0?'+':''}${sp}%`;}
+  const tr=e.mission?` · 특성: ${e.mission.trait}${e.revived?' (부활함)':''}`:e.scream?' · 괴성(4초마다 주변 좀비 광분) — 기절시키면 못 지름':'';
+  const fz=e.frenzyT>0?' · <b style="color:#ff7b72">광분 중</b>(빨라짐, 감속은 그대로 먹힘)':'';
+  return `🔎 <b>${nm}</b>${tr}${fz} — 방어 <b>${a}</b>${ea!==a?`→${ea}`:''} · 마방 <b>${m}</b>${em!==m?`→${em}`:''} · 물리 피해 ×${armorMul(ea).toFixed(2)} · 마법 ×${armorMul(em).toFixed(2)} · 속도 ${sp>=0?'+':''}${sp}%`;}
 function zTapDraw(c){const t=G&&G.zTap;if(!t)return;const e=t.e;if(!e||!(e.hp>0)||G.t-t.t>2500){G.zTap=null;return;}
   c.save();c.strokeStyle='#f2cc60';c.lineWidth=2;c.setLineDash([4,3]);c.beginPath();c.arc(e.x,e.y,(e.r||10)+7,0,Math.PI*2);c.stroke();c.restore();}
 function renderPreview(){
@@ -1750,6 +1770,7 @@ function renderPreview(){
   el.innerHTML=`👁 <b>다음 ${G.nextQueueW}웨이브</b> · `
     +Object.keys(cnt).map(t=>`${ZTYPE[t].name}×${cnt[t]}`).join(' · ')
     +`<br>추천 화력: ${rec[2]}<b style="color:${rec[1]}">${rec[0]}</b>`
+    +(cnt.screamer?' · 괴성꾼 → <b>기절·감속</b>':'')+(cnt.splitter?' · 분열체 → <b>광역</b>':'')+(cnt.healer?' · 치유체 → 먼저 처치':'')
     +prevArmor();
 }
 // S35 다음 웨이브 방어력 최대치·속도 (깎기가 얼마나 필요한지 가늠)
@@ -1763,30 +1784,36 @@ function spawnZombie(type,opt){
   let hp=Math.round(base*z.hp*diffHp(w)*hpMod);
   if(opt&&opt.hpMul)hp=Math.round(hp*opt.hpMul);
   const e={type,seg:0,p:0,x:PATH[0].x,y:PATH[0].y,hp,maxhp:hp,
-    spd:(z.spd+w*(G.dcfg.spdW||0.011))*(G.dcfg.spd||1)*M.enemySpd,r:z.r,fly:!!z.fly,boss:!!z.boss,boom:z.boom||0,
+    spd:(z.spd+w*(G.dcfg.spdW||0.011))*(G.dcfg.spd||1)*M.enemySpd,r:z.r,boss:!!z.boss,
     armor:zArmor(type,w,'a'),mres:zArmor(type,w,'m'),armP:z.armP||0,mresP:z.mresP||0,
     reward:Math.round((z.boss?(80+w*8):(3+Math.floor(w*0.7)))*G.dcfg.reward*M.killGold),
     color:z.color,name:z.name,slowT:0,stunT:0,dotT:0,dotDps:0,spawnAt:G.t,wave:G.wave,
-    split:z.split||0,shield:z.shield?Math.round(hp*z.shield):0,healAura:z.healAura||0,hasteAura:z.hasteAura||0};
-  if(opt){if(opt.seg!=null)e.seg=opt.seg;if(opt.p!=null)e.p=opt.p;if(opt.x!=null)e.x=opt.x;if(opt.y!=null)e.y=opt.y;e.split=0;e.shield=0;e.healAura=0;e.hasteAura=0;e.r=Math.max(6,z.r-3);}
+    split:z.split||0,shield:z.shield?Math.round(hp*z.shield):0,healAura:z.healAura||0,scream:z.scream||0,scrT:z.scream?2000:0,frenzyT:0};
+  if(opt){if(opt.seg!=null)e.seg=opt.seg;if(opt.p!=null)e.p=opt.p;if(opt.x!=null)e.x=opt.x;if(opt.y!=null)e.y=opt.y;e.split=0;e.shield=0;e.healAura=0;e.scream=0;e.r=Math.max(6,z.r-3);}
   G.enemies.push(e);
   return e;
 }
+function screamAt(a){let n=0;
+  for(const o of G.enemies){if(o===a||o.mission)continue;if(Math.hypot(o.x-a.x,o.y-a.y)<=SCREAM_R){o.frenzyT=Math.max(o.frenzyT||0,SCREAM_DUR);n++;}}
+  G.fx.push({type:'scream',x:a.x,y:a.y,r:SCREAM_R,life:650,max:650});
+  if(G.floats.length<60)G.floats.push({x:a.x,y:a.y-18,txt:'광분!',life:700});
+  G.screams=(G.screams||0)+1;return n;}
 // S35 한 바퀴 회복: 트랙을 한 바퀴 돌 때마다 최대체력의 lap%(보스는 절반) 회복 — 빠른 좀비일수록 자주 회복하므로 감속·기절이 중요
 function lapDone(e){e.laps=(e.laps||0)+1;const lh=((G.dcfg&&G.dcfg.lap)||0)*((G.mod&&G.mod.lapHeal!=null)?G.mod.lapHeal:1);if(!(lh>0)||!(e.hp>0)||e.hp>=e.maxhp)return;
   e.hp=Math.min(e.maxhp,e.hp+e.maxhp*lh*(e.boss?0.5:1));G.lapHeal=(G.lapHeal||0)+1;
   if(G.floats&&G.floats.length<60)G.floats.push({x:e.x,y:e.y-16,txt:'+회복',life:520});}
 function moveEnemy(e,dt){
   if(e.stunImmT>0)e.stunImmT-=dt;
+  if(e.frenzyT>0)e.frenzyT-=dt;
   if(e.stunT>0){e.stunT-=dt;if(e.stunT<=0)e.stunImmT=e.boss?1500:STUN_IMM_N;return false;} // 스턴 중 이동 정지 · S32 일반 좀비도 잠깐 면역
-  const spd=e.spd*(e.slowT>0?(e.slowMul||0.45):1)*(e.hasted?(e.hasteAuraSpd||1.4):1);
+  const spd=e.spd*(e.slowT>0?(e.slowMul||0.45):1)*(e.frenzyT>0?FRENZY_MUL:1); // S36 광분 — 감속과 곱해짐(감속이 그대로 먹힘)
   if(e.slw){for(const k in e.slw){e.slw[k].t-=dt;if(e.slw[k].t<=0)delete e.slw[k];}slowCalc(e);}else e.slowT=Math.max(0,e.slowT-dt);
   let remain=spd*dt/16,N=PATH.length,guard=0;
   while(remain>0&&guard++<64){
     const a=PATH[e.seg],b=PATH[(e.seg+1)%N],L=Math.hypot(b.x-a.x,b.y-a.y)||1,left=L*(1-e.p);
     if(remain<left){e.p+=remain/L;remain=0;}else{remain-=left;e.seg=(e.seg+1)%N;e.p=0;if(e.seg===0)lapDone(e);}
     const aa=PATH[e.seg],bb=PATH[(e.seg+1)%N];
-    e.x=aa.x+(bb.x-aa.x)*e.p;e.y=aa.y+(bb.y-aa.y)*e.p-(e.fly?20:0);
+    e.x=aa.x+(bb.x-aa.x)*e.p;e.y=aa.y+(bb.y-aa.y)*e.p;
   }
   return false; // 순환 트랙 — 출구 없음
 }
@@ -1807,13 +1834,14 @@ function update(dt){
   G.t+=dt;
   // 자동 웨이브 카운트다운
   if(!G.over&&(G.wave<MAX_WAVE||G.endless)){G.nextWaveT-=dt;if(G.nextWaveT<=0)nextWave();}
+  else if(!G.over&&G.activeMission&&G.enemies.some(e=>e.mission)){G.nextWaveT-=dt;if(G.nextWaveT<=0&&G.wave>=G.activeMission.deadlineWave){missionFail();return;}} // 30웨이브: 마지막 웨이브 시간이 끝나면 판정
   if(G.queue.length>0){G.spawnT-=dt;if(G.spawnT<=0){const qw=G.queueW.shift()||G.wave;const ne=spawnZombie(G.queue.shift());if(ne)ne.wave=qw;G.spawnT=480;}}
   const transport=SLOTS.filter(s=>s.tower&&U[s.tower.name].gold).reduce((a,s)=>a+U[s.tower.name].gold,0);
-  // 특수 좀비 오라(치유·가속): 주변 좀비에게 효과 (0.5초마다)
+  // 특수 좀비 오라(치유): 주변 좀비에게 효과 (0.5초마다) — 역병 군주도 사용
   G._auraT=(G._auraT||0)-dt;
   if(G._auraT<=0){G._auraT=500;
     for(const a of G.enemies){
-      if(a.healAura){for(const e of G.enemies){if(e!==a&&e.hp<e.maxhp&&Math.hypot(e.x-a.x,e.y-a.y)<70)e.hp=Math.min(e.maxhp,e.hp+e.maxhp*a.healAura);}}
+      if(a.healAura){for(const e of G.enemies){if(e!==a&&e.hp<e.maxhp&&Math.hypot(e.x-a.x,e.y-a.y)<(a.healR||70))e.hp=Math.min(e.maxhp,e.hp+e.maxhp*a.healAura);}}
     }
   }
   for(let i=G.enemies.length-1;i>=0;i--){const e=G.enemies[i];
@@ -1827,9 +1855,8 @@ function update(dt){
           if(G.enemies.length<capNow()-2)for(let k=0;k<2;k++)
             spawnZombie('normal',{hpMul:0.5,seg:e.seg,p:e.p,x:e.x+(Math.random()*20-10),y:e.y+(Math.random()*20-10)});}}
     }
-    // 가속 오라: 주변에 질주군주 있으면 이속↑
-    e.hasted=false;
-    if(!e.hasteAura)for(const a of G.enemies){if(a.hasteAura&&Math.hypot(e.x-a.x,e.y-a.y)<80){e.hasted=true;break;}}
+    // S36 괴성꾼: 기절 중이 아니면 주기적으로 괴성 → 주변 좀비 광분(자신 제외)
+    if(e.scream&&!(e.stunT>0)){e.scrT-=dt;if(e.scrT<=0){e.scrT=SCREAM_EVERY;screamAt(e);}}
     moveEnemy(e,dt); // 순환 — 빠져나가지 않음
   }
   // 수용 한계 초과 = 패배 (제때 처리 못하면 좀비가 트랙에 쌓임)
@@ -1839,10 +1866,9 @@ function update(dt){
     t.cool-=dt;if(t.cool>0)continue;
     const bm=buffMult(t);
     let target=null,best=u.mode==='strong'?-1:1e9;
-    for(const e of G.enemies){if(e.fly&&!u.air)continue;
+    for(const e of G.enemies){
       const d=Math.hypot(e.x-t.x,e.y-t.y);if(d>u.range)continue;
       if(u.mode==='strong'){if(e.hp>best){best=e.hp;target=e;}}
-      else if(u.mode==='air'){const score=(e.fly?-1e6:0)+d;if(score<best){best=score;target=e;}}
       else{if(d<best){best=d;target=e;}}
     }
     if(target){const up=G.upg[u.dt]||0,upDmg=1+up*UPG_DMG,upAs=1+up*UPG_AS;
@@ -1880,14 +1906,18 @@ function update(dt){
   updateUI();
 }
 function killEnemy(e,idx,transport){
+  // S36 종말의 화신: 한 번 부활(체력 revive%) — 보상 없이 계속 싸움
+  if(e.revive&&!e.revived){e.revived=true;e.hp=Math.round(e.maxhp*e.revive);e.dotT=0;
+    G.floats.push({x:e.x,y:e.y-30,txt:'💀 부활!',life:1200,boss:true});G.fx.push({type:'scream',x:e.x,y:e.y,r:70,life:650,max:650});
+    log(`💀 <b style="color:${e.color}">${e.name}</b> 부활! 체력 ${Math.round(e.revive*100)}%로 다시 일어났어요`,e.color);return;}
   // 수송 골드 보너스 상한 +60% — 수송병 도배 골드 스노볼 방지
   let g=e.reward*(1+Math.min(transport||0,0.6))*(e.boss?G.mod.bossGold:1);G.gold+=g;SFX.kill(e.boss);
   G.score+=Math.round(e.reward*(e.boss?5:1)*G.mod.score);
   G.kills++;questProgress('kill',1);
-  // 분열체: 죽을 때 같은 자리에서 작은 좀비 split마리 생성 (수용한계 압박)
+  // 분열체: 죽을 때 같은 자리에서 작은 좀비 split마리 생성 — 수용한계가 거의 찼으면 분열하지 않음
   const sp=e.split;
   G.enemies.splice(idx,1);
-  if(sp>0&&G.enemies.length<G.dcfg.cap+8){for(let k=0;k<sp;k++){
+  if(sp>0&&G.enemies.length<capNow()-2){for(let k=0;k<sp;k++){ // S36: 한계−2 미만일 때만 분열(아니면 그냥 죽음)
     spawnZombie('runner',{hpMul:0.35,seg:e.seg,p:e.p,x:e.x+(Math.random()*16-8),y:e.y+(Math.random()*16-8)});}}
   if(e.mission){log(`🎖️ <b style="color:${e.color}">${e.name}</b> 처치 성공!`,e.color);grantMissionReward(e.mission);return;}
   if(e.boss){
@@ -1927,7 +1957,7 @@ const SYN={stun:1.1,slowAoe:1.1,brkExec:0.05,burnCur:1.3};
 function fxKey(s){return s.skey||(s.owner&&s.owner.name)||'_';}
 // 감속: 같은 출처(유닛·스킬 이름)는 가장 센 것 하나, 다른 출처끼리는 곱해지되 최대 SLOW_CAP(60%)까지. 보스는 효과 절반
 function slowCalc(e){let m=1,T=0;const w=e.slw;if(w)for(const k in w){const o=w[k];if(o.t>0){m*=o.m;if(o.t>T)T=o.t;}}
-  m=Math.max(1-SLOW_CAP,m);e.slowMul=e.boss?1-(1-m)*0.5:m;e.slowT=T;}
+  m=Math.max(1-SLOW_CAP,m);e.slowMul=e.boss?1-(1-m)*0.5*(e.slowRes||1):m;e.slowT=T;} // slowRes: 부패 거인(감속 절반)
 function applySlow(e,mul,dur,key){if(!(mul<1))return;const w=e.slw||(e.slw={}),k=key||'_',o=w[k],live=o&&o.t>0;
   if(!live||mul<=o.m)w[k]={m:mul,t:Math.max(live?o.t:0,dur||1000)};slowCalc(e);}
 // S35 방깎(점수): 같은 출처(유닛·스킬 이름)는 센 것 하나, 다른 출처끼리는 더함, 합계 최대 BRK_CAP(=풀깎 223). 보스도 똑같이 깎임
@@ -1992,7 +2022,7 @@ function hit(s){
 }
 // ===== S31 스킬 발동·효과 (기절·둔화 규칙은 일반 공격과 같은 함수 사용) =====
 // 기절: 보스는 시간 절반 + 풀린 뒤 1.5초 면역(moveEnemy) → 영구 기절 불가
-function applyStun(e,ms){if(!(ms>0)||e.stunImmT>0)return;e.stunT=Math.max(e.stunT||0,e.boss?ms*0.5:ms);}
+function applyStun(e,ms){if(!(ms>0)||e.stunImmT>0||e.stunImm)return; /* stunImm: 파멸의 타이탄 */e.stunT=Math.max(e.stunT||0,e.boss?ms*0.5:ms);}
 // 감속(applySlow)은 위 S32 역할 규칙에 있음
 // S35: 등급 강등·보스 +15% 약화는 없어지고 모두 점수형 깎기로 통일 (예전 이름은 호환용으로 남김)
 function applyShred(e,v,key){applyBrk(e,key||'약화',v||10,4000);}
@@ -2002,7 +2032,7 @@ function skFx(f){if(G.fx.length<80)G.fx.push(f);}
 function skName(t,nm){ // 스킬 이름 띄우기: 전체 0.6초·유닛당 2.5초에 1번만
   if(G.t<(G._skNameT||0)||G.t<(t._skNameT||0))return;G._skNameT=G.t+600;t._skNameT=G.t+2500;
   G.floats.push({x:t.x,y:t.y-24,txt:nm,life:900,sk:true});}
-function skInArea(u,cx,cy,r){const out=[];for(const e of G.enemies){if(e.fly&&!u.air)continue;if(Math.hypot(e.x-cx,e.y-cy)<=r)out.push(e);}return out;}
+function skInArea(u,cx,cy,r){const out=[];for(const e of G.enemies){if(Math.hypot(e.x-cx,e.y-cy)<=r)out.push(e);}return out;}
 function skDmg(e,dmg,u,t,transport,extra){if(!(dmg>0)||!G.enemies.includes(e))return;dealDamage(e,Object.assign({dmg,dt:u.dt,owner:t,transport},extra||{}));}
 // 탑이 한 번 쏠 때마다 호출. dmg=그 1타 공격력(버프·강화 반영)
 function skillsOnAttack(t,u,target,dmg,transport){const list=SKILLS[t.name];if(!list||!target)return 0;
@@ -2033,7 +2063,7 @@ function skillFire(t,u,s,target,dmg,transport){
     for(const e of skInArea(u,cx,cy,s.r))applyDot(e,dmg*s.k,s.dur);
   }else if(s.fx==='gold'){ // S32 골드 보급
     const g=Math.round(s.g+(G.wave||0)/3);G.gold+=g;st.dmg+=g;G.floats.push({x:t.x,y:t.y-30,txt:`+${g}G`,life:900});
-  }else if(s.fx==='bomb'||s.fx==='aa'){
+  }else if(s.fx==='bomb'){
     if(s.nuke){G.nukeN=(G.nukeN||0)+1; // S34 전술핵: 큰 섬광 + 충격파 고리 2겹 + 화면 흔들림(boom max 520)
       skFx({type:'flash',x:cx,y:cy,r:s.r*1.3,life:300,max:300});
       skFx({type:'ring',x:cx,y:cy,r:s.r*1.4,life:620,max:620,color:'#fff4a8'});
@@ -2042,12 +2072,12 @@ function skillFire(t,u,s,target,dmg,transport){
       G.floats.push({x:cx,y:cy-24,txt:'☢ 전술핵!',life:1000,sk:true});}
     skFx({type:'flash',x:cx,y:cy,r:s.r,life:180,max:180});
     skFx({type:'boom',x:cx,y:cy,r:s.r,life:420,max:420,color:col,dt:u.dt});try{SFX.boom();}catch(_){}
-    const h=hp0();for(const e of skInArea(u,cx,cy,s.r))skDmg(e,dmg*s.k*(s.fx==='aa'&&e.fly?2:1),u,t,transport);st.dmg+=Math.max(0,h-hp0());
+    const h=hp0();for(const e of skInArea(u,cx,cy,s.r))skDmg(e,dmg*s.k,u,t,transport);st.dmg+=Math.max(0,h-hp0());
   }else if(s.fx==='barrage'){G.skq=G.skq||[];
     for(let j=0;j<(s.hits||3);j++){const a=skRand()*6.2832,d=skRand()*38;
       G.skq.push({t:120+j*110,target,x:cx,y:cy,ox:Math.cos(a)*d,oy:Math.sin(a)*d,r:s.r,dmg:dmg*s.k,u,owner:t,transport,col,st});}
   }else if(s.fx==='snipe'){let best=null,bh=-1;
-    for(const e of G.enemies){if(e.fly&&!u.air)continue;if(Math.hypot(e.x-t.x,e.y-t.y)>u.range)continue;
+    for(const e of G.enemies){if(Math.hypot(e.x-t.x,e.y-t.y)>u.range)continue;
       const sc=e.hp+(s.bp&&e.boss?1e15:0);if(sc>bh){bh=sc;best=e;}}
     if(best){skFx({type:'line',x:t.x,y:t.y,x2:best.x,y2:best.y,life:240,max:240,color:'#f2cc60'});
       skFx({type:'flash',x:best.x,y:best.y,r:18,life:160,max:160});
@@ -2077,7 +2107,6 @@ function skillText(s){
   const kk=v=>`공격력 ${+v.toFixed(2)}배`;let what='';
   if(s.fx==='stun')what=`${skAreaWord(s.r)} 좀비 ${s.ms/1000}초 기절${s.k?` + ${kk(s.k)} 피해`:''} (보스는 절반)`;
   else if(s.fx==='bomb')what=`${s.nuke?'☢ 전술핵 — ':''}${skAreaWord(s.r)} 폭발 · ${kk(s.k)} 피해`;
-  else if(s.fx==='aa')what=`${skAreaWord(s.r)} 폭발 · ${kk(s.k)} 피해 (비행 좀비는 2배)`;
   else if(s.fx==='barrage')what=`${s.hits}발 연속 낙하 · 한 발당 ${kk(s.k)} 피해`;
   else if(s.fx==='slow')what=`${skAreaWord(s.r)} 좀비 ${Math.round((1-s.mul)*100)}% 느리게 ${s.dur/1000}초${s.k?` + ${kk(s.k)} 피해`:''}`;
   else if(s.fx==='shred'&&s.m)what=`${skAreaWord(s.r)} 좀비 마법방어력 −${s.v} (4초)${s.k?` + ${kk(s.k)} 피해`:''} · 보스에도 똑같이`;
@@ -2093,11 +2122,10 @@ function skillText(s){
 // 패배 원인 진단 — 붕괴 시점 트랙 위 좀비 구성으로 "무엇이 부족했는지" 알려줌
 function defeatDiag(){
   const es=G.enemies;if(!es.length)return '';
-  let heavy=0,high=0,fly=0,boss=0;const n=es.length;
-  for(const e of es){if(e.boss)boss++;else{if(armorHi(e))heavy++;if(mresHi(e))high++;if(e.fly)fly++;}}
+  let heavy=0,high=0,boss=0;const n=es.length;
+  for(const e of es){if(e.boss)boss++;else{if(armorHi(e))heavy++;if(mresHi(e))high++;}}
   let tip;
   if(boss>=1&&boss>=n*0.15)tip='보스가 남았어요 — <b style="color:#f2cc60">방어무시</b> 유닛·강화가 해답';
-  else if(fly>n*0.3)tip='비행 좀비가 쌓였어요 — <b style="color:#ff9f6e">대공</b> 유닛을 준비하세요';
   else if(heavy>n*0.4)tip='중장갑(방어력 높은 적 · 강시 등)이 많았어요 — <b style="color:#f0955e">방깎</b> 유닛을 모으거나 <b style="color:#79c0ff">마법</b> 화력을 늘리세요';
   else if(high>n*0.4)tip='마법방어력 높은 적이 많았어요 — <b style="color:#38c9d6">마방깎</b> 유닛을 모으거나 <b style="color:#ff9f6e">물리</b> 화력을 늘리세요';
   else tip='전체 화력 부족 — 소환·조합·강화를 더 부지런히!';
@@ -2489,14 +2517,13 @@ function vBurst(x,y,r){const n=Math.min(6,2+(r/20|0));
   for(let i=0;i<n;i++){const a=Math.random()*TAU,sp=.12+Math.random()*.2;vAdd({type:'spark',x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:220+Math.random()*180,max:400,r:1.5,drag:.9});}
   if(r>=24&&VS.scorch)vDecal(VS.scorch[(Math.random()*3)|0],x,y,Math.min(2.2,r/30),8000);}
 function vBoom(x,y,r,big){VFX.booms.push({x,y,r,life:big?650:420,max:big?650:420});if(VFX.booms.length>12)VFX.booms.shift();vBurst(x,y,r);}
-function vOnDeath(e){const x=e.x,y=e.y,r=e.r||10,gy=e.fly?y+20:y;
+function vOnDeath(e){const x=e.x,y=e.y,r=e.r||10,gy=y;
   VFX.corpses.push({e,x,y,ang:vFace(e),life:900,max:900});if(VFX.corpses.length>40)VFX.corpses.shift();
   if(VS.goo)vDecal(VS.goo[(Math.random()*3)|0],x,gy,(r/10)*(.8+Math.random()*.4),9000);
   const n=e.boss?10:4;for(let i=0;i<n;i++){const a=Math.random()*TAU,sp=.04+Math.random()*.09;vAdd({type:'drop',x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-.05,g:.00025,life:380+Math.random()*200,max:560,r:1.4+Math.random()*1.4,c:'#6b8a2a'});}
   if(VFX.coins.length<30)VFX.coins.push({x,y:y-4,life:650,max:650});
-  if(e.type==='bomber')vBoom(x,y,30,false);
   if(e.boss){vBoom(x,y,70,true);VFX.shake=Math.max(VFX.shake,e.type==='final'?12:9);}}
-function vOnFx(f){const x=f.x||0,y=f.y||0;if(f.type==='ring'||f.type==='line')return; // S31: 고리·조준선은 파편 없음
+function vOnFx(f){const x=f.x||0,y=f.y||0;if(f.type==='ring'||f.type==='line'||f.type==='scream')return; // S31: 고리·조준선은 파편 없음
   if(f.type==='boom'){const r=f.r||30;vBurst(x,y,r);if(f.max===520)VFX.shake=Math.max(VFX.shake,8);else if(r>=110)VFX.shake=Math.max(VFX.shake,3);}
   else{for(let i=0;i<2;i++){const a=Math.random()*TAU,sp=.1+Math.random()*.12;vAdd({type:'spark',x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:180,max:180,r:1.2,drag:.9,c:DT_COL[f.dt]});}}}
 function vTick(){const now=vNow();VFX.rdt=Math.max(0,Math.min(100,now-(VFX.lastReal||now)));VFX.lastReal=now;
@@ -2572,8 +2599,7 @@ function draw(){
   for(const s of SLOTS)if(s.tower&&!(drag&&drag.moved&&drag.from===s))drawTower(s);
   if(!G){vFlushAir();ctx.restore();return;}
   vDrawCorpses();
-  for(const e of G.enemies)if(!e.fly)drawZombie(e);
-  for(const e of G.enemies)if(e.fly)drawZombie(e);
+  for(const e of G.enemies)drawZombie(e);
   vFlushAir();
   for(const s of G.shots)drawShot(s);
   for(const f of G.fx)drawFx(f);
@@ -2625,7 +2651,7 @@ function vDrawDecals(){const D=VFX.decals;if(!D.length)return;ctx.save();
   for(const d of D){ctx.globalAlpha=Math.min(1,d.life/1500)*.9;ctx.save();ctx.translate(d.x,d.y);ctx.rotate(d.rot);vBlit(ctx,d.spr,0,0,d.s);ctx.restore();}ctx.restore();}
 function vFace(e){const N=PATH.length,sg=(e.seg||0)%N,a=PATH[sg],b=PATH[(sg+1)%N];return Math.atan2(b.y-a.y,b.x-a.x);}
 function vDrawCorpses(){for(const c of VFX.corpses){const k=c.life/c.max,sp=vZDark(c.e);if(!sp)continue;ctx.save();ctx.globalAlpha=k*.85;
-  ctx.translate(c.x,c.y+(c.e.fly?(1-k)*20:0));ctx.rotate(c.ang+(1-k)*.6);const sc=1-(1-k)*.3;ctx.scale(sc,sc*(.55+.45*k));vBlit(ctx,sp,0,0);ctx.restore();}}
+  ctx.translate(c.x,c.y);ctx.rotate(c.ang+(1-k)*.6);const sc=1-(1-k)*.3;ctx.scale(sc,sc*(.55+.45*k));vBlit(ctx,sp,0,0);ctx.restore();}}
 function vDrawBooms(){if(!VFX.booms.length)return;ctx.save();
   for(const b of VFX.booms){const k=b.life/b.max,q=1-k;ctx.globalCompositeOperation='lighter';ctx.globalAlpha=Math.min(1,k*1.4);vBlit(ctx,VS.fire,b.x,b.y,b.r*(.8+.8*q)*2/64);
     ctx.globalCompositeOperation='source-over';ctx.globalAlpha=k*.8;ctx.strokeStyle='#fff1c8';ctx.lineWidth=1+3*k;ctx.beginPath();ctx.arc(b.x,b.y,b.r*(.3+q*1.1),0,TAU);ctx.stroke();}
@@ -2905,7 +2931,6 @@ function vRoleBadge(role){if(VROLE[role])return VROLE[role];const R=(typeof ROLE
       case '처형':g.lineWidth=1.8;P([-3.2,-3.2,3.2,3.2]);g.stroke();P([3.2,-3.2,-3.2,3.2]);g.stroke();break;
       case '보스':P([-4,3,-4,-2,-2,.2,0,-3.6,2,.2,4,-2,4,3]);g.closePath();g.fill();break;
       case '광역':vSpike(g,6,4.6,1.9,-Math.PI/2);g.fill();break;
-      case '대공':g.lineWidth=1.6;P([0,4,0,-3.6]);g.stroke();P([-3.2,-.6,0,-4,3.2,-.6]);g.stroke();break;
       case '강화':g.lineWidth=2;P([0,-4,0,4]);g.stroke();P([-4,0,4,0]);g.stroke();break;
       case '경제':g.beginPath();g.arc(0,0,4,0,TAU);g.fill();g.fillStyle='#0d0e0a';g.fillRect(-.7,-2.6,1.4,5.2);break;
       case '지속':g.beginPath();g.moveTo(0,-4.6);g.bezierCurveTo(3.8,-1,3.4,4,0,4.2);g.bezierCurveTo(-3.4,4,-3.8,-.4,-1,-1.6);g.bezierCurveTo(-.6,-.4,.2,-2.6,0,-4.6);g.closePath();g.fill();break;
@@ -3021,6 +3046,9 @@ function drawSkFx(f,k){const c=ctx;if(!c)return;const q=1-k;c.save();
     c.beginPath();c.arc(f.x2,f.y2,10+6*q,0,TAU);c.stroke();}
   c.restore();}
 function drawFx(f){const k=Math.max(0,Math.min(1,f.life/(f.max||1)));
+  if(f.type==='scream'){const c=ctx,q=1-k;c.save();for(let i=0;i<3;i++){const qq=Math.min(1,q*1.3+i*.18);if(qq>1)continue; // S36 괴성: 퍼지는 음파 고리 3겹
+      c.globalAlpha=Math.max(0,(1-qq))*.8;c.strokeStyle=i?'#ff9b87':'#ff5a4a';c.lineWidth=2.5-i*.6;c.beginPath();c.arc(f.x,f.y,Math.max(1,f.r*qq),0,TAU);c.stroke();}
+    c.restore();return;}
   if(f.type==='ring'||f.type==='flash'||f.type==='line'){drawSkFx(f,k);return;} // S31 스킬 연출
   // 이미지 스킨(타격/폭발)이 있으면 우선 사용 — 커지며 사라지는 연출
   const im=SKIN.fx[f.type==='boom'?'boom':'hit_'+(f.dt||'phys')];
@@ -3045,21 +3073,18 @@ function vZBody(g,type,r,col,f,sh,seed){const R=vRand(seed),sw=[0,1,0,-1][f],ski
   const legs=(k)=>{g.strokeStyle=skinD;g.lineWidth=r*.3;g.beginPath();g.moveTo(-r*.3,-r*.3);g.lineTo(-r*.78-sw*k*r*.22,-r*.36);g.moveTo(-r*.3,r*.3);g.lineTo(-r*.78+sw*k*r*.22,r*.36);g.stroke();};
   const shirt=vMix(col,'#34362a',.5);
   switch(type){
-  case 'runner':case 'runnerKing':{legs(1.7);if(type==='runnerKing'){g.fillStyle='#8e1f1a';g.beginPath();g.moveTo(-r*.2,-r*.6);g.quadraticCurveTo(-r*1.2,-r*.8-sw*r*.1,-r*1.45,-r*.3);g.lineTo(-r*1.5,r*.3);g.quadraticCurveTo(-r*1.2,r*.8+sw*r*.1,-r*.2,r*.6);g.closePath();g.fill();}
+  case 'runner':case 'screamer':{legs(1.7);if(type==='screamer'){g.fillStyle='#8e1f1a';g.beginPath();g.moveTo(-r*.2,-r*.6);g.quadraticCurveTo(-r*1.2,-r*.8-sw*r*.1,-r*1.45,-r*.3);g.lineTo(-r*1.5,r*.3);g.quadraticCurveTo(-r*1.2,r*.8+sw*r*.1,-r*.2,r*.6);g.closePath();g.fill();}
     arm(-r*.42,r*.9+sw*r*.35,-r*.5,r*.26,skin);arm(r*.42,r*.2-sw*r*.5,r*.62,r*.26,skin);torso(r*.5,r*.68,shirt);rips(2);
     g.strokeStyle='#2a2418';g.lineWidth=r*.12;for(let i=-1;i<=1;i++){g.beginPath();g.moveTo(r*.2,i*r*.18);g.lineTo(-r*.25,i*r*.3);g.stroke();}
     head(r*.38,r*.36,skin);eyes(r*.6,r*.14,r*.08,'#ffcf5a');
-    if(type==='runnerKing'){g.fillStyle='#e0b43a';for(let i=0;i<5;i++){const a=i*TAU/5;g.beginPath();g.moveTo(r*.38+Math.cos(a)*r*.2,Math.sin(a)*r*.2);g.lineTo(r*.38+Math.cos(a+.3)*r*.42,Math.sin(a+.3)*r*.42);g.lineTo(r*.38+Math.cos(a+.6)*r*.2,Math.sin(a+.6)*r*.2);g.fill();}}
+    if(type==='screamer'){g.fillStyle='#2a0a08';g.beginPath();g.ellipse(r*.66,0,r*.13,r*.2,0,0,TAU);g.fill(); // 크게 벌린 입
+      g.strokeStyle='rgba(255,140,120,.8)';g.lineWidth=Math.max(.6,r*.06);for(let i=1;i<=2;i++){g.beginPath();g.arc(r*.66,0,r*(.22+i*.16),-0.7,0.7);g.stroke();}}
     break;}
   case 'tank':{legs(.4);g.fillStyle='#8f97a0';rrP(g,-r*.5,-r*.95,r*.7,r*.4,r*.1);g.fill();rrP(g,-r*.5,r*.55,r*.7,r*.4,r*.1);g.fill();
     arm(-r*.34,r*1.2,-r*.3,r*.26,'#b3bba2');arm(r*.34,r*1.2,r*.3,r*.26,'#b3bba2');torso(r*.62,r*.82,vMix(col,'#2d3a4c',.55));
     g.strokeStyle='#c7a246';g.lineWidth=r*.08;g.beginPath();g.moveTo(-r*.7,0);g.lineTo(r*.3,0);g.stroke();
     head(r*.34,r*.44,'#1f2126');g.fillStyle='#b8322a';g.beginPath();g.arc(r*.34,0,r*.1,0,TAU);g.fill();
     g.fillStyle='#f2d64a';g.fillRect(r*.5,-r*.12,r*.55,r*.24);g.strokeStyle='#b8322a';g.lineWidth=Math.max(.6,r*.05);g.beginPath();g.moveTo(r*.56,0);g.lineTo(r*.7,-r*.06);g.lineTo(r*.82,r*.06);g.lineTo(r*.98,-r*.04);g.stroke();break;}
-  case 'flyer':{const fl=[.1,.45,.75,.45][f]*r;g.fillStyle=vMix(col,'#1d2630',.55);
-    for(const s of[-1,1]){g.beginPath();g.moveTo(r*.1,s*r*.3);g.lineTo(-r*.2,s*(r*1.25+fl));g.lineTo(-r*.55,s*(r*.95+fl*.7));g.lineTo(-r*.8,s*(r*1.05+fl*.6));g.lineTo(-r*.55,s*r*.3);g.closePath();g.fill();
-      g.strokeStyle=vMix(col,'#ffffff',.2);g.lineWidth=Math.max(.6,r*.07);g.beginPath();g.moveTo(r*.1,s*r*.3);g.lineTo(-r*.2,s*(r*1.25+fl));g.stroke();}
-    torso(r*.45,r*.4,vMix(col,'#30363a',.45));arm(-r*.2,r*.85,-r*.25,r*.18,skin);arm(r*.2,r*.85,r*.25,r*.18,skin);head(r*.42,r*.3,skin);eyes(r*.6,r*.12,r*.07,'#9fe8ff');break;}
   case 'splitter':{legs(1);arm(-r*.5,r*.95+sw*r*.15,-r*.45,r*.28,skin);arm(r*.5,r*.95-sw*r*.15,r*.45,r*.28,skin);
     torso(r*.5,r*.55,vMix(col,'#4a3a1a',.4),-r*.3);torso(r*.46,r*.52,vMix(col,'#4a3a1a',.3),r*.05);
     g.strokeStyle='rgba(40,25,5,.6)';g.lineWidth=r*.07;g.beginPath();g.moveTo(-r*.12,-r*.5);g.quadraticCurveTo(-r*.2,0,-r*.12,r*.5);g.stroke();
@@ -3075,11 +3100,10 @@ function vZBody(g,type,r,col,f,sh,seed){const R=vRand(seed),sw=[0,1,0,-1][f],ski
     g.fillStyle='#3fb950';g.fillRect(-r*.5,-r*.1,r*.42,r*.2);g.fillRect(-r*.39,-r*.21,r*.2,r*.42);
     head(r*.4,r*.38,skin);g.strokeStyle='rgba(235,232,215,.9)';g.lineWidth=r*.08;g.beginPath();g.arc(r*.4,0,r*.26,-2,1.2);g.stroke();eyes(r*.62,r*.14,r*.07,'#a8ff8a');
     g.fillStyle='#7cff6a';g.beginPath();g.arc(r*.98,-r*.4,r*.12,0,TAU);g.fill();break;}
-  case 'bomber':{legs(1);arm(-r*.45,r*.95+sw*r*.15,-r*.42,r*.27,skin);arm(r*.45,r*.95-sw*r*.15,r*.42,r*.27,skin);torso(r*.58,r*.78,vMix(col,'#3a2a22',.55));
-    for(let i=-1;i<=1;i++){g.fillStyle='#c4302b';rrP(g,-r*.72,i*r*.3-r*.12,r*.55,r*.24,r*.08);g.fill();g.fillStyle='#e8dcc0';g.fillRect(-r*.24,i*r*.3-r*.12,r*.06,r*.24);}
-    g.strokeStyle='#1a1a14';g.lineWidth=r*.08;g.beginPath();g.moveTo(-r*.2,-r*.72);g.lineTo(-r*.2,r*.72);g.stroke();
-    g.strokeStyle='#e0a526';g.lineWidth=r*.05;g.beginPath();g.moveTo(-r*.72,-r*.3);g.quadraticCurveTo(-r*.9,0,-r*.72,r*.3);g.stroke();
-    head(r*.4,r*.38,skin);eyes(r*.62,r*.14,r*.08);break;}
+  case 'armored':{legs(.6);arm(-r*.45,r*.95+sw*r*.12,-r*.42,r*.28,'#7d868f');arm(r*.45,r*.95-sw*r*.12,r*.42,r*.28,'#7d868f');torso(r*.62,r*.8,'#4a525b');
+    for(let i=-1;i<=1;i++){const gr=g.createLinearGradient(0,i*r*.32-r*.13,0,i*r*.32+r*.13);gr.addColorStop(0,'#c9d1d9');gr.addColorStop(1,'#6e7681');g.fillStyle=gr;rrP(g,-r*.66,i*r*.32-r*.13,r*.62,r*.26,r*.05);g.fill();
+      g.fillStyle='#30363d';g.beginPath();g.arc(-r*.58,i*r*.32,r*.04,0,TAU);g.arc(-r*.12,i*r*.32,r*.04,0,TAU);g.fill();}
+    head(r*.38,r*.38,'#59616a');g.fillStyle='#1b1f24';g.fillRect(r*.5,-r*.22,r*.12,r*.44);eyes(r*.62,r*.12,r*.06,'#ff9b6a');break;}
   case 'boss':case 'mission':{const mis=type==='mission',flesh=mis?vMix(col,'#3c3f38',.5):vMix(col,'#40201a',.3);legs(.6);
     g.fillStyle='#e6dcc0';for(let i=0;i<5;i++){const y=(i-2)*r*.34;g.beginPath();g.moveTo(-r*.55,y-r*.1);g.lineTo(-r*1.05-(i%2)*r*.15,y);g.lineTo(-r*.55,y+r*.1);g.closePath();g.fill();}
     arm(-r*.62,r*1.0+sw*r*.1,-r*.58,r*.44,flesh);arm(r*.6,r*.85-sw*r*.1,r*.55,r*.3,skin);
@@ -3115,16 +3139,16 @@ function drawZombie(e){const c=ctx,r=e.r||10,gt=G?G.t:0,boss=!!e.boss,stun=e.stu
   const hpr=Math.max(0,Math.min(1,e.hp/(e.maxhp||1)));let m=VFX.hpMem.get(e);
   if(!m){m={hp:e.hp,tr:hpr};VFX.hpMem.set(e,m);}else{if(e.hp<m.hp-.01)VFX.hitT.set(e,gt);m.hp=e.hp;m.tr=m.tr<hpr?hpr:m.tr+(hpr-m.tr)*Math.min(1,VFX.rdt*.004);}
   c.save();c.globalAlpha=fade;
-  // 바닥 그림자(비행형은 20px 아래 땅에)
-  c.globalAlpha=fade*(e.fly?.45:.8);vBlit(c,VS.blob,e.x,e.y+(e.fly?22:r*.3),r*2.5/40);c.globalAlpha=fade;
+  // 바닥 그림자
+  c.globalAlpha=fade*.8;vBlit(c,VS.blob,e.x,e.y+r*.3,r*2.5/40);c.globalAlpha=fade;
   // 오라(몸 아래)
   if(boss||e.enraged){c.globalCompositeOperation='lighter';const pl=.5+.5*Math.sin(gt*.006+ph);
     if(e.type==='final'){if(!VZP)VZP=vRad(64,[[0,'rgba(190,120,255,.5)'],[.5,'rgba(140,70,220,.22)'],[1,'rgba(90,30,160,0)']]);c.globalAlpha=fade*(.55+.3*pl);vBlit(c,VZP,e.x,e.y,r*3.4/64*(1+.06*pl));}
     else{c.globalAlpha=fade*(e.enraged?.7+.3*pl:.4+.2*pl);vBlit(c,VS.red,e.x,e.y,r*(e.enraged?3.8:3.1)/64*(1+.06*pl));}
     c.globalCompositeOperation='source-over';c.globalAlpha=fade;}
-  if(e.healAura){const pl=(gt*.0012+ph)%1;c.strokeStyle='rgba(120,230,110,.4)';c.lineWidth=1.2;c.setLineDash([4,5]);c.beginPath();c.arc(e.x,e.y,70,0,TAU);c.stroke();c.setLineDash([]);
+  if(e.healAura){const pl=(gt*.0012+ph)%1;c.strokeStyle='rgba(120,230,110,.4)';c.lineWidth=1.2;c.setLineDash([4,5]);c.beginPath();c.arc(e.x,e.y,e.healR||70,0,TAU);c.stroke();c.setLineDash([]);
     c.globalAlpha=fade*(1-pl)*.7;c.strokeStyle='#7cff6a';c.lineWidth=2;c.beginPath();c.arc(e.x,e.y,r+4+pl*20,0,TAU);c.stroke();c.globalAlpha=fade;}
-  if(e.hasteAura){c.strokeStyle='rgba(255,120,100,.32)';c.lineWidth=1.2;c.setLineDash([10,8]);c.lineDashOffset=-gt*.03;c.beginPath();c.arc(e.x,e.y,80,0,TAU);c.stroke();c.setLineDash([]);c.lineDashOffset=0;}
+  if(e.frenzyT>0){c.globalCompositeOperation='lighter';c.globalAlpha=fade*.55;vBlit(c,VS.red,e.x,e.y,r*2.6/64);c.globalCompositeOperation='source-over';c.globalAlpha=fade;} // S36 광분: 붉은 기운
   // 몸통
   c.save();c.translate(e.x,e.y+bob);c.rotate(face);
   const zk=SKIN.z[e.type];
@@ -3134,8 +3158,7 @@ function drawZombie(e){const c=ctx,r=e.r||10,gt=G?G.t:0,boss=!!e.boss,stun=e.stu
   }else{const z=vZSpr(e,fr);vBlit(c,z.b,0,0);
     const ha=gt-(VFX.hitT.has(e)?VFX.hitT.get(e):-9999);
     if(ha<80){if(!z.flash)z.flash=vSil(z.b,'#ffffff',1);c.globalAlpha=fade*(1-ha/80)*.85;vBlit(c,z.flash,0,0);c.globalAlpha=fade;}
-    if(e.boom&&Math.sin(gt*.02+ph)>0){c.globalCompositeOperation='lighter';vBlit(c,VS.flash.phys,-r*.5,0,r*.05+.25);c.globalCompositeOperation='source-over';}
-    if(e.hasted){c.strokeStyle='rgba(255,170,140,.55)';c.lineWidth=1.2;for(let i=-1;i<=1;i++){const l=4+((gt*.05+i*7)%6);c.beginPath();c.moveTo(-r-2,i*r*.4);c.lineTo(-r-2-l,i*r*.4);c.stroke();}}}
+    if(e.frenzyT>0){c.strokeStyle='rgba(255,110,90,.75)';c.lineWidth=1.2;for(let i=-1;i<=1;i++){const l=4+((gt*.05+i*7)%6);c.beginPath();c.moveTo(-r-2,i*r*.4);c.lineTo(-r-2-l,i*r*.4);c.stroke();}}}
   c.restore();
   // 상태 표시: 둔화(얼음 테) · 기절(별) · 지속피해(불꽃) · 방어약화(금간 방패)
   if(e.slowT>0){c.globalAlpha=fade*.9;vBlit(c,VS.ice,e.x,e.y,r*2.7/40);c.globalAlpha=fade;}
@@ -3186,7 +3209,7 @@ function updateUI(){
   // 미션 진행 중이면 버튼에 남은 웨이브 표시
   const mb=document.getElementById('missionBtn');
   if(G.activeMission){const left=G.activeMission.deadlineWave-G.wave;
-    mb.textContent=`🎖️ ${G.activeMission.name} — ${left}웨이브 남음!`;mb.style.background='linear-gradient(135deg,#ff4d6d,#bf4080)';}
+    mb.textContent=left<=0?`🎖️ ${G.activeMission.name} — 이번 웨이브가 마지막!`:`🎖️ ${G.activeMission.name} — ${left}웨이브 남음`;mb.style.background='linear-gradient(135deg,#ff4d6d,#bf4080)';}
   else{mb.textContent='🎖️ 미션 도전';mb.style.background='linear-gradient(135deg,#bf4080,#8b2d5c)';}
   const wb=document.getElementById('waveBtn');
   if(G.wave>=MAX_WAVE&&!G.endless){wb.disabled=true;wb.textContent='전 웨이브 완료';}
@@ -3249,7 +3272,7 @@ function renderSelected(){
     <span class="tag" style="background:${rc.color}">${rc.name}</span>
     <span class="dtag ${dtc}">${DT_NAME[u.dt]}</span>${roleTags(t.name)}${upTxt}
     <span style="font-size:11px;color:#aeb6bf">· 흔함 ${cval(t.name)}개 가치</span>
-    ${u.role&&ROLES[u.role]?`<div style="margin-top:4px;font-size:11px;color:${ROLES[u.role].c};">역할: <b>${u.role}</b> — ${ROLES[u.role].d}</div>`:''}
+    ${u.role&&ROLES[u.role]?`<div style="margin-top:4px;font-size:11px;color:${ROLES[u.role].c};">역할: <b>${u.role}</b> — ${ROLES[u.role].d}</div>`:isBasicTier(u)?`<div style="margin-top:4px;font-size:11px;color:#8b949e;">특수능력 없음 — 기본 공격만 (능력은 희귀 등급부터)</div>`:''}
     ${u.junk?`<div style="margin-top:4px;font-size:11px;color:#c6e04a;">☢ 공격하지 않고 자리만 차지해요 · 팔면 0골드 · 보통 조합 재료로는 못 써요</div>`:''}
     ${u.t==='secret'?`<div style="margin-top:4px;font-size:11px;color:${RARITY.secret.color};">☢ 비밀 유닛 — 우라늄 연구소 비밀 도박에서만 나와요</div>`:''}
     <div style="margin-top:6px;">공격력 ${dmgTxt} · 사거리 ${u.range}<br>
@@ -3290,7 +3313,7 @@ function craftMax(r){
   let n=0;while(canCraft(r)){craftSilent(r);n++;}if(n>0){G.invSig='';updateUI();
   const rc=RARITY[U[r].t];log(`⚙️ <b style="color:${rc.color}">${shortName(r)}</b> ×${n} 조합 완성!`,rc.color);roleHint('craft');updateUI();}}
 // ===== 조합 손실 경고(S26): 사라지는 재료가 "그 역할의 마지막 유닛"이면 먼저 알려줌 =====
-const ROLE_KEYS=[['air','대공'],['buff','공격 지원(버프)'],['slow','둔화'],['supply','보급'],['debuff','표적지정'],['bossBonus','보스특화'],['splash','광역']];
+const ROLE_KEYS=[['buff','공격 지원(버프)'],['slow','둔화'],['supply','보급'],['debuff','표적지정'],['bossBonus','보스특화'],['splash','광역']];
 function roleCount(){const c={};for(const s of SLOTS){if(!s.tower)continue;const u=U[s.tower.name];for(const [k] of ROLE_KEYS)if(u[k])c[k]=(c[k]||0)+1;}return c;}
 function craftLossItems(consumed,result){ // 사라지는 "마지막 역할" 목록 [{k,label,msg,tier}] (tier=잃는 유닛 중 최고 등급 순번)
   const before=roleCount(),ru=U[result],out=[];
@@ -3303,9 +3326,8 @@ function craftLossItems(consumed,result){ // 사라지는 "마지막 역할" 목
   return out;
 }
 function craftLoss(consumed,result){return craftLossItems(consumed,result).map(x=>x.msg);} // 목표 패널용: 전부 표시
-// S27 경고 줄이기: 확인창은 "지금 정말 중요한 역할"만. 대공=항상(끌 수 없음), 나머지=판당 1번·안흔함 이상·시기 맞을 때만
+// S27 경고 줄이기: 확인창은 "지금 정말 중요한 역할"만. 판당 1번·안흔함 이상·시기 맞을 때만
 function warnWorthy(it){
-  if(it.k==='air')return true;
   if(it.k==='supply'||it.k==='debuff')return false; // 보급·표적지정은 목표 패널에만 표시
   if(G.warnMute[it.k]||G.warned[it.k]||it.tier<1)return false;
   const w=G.wave,bossSoon=(w+1)%5===0||(w+2)%5===0||G.enemies.some(e=>e.boss);
@@ -3331,9 +3353,9 @@ function renderWarn(){const el=document.getElementById('warnBox');if(!el)return;
     <div style="font-size:12px;color:#ffb3ad;line-height:1.6;">${c.msgs.map(m=>'• '+m).join('<br>')}</div>
     <div class="btn-row" style="margin-top:8px;"><button onclick="craftAnyway()" style="flex:1;background:linear-gradient(135deg,#da3633,#b62324);">그래도 조합</button>
     <button onclick="cancelCraft()" style="flex:1;background:#30363d;">취소</button></div>`
-    +((c.keys||[]).some(k=>k!=='air')?`<button onclick="craftMute()" style="margin-top:6px;width:100%;background:none;border:none;border-bottom:1px dashed #6e7681;border-radius:0;color:#aeb6bf;font-size:11px;padding:4px 0;">조합하고, 이번 판에 이 경고 그만 보기 (대공 경고는 계속)</button>`:'');}
+    +((c.keys||[]).length?`<button onclick="craftMute()" style="margin-top:6px;width:100%;background:none;border:none;border-bottom:1px dashed #6e7681;border-radius:0;color:#aeb6bf;font-size:11px;padding:4px 0;">조합하고, 이번 판에 이 경고 그만 보기</button>`:'');}
 function craftAnyway(){const c=G.craftConfirm;if(!c||!c.r)return;G.craftConfirm={ok:c.r};c.fn();G.craftConfirm=null;renderWarn();}
-function craftMute(){const c=G.craftConfirm;if(!c||!c.r)return;for(const k of c.keys||[])if(k!=='air')G.warnMute[k]=1;
+function craftMute(){const c=G.craftConfirm;if(!c||!c.r)return;for(const k of c.keys||[])G.warnMute[k]=1;
   log('🔕 이번 판에는 이 역할 경고를 다시 띄우지 않습니다.','#aeb6bf');craftAnyway();}
 function cancelCraft(){G.craftConfirm=null;renderWarn();}
 // ===== 목표 조합 추적(S26): 최대 3개 등록 → 부족한 흔함·공유 재료·완성 시 사라질 역할을 계속 표시 =====
@@ -3376,15 +3398,16 @@ function renderGoals(){const el=document.getElementById('goalBox');if(!el||!G)re
 // 추천 덱 3종(S26): 역할·운영법이 다른 완성 덱 — 도감 상단에 장단점과 함께 표시, 한 번에 목표 등록
 const DECKS=[
   {name:'돌파 사냥조',icon:'⚔',color:'#f2cc60',core:['707특임대','현궁 대전차','미사일여단'],role:'보스·미션 보스를 빠르게 처치하는 방어무시 특화',
-   good:'보스전·미션이 짧아지고 상성 걱정이 없음(방어무시)',bad:'광역이 없어 물량 웨이브(분열체·광란)에 약함 → 척탄·박격포 유지 필요'},
-  // S27: 옛 핵심(천무·K2흑표·현무-3)은 그 자체가 ATACMS 조합식이라 3개가 모이는 순간 합쳐져 사라짐 → 현무-3 대신 천산
-  {name:'포병 화력조',icon:'💥',color:'#79c0ff',core:['천무 다연장','K2 흑표','K808A 천산'],role:'광역 포격·스턴으로 물량과 중장갑(강시)을 한꺼번에 정리',
-   good:'후반 물량 웨이브와 강시에 가장 강함',bad:'대공이 없어 비행변종에 약함 → 발칸·비호를 잠가두기'},
-  {name:'대공 제어조',icon:'🛡',color:'#7ee787',core:['AH-64E 아파치','K808A 천산','K10 탄약운반'],role:'대공+스턴+버프로 안정적으로 버티는 운영형',
-   good:'비행 웨이브·질주군주에 강하고 아군 전체 공속이 오름',bad:'단일 화력이 낮아 보스전이 길어짐 → 판처·미사일반으로 보스 보강'},
+   good:'보스전·미션이 짧아지고 상성 걱정이 없음(방어무시)',bad:'광역이 약해 물량 웨이브(분열체·광란)에 밀릴 수 있음 → K9 천둥·천무 같은 광역 유닛 1~2기 곁들이기'},
+  // S36 물리 덱: 방깎(흑표·드론봇·천산)으로 강시·방패병·철갑귀의 방어력을 깎아 물리 화력을 살림
+  {name:'기갑 돌파조',icon:'🛠',color:'#ff9f6e',core:['K2 흑표','드론봇중대','K808A 천산'],role:'물리 화력 + 방깎(방어력 깎기)으로 강시·방패병을 뚫는 조합',
+   good:'방깎이 겹겹이 쌓여 단단한 적도 녹고, 감속·기절로 광분한 좀비도 붙잡음',bad:'마법방어력 높은 적(치유체·심연의 군주)은 물리로 상대 → 깎기 유닛이 빠지면 강시가 버팀 → 방깎 유닛을 잠가두기'},
+  // S36 마법 덱: 마방깎(천무·아파치)으로 마법 화력을 살림 — 강시·방패병은 원래 마법에 약함
+  {name:'마법 포격조',icon:'💥',color:'#79c0ff',core:['천무 다연장','AH-64E 아파치','현무-3'],role:'광역 마법 포격 + 마방깎으로 물량과 강시를 한꺼번에 정리',
+   good:'후반 물량 웨이브와 강시·방패병에 가장 강함',bad:'치유체·철갑귀처럼 마법방어력 높은 적은 마방깎이 있어야 함 → 마방깎 유닛(LAMD·코브라)을 잠가두기'},
   // S35 방무 + 강화: 방어무시는 깎기가 필요 없는 대신 기본 화력이 낮음 → 강화(버프)를 1.5배로 받아 제값
   {name:'방무 강화조',icon:'🎯',color:'#7ee787',core:['707특임대','현궁 대전차','K10 탄약운반'],role:'방어무시 화력을 강화(버프) 유닛으로 끌어올리는 조합 — 방깎 없이도 모든 난이도 대응',
-   good:'어떤 방어력이든 그대로 들어가고, 강화 효과를 1.5배로 받음',bad:'강화 유닛이 빠지면 화력이 평범 → 통신병·통신중대·수리온 등 강화 유닛을 곁에 두기'},
+   good:'어떤 방어력이든 그대로 들어가고, 강화 효과를 1.5배로 받음',bad:'강화 유닛이 빠지면 화력이 평범 → 무인수색차·K10 탄약운반 등 강화 유닛을 곁에 두기'},
 ];
 // 유닛 능력 태그(S25): 선택 패널·조합 목록·갈림길 비교에 공용
 // ===== S32 역할: 유닛마다 주 역할 1개(+보조). 같은 효과는 겹치지 않으니 역할을 섞어야 강하다 =====
@@ -3398,7 +3421,6 @@ const ROLES={
   '처형':{c:'#e6edf3',d:'체력이 조금 남은 적을 바로 처치 (보스는 안 됨)'},
   '보스':{c:'#e3b341',d:'보스에게 추가 피해 · 보스 먼저 조준'},
   '광역':{c:'#ffa657',d:'여러 마리를 한 번에 타격'},
-  '대공':{c:'#a5d6ff',d:'날아오는 적 공격'},
   '강화':{c:'#7ee787',d:'주변 아군 공격력·공격 속도 증가'},
   '경제':{c:'#c9d97a',d:'골드·보급으로 살림에 보탬'},
   '지속':{c:'#56d364',d:'불·가스 지속 피해 — 가장 센 것 1개만 적용'},
@@ -3408,7 +3430,7 @@ const ROLE_ORDER=Object.keys(ROLES);
 const ROLE_RULE='같은 효과는 겹치지 않아요 — 역할을 섞으세요';
 const ROLE_SYN_TXT=`기절한 적 +${Math.round((SYN.stun-1)*100)}% 피해 · 느려진 적에게 광역·지속 +${Math.round((SYN.slowAoe-1)*100)}% · 방깎된 적은 처형 기준 +${Math.round(SYN.brkExec*100)}% · 불붙은 적에게 현재체력 피해 ${SYN.burnCur}배`;
 function roleTag(r,sub){const x=ROLES[r];return x?`<span class="rtag${sub?' sub':''}" style="color:${x.c}" title="${x.d}">${r}</span>`:'';}
-function roleTags(n,max){const u=U[n];if(!u||!u.role)return '';let h=roleTag(u.role);
+function roleTags(n,max){const u=U[n];if(u&&!u.role&&isBasicTier(u))return '<span class="rtag sub" style="color:#8b949e" title="특수능력 없음 — 능력은 희귀부터">기본</span>';if(!u||!u.role)return '';let h=roleTag(u.role);
   for(const r of (u.roles||[]).filter(r=>r!==u.role).slice(0,max==null?3:max))h+=roleTag(r,1);return h;}
 function unitHasRole(n,r){const u=U[n];return !!(u&&(u.role===r||(u.roles||[]).includes(r)));}
 // 우리 편(지도+대기소) 역할 한 줄 — 없는 역할은 흐리게
@@ -3425,9 +3447,9 @@ function renderRoleCov(){
 }
 // ===== S33 빠진 역할 알림 — 쉬움·보통에서만(어려움↑·무한은 절대 안 뜸). 한 번에 하나, 같은 역할은 2웨이브 넘게 쉬고, 한 판에 3번까지 =====
 const ROLE_SHORT={'기절':'잠깐 멈춰 세우기','감속':'걸음 느리게','방깎':'방어력 낮추기','마방깎':'마법 방어력 낮추기','증폭':'받는 피해 늘리기','최대%':'최대 체력 비례 피해',
-  '현재%':'남은 체력 비례 피해','처형':'빈사 적 바로 처치','보스':'보스에게 추가 피해','광역':'여러 마리 한꺼번에','대공':'나는 적 공격',
+  '현재%':'남은 체력 비례 피해','처형':'빈사 적 바로 처치','보스':'보스에게 추가 피해','광역':'여러 마리 한꺼번에',
   '강화':'옆 아군 힘 올리기','경제':'골드 벌기','지속':'불·가스 지속 피해'};
-const HINT_ORDER=['광역','감속','기절','강화','방깎','마방깎','처형','지속','증폭','최대%','현재%','경제','대공','보스'];
+const HINT_ORDER=['광역','감속','기절','강화','방깎','마방깎','처형','지속','증폭','최대%','현재%','경제','보스'];
 // S34 덱 공격 속성 판단: 물리가 많으면 방깎, 마법이 많으면 마방깎, 방어무시가 많으면 둘 다 필요 없음
 const BRK_TIP='물리 덱 → 방깎, 마법 덱 → 마방깎, 방어무시 덱은 둘 다 필요 없는 대신 강화(버프) 유닛과 짝';
 function teamDt(){const c={phys:0,magic:0,pierce:0};const add=t=>{const u=t&&U[t.name];if(!u||u.junk||u.cd>=9999)return;c[u.dt]=(c[u.dt]||0)+1;};
@@ -3437,7 +3459,7 @@ function brkRole(){const d=teamDt();return d==='magic'?'마방깎':d==='phys'?'�
 const HINT_GAP=20000,HINT_SHOW=15000,HINT_MAX=3;
 function hintJosa(w){const c=(w||'').charCodeAt(w.length-1);return(c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28)?'이':'가';}
 function hintOn(){return !!(G&&!G.over&&!G.endless&&(G.diff==='쉬움'||G.diff==='보통'));}
-function hintHas(n,r){return unitHasRole(n,r)||(r==='대공'&&!!(U[n]&&U[n].air));}
+function hintHas(n,r){return unitHasRole(n,r);}
 function teamRoleSet(){const any={};let n=0;
   const add=t=>{const u=t&&U[t.name];if(!u)return;n++;for(const r of ROLE_ORDER)if(hintHas(t.name,r))any[r]=1;};
   try{SLOTS.forEach(s=>add(s.tower));resList().forEach(add);}catch(_){}return{any,n};}
@@ -3445,7 +3467,7 @@ function hintUnits(r){return Object.keys(U).filter(n=>unitHasRole(n,r)&&!isSecre
   .sort((a,b)=>TIER_ORDER.indexOf(U[a].t)-TIER_ORDER.indexOf(U[b].t)).slice(0,2);}
 function hintThreats(){const t={};try{
   const q=[].concat(G.queue||[],G.nextQueue||[]);
-  for(const k of q){const z=ZTYPE[k];if(z&&z.fly)t['대공']=1;if(k==='boss'||k==='final')t['보스']=1;if(z&&!z.boss&&(z.armP>=0.8||z.mresP>=0.8))t['방깎']=1;}
+  for(const k of q){const z=ZTYPE[k];if(k==='boss'||k==='final')t['보스']=1;if(z&&!z.boss&&(z.armP>=0.8||z.mresP>=0.8))t['방깎']=1;}
   for(const e of G.enemies||[]){if(e.mission)t['보스']=1;}
   if(G.activeMission)t['보스']=1;}catch(_){}return t;}
 function roleHint(trigger){try{
@@ -3456,13 +3478,13 @@ function roleHint(trigger){try{
   if(th['방깎']){delete th['방깎'];if(br)th[br]=1;} // 단단한 적: 우리 덱 속성에 맞는 깎기만
   const isB=r=>r==='방깎'||r==='마방깎';
   const ok=r=>(!isB(r)||r===br)&&!tm.any[r]&&(G.hintCnt[r]||0)<HINT_MAX&&!(G.hintSeen[r]!=null&&G.wave-G.hintSeen[r]<3)&&hintUnits(r).length;
-  let role=['대공','보스',br].find(r=>r&&th[r]&&ok(r)),threat=!!role;
+  let role=['보스',br].find(r=>r&&th[r]&&ok(r)),threat=!!role;
   if(!role&&teamDt()==='pierce'&&G.wave>=3&&ok('강화')){role='강화';threat=true;} // S35 방무 덱 → 강화 유닛
   // 급하지 않은 알림은 더 드물게(마지막 알림 뒤 60초↑ ≈ 1.5웨이브)
   if(!role&&(tm.n>=4||G.wave>=2)&&!(G.hintT!=null&&G.t-G.hintT<HINT_GAP*3))role=HINT_ORDER.find(ok);
   if(!role)return null;
   const us=hintUnits(role).map(n=>`[${RARITY[U[n].t].name}] ${shortName(n)}`);
-  const why=threat?(role==='대공'?'곧 나는 적이 와요! ':role==='보스'?'곧 보스가 와요! ':role==='방깎'?"단단한 적이 와요 — 물리 위주 덱은 '방깎'과 잘 맞아요! ":role==='마방깎'?"단단한 적이 와요 — 마법 위주 덱은 '마방깎'과 잘 맞아요! ":role==='강화'?"방어무시 위주 덱은 '강화'(버프) 유닛과 함께일 때 가장 세요! ":'곧 단단한 적이 와요! '):'';
+  const why=threat?(role==='보스'?'곧 보스가 와요! ':role==='방깎'?"단단한 적이 와요 — 물리 위주 덱은 '방깎'과 잘 맞아요! ":role==='마방깎'?"단단한 적이 와요 — 마법 위주 덱은 '마방깎'과 잘 맞아요! ":role==='강화'?"방어무시 위주 덱은 '강화'(버프) 유닛과 함께일 때 가장 세요! ":'곧 단단한 적이 와요! '):'';
   const msg=`💡 ${why}지금 우리 편에 <b>'${role}'</b>(${ROLE_SHORT[role]||''})${hintJosa(role)} 없어요 — <u>${us.join(' · ')}</u> 계열을 노려보세요`;
   G.hintSeen[role]=G.wave;G.hintCnt[role]=(G.hintCnt[role]||0)+1;G.hintT=G.t;
   G.hint={role,msg,t:G.t};G.hintLog.push({role,wave:G.wave,trigger,t:G.t});
@@ -3477,9 +3499,11 @@ function hintTick(force){try{const el=document.getElementById('hintLine');if(!el
   if(force||el._hs!==html){el.innerHTML=html;el._hs=html;}}catch(_){}}
 function hintOpen(){try{const h=G&&G.hint;if(!h)return;openBook();bookRole=null;setBookRole(h.role);}catch(_){}}
 function unitTags(u){const fx=[];if(u.splash)fx.push('광역');if(u.slow)fx.push(`둔화${Math.round((1-u.slow)*100)}%`);if(u.dot)fx.push('지속피해');
-  if(u.air)fx.push('대공');if(u.bossBonus)fx.push('보스특화');if(u.buff)fx.push('버프');if(u.debuff)fx.push('표적지정');
+  if(u.bossBonus)fx.push('보스특화');if(u.buff)fx.push('버프');if(u.debuff)fx.push('표적지정');
   if(u.execute)fx.push('처형');if(u.rampage)fx.push('성장');if(u.supply)fx.push('보급');if(u.gold)fx.push('골드');
-  if(u.stun)fx.push(u.stunP?`기절${Math.round(u.stunP*100)}%확률`:'스턴');if(u.armBrk)fx.push(`방깎−${u.armBrk}`);if(u.mBrk)fx.push(`마방깎−${u.mBrk}`);if(u.maxHpPct)fx.push('최대체력딜');if(u.curHpPct)fx.push('현재체력딜');return fx;}
+  if(u.stun)fx.push(u.stunP?`기절${Math.round(u.stunP*100)}%확률`:'스턴');if(u.armBrk)fx.push(`방깎−${u.armBrk}`);if(u.mBrk)fx.push(`마방깎−${u.mBrk}`);if(u.maxHpPct)fx.push('최대체력딜');if(u.curHpPct)fx.push('현재체력딜');if(!fx.length&&isBasicTier(u))fx.push('기본 공격만');return fx;}
+// S36: 흔함·안흔함·특별은 특수능력 없음 — 능력은 희귀부터
+function isBasicTier(u){return !!u&&(u.t==='common'||u.t==='uncommon'||u.t==='special');}
 function renderCraft(){
   const el=document.getElementById('craftList');
   // 만들 수 있는 것 + 1~2개만 더 모으면 되는 것까지 표시
