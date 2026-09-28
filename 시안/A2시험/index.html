@@ -18,7 +18,7 @@
   --blue:#7ec8ff;
   --ink:#f3f5f8;
   --dim:#a7b0bf;
-  --bottombar-h:228px;--topbar-h:104px; /* info-strip(160) + cmd-row(68) 고정 총합 — 선택 전후 안 바뀜 */
+  --bottombar-h:264px;--topbar-h:104px; /* info-strip(160) + cmd-row(68) 고정 총합 — 선택 전후 안 바뀜 */
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;min-width:0;}
 html,body{margin:0;padding:0;background:#05060a;overscroll-behavior:none;overflow-x:hidden;width:100%;}
@@ -160,7 +160,7 @@ body.shotmode .stage{position:absolute!important;top:0;left:0;width:375px!import
 /* ===== 게임판 ===== */
 /* 전장은 위(상태줄 뒤)부터 아래 조작부 바로 위까지만. 정보띠·명령줄은 이 아래 별도 고정 영역. */
 .board-wrap{
-  position:absolute;left:0;right:0;top:var(--topbar-h,104px);bottom:var(--bottombar-h,228px);
+  position:absolute;left:0;right:0;top:var(--topbar-h,104px);bottom:var(--bottombar-h,264px);
   overflow:hidden;background:#1a2a1f;
 }
 .board-wrap svg{width:100%;height:100%;display:block;}
@@ -177,7 +177,7 @@ body.shotmode .stage{position:absolute!important;top:0;left:0;width:375px!import
 }
 /* 정보띠: 선택 여부와 무관하게 항상 같은 높이 확보(전장을 덮지 않음) */
 .info-strip{
-  height:160px;flex:0 0 auto;display:flex;align-items:center;gap:8px;
+  height:196px;flex:0 0 auto;display:flex;align-items:center;gap:8px;
   padding:10px 10px;border-bottom:1px solid #20252e;overflow:hidden;
 }
 .info-strip .peek-txt{flex:1;font-size:12.5px;color:#c3cad8;line-height:1.5;min-width:0;}
@@ -191,8 +191,8 @@ body.shotmode .stage{position:absolute!important;top:0;left:0;width:375px!import
 .peek-full .pf-trait{font-size:12px;color:var(--gold);margin-top:4px;line-height:1.5;}
 .peek-full .pf-sub{font-size:11.5px;color:var(--dim);margin-top:2px;}
 
-/* 유닛 선택된 정보 띠: 160px 안에서 위(이름·스탯)/아래(조합 후보) 2단 고정 */
-.sel-strip{display:flex;flex-direction:column;gap:6px;width:100%;height:100%;justify-content:center;}
+/* 유닛 선택된 정보 띠: 196px 안에서 위(이름·스탯)/아래(조합 후보) 2단 고정 */
+.sel-strip{display:flex;flex-direction:column;gap:6px;width:100%;height:100%;justify-content:flex-start;}
 .sel-top{display:flex;align-items:center;gap:8px;}
 .sel-portrait{width:40px;height:40px;border-radius:8px;border:1px solid var(--edge);background:#0a0c10;overflow:hidden;flex:0 0 auto;position:relative;}
 .sel-portrait img{width:100%;height:100%;object-fit:contain;}
@@ -205,20 +205,29 @@ body.shotmode .stage{position:absolute!important;top:0;left:0;width:375px!import
 .sel-stats{display:flex;gap:9px;font-size:12px;color:var(--dim);white-space:nowrap;flex:0 0 auto;}
 .sel-stats b{color:#eef1f5;font-weight:800;font-family:'SUIT Variable';font-size:12.5px;}
 .side-actions{display:flex;flex-direction:column;gap:5px;flex:0 0 auto;}
+.side-actions.row{flex-direction:row;margin-left:auto;align-self:center;gap:6px;}
 .mini-btn{width:34px;height:26px;border-radius:6px;background:#1c212a;border:1px solid var(--edge);display:flex;align-items:center;justify-content:center;color:#9aa4b2;}
 .mini-btn svg{width:14px;height:14px;}
 .mini-btn.disabled{opacity:.35;}
-/* 상위 조합 후보 줄: 정보띠 하단 고정 */
-.recipe-block{flex:0 0 auto;}
-.recipe-block .rb-label{font-size:12px;color:var(--dim);font-weight:700;margin-bottom:4px;}
-.recipe-line{display:flex;align-items:center;gap:6px;overflow-x:auto;padding-bottom:1px;}
-.recipe-chip{display:flex;align-items:center;gap:5px;background:#161a21;border:1px solid #2a313d;border-radius:7px;padding:4px 8px 4px 5px;flex:0 0 auto;}
-.recipe-chip.ready{border-color:#3d6b45;background:#132318;}
-.recipe-chip img{width:22px;height:22px;object-fit:contain;flex:0 0 auto;}
-.recipe-chip .rc-name{font-size:11.5px;font-weight:700;color:#c3cad8;white-space:nowrap;}
-.recipe-chip .rc-cnt{font-size:12px;font-weight:800;color:var(--dim);font-family:'SUIT Variable';white-space:nowrap;}
-.recipe-chip.ready .rc-cnt{color:var(--green);}
-.recipe-empty{font-size:11.5px;color:var(--dim);}
+/* 아래 칸: 글자 탭(밑줄) + 세로 목록(구분선) — 가로 스크롤 없음 */
+.sel-tabs{display:flex;gap:18px;border-bottom:1px solid #262c36;flex:0 0 auto;}
+.sel-tab{background:none;border:0;padding:4px 0 6px;font-family:'SUIT Variable';font-weight:800;font-size:13px;color:var(--dim);border-bottom:2px solid transparent;margin-bottom:-1px;}
+.sel-tab b{font-weight:900;margin-left:2px;}
+.sel-tab.on{color:#fff;border-bottom-color:var(--gold);}
+.sel-tab.on b{color:var(--gold);}
+.sel-body{flex:1;min-height:0;overflow-y:auto;}
+.recipe-row{display:flex;align-items:center;gap:8px;height:31px;border-bottom:1px solid #1d222a;}
+.recipe-row:last-child{border-bottom:0;}
+.recipe-row img{width:26px;height:26px;object-fit:contain;flex:0 0 auto;}
+.recipe-row .rc-name{font-family:'SUIT Variable';font-size:13px;font-weight:800;color:#dfe4ec;white-space:nowrap;flex:0 0 auto;}
+.recipe-row .rc-cnt{margin-left:auto;font-size:12px;font-weight:700;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.recipe-row.ready .rc-name{color:var(--green);}
+.recipe-row.ready .rc-cnt{color:#9fd8a8;}
+.skill-row{padding:6px 0;border-bottom:1px solid #1d222a;}
+.skill-row:last-child{border-bottom:0;}
+.skill-row .sk-name{font-family:'SUIT Variable';font-weight:800;font-size:13px;color:var(--gold);}
+.skill-row .sk-txt{font-size:12px;color:#c3cad8;line-height:1.45;margin-top:1px;}
+.recipe-empty{font-size:12px;color:var(--dim);padding-top:8px;line-height:1.5;}
 
 /* 명령줄: 항상 동일 */
 .cmd-row{
@@ -484,18 +493,14 @@ const U={
   '707특임대':{t:'legend',dt:'pierce',dmg:260,range:120,cd:480,bossBonus:3.0,execute:0.1,stun:500,short:'707',role:'처형',roles:['보스','기절']},
   'AH-64E 아파치':{t:'legend',dt:'magic',dmg:175,range:170,cd:480,splash:58,mBrk:35,short:'아파치',role:'현재%',roles:['마방깎']},
 };
+// 실제 게임(원랜디.html) 스킬 설명 그대로 — [스킬 이름, 효과]
 const SKILLS_BY={
-  'K2 흑표':['전차포 일제사격','장갑 파쇄'],
-  '707특임대':['소탕 작전','저격 일격'],
-  'AH-64E 아파치':['헬파이어 일제사격','약점 저격'],
-};
-const SKD={
-  '전차포 일제사격':'8번 공격마다 주변 좀비에게 폭발 피해(반경 55)',
-  '장갑 파쇄':'15번 공격마다 주변 좀비 방어력 30 감소(반경 70)',
-  '소탕 작전':'10번 공격마다 체력 15% 이하 좀비 처형(반경 60)',
-  '저격 일격':'10번 공격마다 가장 튼튼한 좀비 2.0배 저격',
-  '헬파이어 일제사격':'12번 공격마다 4발 연속 폭발(반경 30)',
-  '약점 저격':'8번 공격마다 현재 체력 가장 높은 좀비 저격',
+  "K2 흑표":[["전차포 일제사격","8번 공격마다 · 좁은 범위 폭발 · 공격력 1배 피해"],["장갑 파쇄","15번 공격마다 · 보통 범위 좀비 방어력 −30 (4초) · 보스에도 똑같이"]],
+  "K1A2 전차":[["철갑탄 일제사격","8번 공격마다 · 좁은 범위 좀비 방어력 −20 (4초) + 공격력 1배 피해 · 보스에도 똑같이"]],
+  "K21 보병전투차":[["하차 돌격","공격할 때 10% 확률 · 좁은 범위 좀비 0.5초 기절 + 공격력 0.6배 피해 (보스는 절반)"]],
+  "707특임대":[["소탕 작전","10번 공격마다 · 좁은 범위 체력 15% 이하 좀비 즉시 처치 + 공격력 0.6배 피해 (보스 제외)"],["저격 일격","10번 공격마다 · 사거리 안 가장 튼튼한 좀비 1마리 정밀타격 · 공격력 2배 피해"]],
+  "K9 천둥":[["포병 집중사격","공격할 때 12% 확률 · 보통 범위 폭발 · 공격력 1배 피해"]],
+  "AH-64E 아파치":[["헬파이어 일제사격","12번 공격마다 · 4발 연속 낙하 · 한 발당 공격력 0.4배 피해"],["약점 저격","8번 공격마다 · 사거리 안 가장 튼튼한 좀비 1마리 정밀타격 · 공격력 1배 피해 + 현재체력 3%"]],
 };
 const RECIPE={
   '저격수':['경계병','K2소총수'],
@@ -821,7 +826,7 @@ document.getElementById('specialList').addEventListener('click',(e)=>{
 ======================================================================= */
 function onCellClick(i){
   if(G.selected===i){ G.selected=null; }
-  else { G.selected=i; }
+  else { G.selected=i; G.selTab=null; }
   G.comboArmed=false;
   drawCells();
   renderInfoStrip();
@@ -847,7 +852,7 @@ function renderInfoStrip(){
   const tier=RARITY[u.t];
   const asRate=(1000/u.cd).toFixed(1);
   const skills=SKILLS_BY[uname];
-  const skillTxt=skills? SKD[skills[0]]+(skills.length>1?` · 외 ${skills.length-1}`:'') : '';
+  const nSkill=skills?skills.length:0;
 
   // 상위 조합 후보: uname이 재료로 쓰이는 결과들 (최대 3개, 만들 수 있는 것 먼저)
   const candidates=Object.keys(RECIPE).filter(res=>RECIPE[res].includes(uname));
@@ -861,11 +866,17 @@ function renderInfoStrip(){
     }).join(' · ');
     return {res,allReady,matTxt};
   }).sort((a,b)=>(b.allReady?1:0)-(a.allReady?1:0)).slice(0,3);
-  const recipeHtml=withReady.map(c=>`<div class="recipe-chip ${c.allReady?'ready':''}">
+  const recipeHtml=withReady.map(c=>`<div class="recipe-row ${c.allReady?'ready':''}">
       <img src="${ASSET_UNIT(c.res)}" alt="">
       <span class="rc-name">${c.res}</span>
       <span class="rc-cnt">${c.matTxt}</span>
     </div>`).join('');
+  // 탭: 조합 후보가 없으면(최상위) 스킬 탭을 먼저
+  const tab=G.selTab||(withReady.length?'combo':'skill');
+  const skillHtml=nSkill
+    ? skills.map(([n,t])=>`<div class="skill-row"><div class="sk-name">${n}</div><div class="sk-txt">${t}</div></div>`).join('')
+    : `<div class="recipe-empty">특수 스킬은 희귀 등급부터 붙습니다. 이 유닛은 기본 공격(${DT_NAME[u.dt]})으로 싸웁니다.</div>`;
+  const comboHtml=recipeHtml||`<div class="recipe-empty">최상위 유닛입니다. 더 올릴 조합은 없습니다.</div>`;
 
   strip.innerHTML=`
     <div class="sel-strip">
@@ -877,23 +888,24 @@ function renderInfoStrip(){
             <span class="tier-chip" style="background:${tier.color}22;color:${tier.color};">${tier.name}</span>
           </div>
           <div class="sel-sub">${DT_NAME[u.dt]} 공격 ${u.role?'· '+u.role:''}</div>
-          ${skillTxt?`<div class="sel-skill">${skillTxt}</div>`:''}
         </div>
         <div class="sel-stats">
           <div>공격력<br><b>${u.dmg}</b></div>
           <div>초당<br><b>${asRate}</b></div>
           <div>사거리<br><b>${u.range}</b></div>
         </div>
-        <div class="side-actions">
+      </div>
+      <div class="sel-tabs">
+        <button class="sel-tab tap ${tab==='combo'?'on':''}" data-tab="combo">상위 조합 <b>${withReady.length}</b></button>
+        <button class="sel-tab tap ${tab==='skill'?'on':''}" data-tab="skill">스킬 <b>${nSkill}</b></button>
+        <div class="side-actions row">
           <button class="mini-btn tap" id="lockBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>
           <button class="mini-btn tap" id="sellBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></button>
         </div>
       </div>
-      <div class="recipe-block">
-        <div class="rb-label">상위 조합 후보</div>
-        ${recipeHtml?`<div class="recipe-line">${recipeHtml}</div>`:`<div class="recipe-empty">이 유닛으로 만들 수 있는 상위 유닛 없음(최상위)</div>`}
-      </div>
+      <div class="sel-body">${tab==='skill'?skillHtml:comboHtml}</div>
     </div>`;
+  strip.querySelectorAll('.sel-tab').forEach(b=>b.onclick=()=>{G.selTab=b.dataset.tab;renderInfoStrip();});
 }
 
 function renderCmdRow(){
@@ -1050,7 +1062,10 @@ if(location.search.includes('shot=1')){document.body.classList.add('shotmode');}
 function applyHash(){
   const h=location.hash;
   if(h==='#sel'){
-    G.selected=2; // 저격수 칸(만들 수 있는 상위 조합 3개)
+    G.selected=5; // K21 보병전투차 칸(스킬 1개 + 상위 조합 3개)
+    drawCells();renderInfoStrip();renderCmdRow();
+  } else if(h==='#skill'){
+    G.selected=0; G.selTab='skill'; // K2 흑표 칸(스킬 2개)
     drawCells();renderInfoStrip();renderCmdRow();
   } else if(h==='#mission'){
     openMission();
