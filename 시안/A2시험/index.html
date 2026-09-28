@@ -227,6 +227,15 @@ body.shotmode .stage{position:absolute!important;top:0;left:0;width:375px!import
 .skill-row:last-child{border-bottom:0;}
 .skill-row .sk-name{font-family:'SUIT Variable';font-weight:800;font-size:13px;color:var(--gold);}
 .skill-row .sk-txt{font-size:12px;color:#c3cad8;line-height:1.45;margin-top:1px;}
+.recipe-row{cursor:pointer;}
+.recipe-row.on{background:linear-gradient(90deg,rgba(242,193,78,.13),transparent 70%);}
+.recipe-row .rc-make{flex:0 0 auto;margin-left:4px;height:31px;padding:0 4px;background:none;border:0;border-bottom:2px solid var(--green);color:var(--green);font-family:'SUIT Variable';font-weight:900;font-size:13px;cursor:pointer;}
+.cm-hint{margin-left:auto;align-self:center;font-size:12px;color:#8fd0ff;font-weight:700;}
+.cm-glow{animation:cmPulse 1.1s ease-in-out infinite;}
+body.shotmode .cm-glow{animation:none;}
+@keyframes cmPulse{0%,100%{opacity:1}50%{opacity:.35}}
+.mat-flash{animation:matBlink .45s ease-in-out 4;}
+@keyframes matBlink{0%,100%{opacity:1}50%{opacity:.1}}
 .recipe-empty{font-size:12px;color:var(--dim);padding-top:8px;line-height:1.5;}
 
 /* 명령줄: 항상 동일 */
@@ -542,7 +551,7 @@ const G={
   zombieCnt:14, zombieCap:36,
   waveSec:8, running:true,
   selected:null, // {cellId}
-  comboArmed:false,
+  comboMode:false, flashCells:[], flashTimer:null,
   specialTicket:1, missionOpen:false,
 };
 const SPEEDS=[1,1.25,1.5,1.75,2];
@@ -616,8 +625,30 @@ function drawCells(){
         g.appendChild(brk);
       }
 
-      // 조합 가능 표식(구석 작은 삼각)
-      if(canCombineFrom(uname)){
+      // 조합 모드: 지금 합칠 수 있는 유닛은 파랗게 숨쉬고, 나머지는 어둡게
+      const canNow=readyFor(uname).length>0;
+      if(G.comboMode){
+        if(canNow){
+          const gl=document.createElementNS('http://www.w3.org/2000/svg','rect');
+          gl.setAttribute('x',cx-21);gl.setAttribute('y',cy-21);
+          gl.setAttribute('width',42);gl.setAttribute('height',42);gl.setAttribute('rx',6);
+          gl.setAttribute('fill','rgba(126,200,255,.14)');gl.setAttribute('stroke','#7ec8ff');gl.setAttribute('stroke-width','2.4');
+          gl.setAttribute('class','cm-glow');
+          g.appendChild(gl);
+        } else g.style.opacity='.35';
+      }
+      // 재료 반짝(조합 줄을 눌렀을 때)
+      if(G.flashCells.includes(i)){
+        const fl=document.createElementNS('http://www.w3.org/2000/svg','rect');
+        fl.setAttribute('x',cx-21);fl.setAttribute('y',cy-21);
+        fl.setAttribute('width',42);fl.setAttribute('height',42);fl.setAttribute('rx',6);
+        fl.setAttribute('fill','rgba(242,193,78,.22)');fl.setAttribute('stroke','#f2c14e');fl.setAttribute('stroke-width','2.6');
+        fl.setAttribute('class','mat-flash');
+        g.appendChild(fl);
+      }
+
+      // 조합 가능 표식(구석 작은 삼각) — 지금 바로 합칠 수 있을 때만
+      if(canNow && !G.comboMode){
         const dot=document.createElementNS('http://www.w3.org/2000/svg','path');
         dot.setAttribute('d',`M${cx+13} ${cy-19} l6 0 l0 6 z`);
         dot.setAttribute('fill','#7ec8ff');
@@ -629,9 +660,31 @@ function drawCells(){
   });
 }
 
-function canCombineFrom(uname){
-  // uname이 재료로 쓰이는 결과가 하나라도 있으면 true
-  return Object.keys(RECIPE).some(res=>RECIPE[res].includes(uname));
+/* ===== 조합 도우미 ===== */
+function needOf(res){const need={};RECIPE[res].forEach(m=>need[m]=(need[m]||0)+1);return need;}
+function isReady(res){const need=needOf(res);return Object.keys(need).every(m=>CELL_UNIT.filter(v=>v===m).length>=need[m]);}
+function readyFor(uname){return uname?Object.keys(RECIPE).filter(res=>RECIPE[res].includes(uname)&&isReady(res)):[];}
+function allReady(){return Object.keys(RECIPE).filter(isReady);}
+// 재료로 쓰일 칸 번호(누른 칸을 먼저 씀)
+function matCells(res,prefer){
+  const need=needOf(res);const out=[];
+  if(prefer!=null&&need[CELL_UNIT[prefer]]>0){out.push(prefer);need[CELL_UNIT[prefer]]--;}
+  CELL_UNIT.forEach((v,i)=>{if(i!==prefer&&need[v]>0){out.push(i);need[v]--;}});
+  return out;
+}
+function flashCells(list,ms){
+  G.flashCells=list;drawCells();
+  clearTimeout(G.flashTimer);
+  G.flashTimer=setTimeout(()=>{G.flashCells=[];drawCells();},ms||1800);
+}
+function doCombine(res,prefer){
+  const cells=matCells(res,prefer);
+  cells.forEach(i=>CELL_UNIT[i]=null);
+  const at=cells.includes(prefer)?prefer:cells[0];
+  CELL_UNIT[at]=res;
+  G.selected=at;G.selTab='combo';G.comboMode=false;
+  renderInfoStrip();renderCmdRow();updateTopbar();
+  flashCells([at],1000);
 }
 
 /* ===== 좀비 이동 애니메이션(트랙 순환) ===== */
@@ -825,9 +878,19 @@ document.getElementById('specialList').addEventListener('click',(e)=>{
    유닛 선택 → 정보 띠 갱신
 ======================================================================= */
 function onCellClick(i){
+  if(G.comboMode){
+    const r=readyFor(CELL_UNIT[i]);
+    if(r.length===1){ doCombine(r[0],i); return; }   // 갈 곳이 하나면 바로 합침
+    G.comboMode=false;
+    if(r.length>1){                                   // 여러 개면 목록에서 고르기
+      G.selected=i; G.selTab='combo'; G.flashCells=[];
+      drawCells();renderInfoStrip();renderCmdRow();
+      return;
+    }
+  }
   if(G.selected===i){ G.selected=null; }
   else { G.selected=i; G.selTab=null; }
-  G.comboArmed=false;
+  G.flashCells=[];
   drawCells();
   renderInfoStrip();
   renderCmdRow();
@@ -835,6 +898,16 @@ function onCellClick(i){
 
 function renderInfoStrip(){
   const strip=document.getElementById('infoStrip');
+  if(G.comboMode){
+    const list=allReady().map(res=>({res,allReady:true,matTxt:matTxtOf(res)}));
+    strip.innerHTML=`<div class="sel-strip">
+      <div class="sel-tabs"><span class="sel-tab on">지금 만들 수 있는 조합 <b>${list.length}</b></span>
+        <span class="cm-hint">반짝이는 유닛을 누르면 합쳐집니다</span></div>
+      <div class="sel-body">${list.length?recipeRowsHtml(list):`<div class="recipe-empty">지금 합칠 수 있는 유닛이 없습니다. 소환으로 재료를 모아 보세요.</div>`}</div>
+    </div>`;
+    bindRecipeRows(strip,null);
+    return;
+  }
   if(G.selected===null || !CELL_UNIT[G.selected]){
     const zt=ZTYPE[PEEK_ZOMBIE];
     strip.innerHTML=`<div class="peek-full">
@@ -857,20 +930,9 @@ function renderInfoStrip(){
   // 상위 조합 후보: uname이 재료로 쓰이는 결과들 (최대 3개, 만들 수 있는 것 먼저)
   const candidates=Object.keys(RECIPE).filter(res=>RECIPE[res].includes(uname));
   const ownCount=n=>CELL_UNIT.filter(v=>v===n).length;
-  const withReady=candidates.map(res=>{
-    const need={};RECIPE[res].forEach(m=>need[m]=(need[m]||0)+1);
-    const allReady=Object.keys(need).every(m=>ownCount(m)>=need[m]);
-    const matTxt=Object.keys(need).map(m=>{
-      const short=U[m]&&U[m].short?U[m].short:m;
-      return `${short} ${Math.min(ownCount(m),need[m])}/${need[m]}`;
-    }).join(' · ');
-    return {res,allReady,matTxt};
-  }).sort((a,b)=>(b.allReady?1:0)-(a.allReady?1:0)).slice(0,3);
-  const recipeHtml=withReady.map(c=>`<div class="recipe-row ${c.allReady?'ready':''}">
-      <img src="${ASSET_UNIT(c.res)}" alt="">
-      <span class="rc-name">${c.res}</span>
-      <span class="rc-cnt">${c.matTxt}</span>
-    </div>`).join('');
+  const withReady=candidates.map(res=>({res,allReady:isReady(res),matTxt:matTxtOf(res)}))
+    .sort((a,b)=>(b.allReady?1:0)-(a.allReady?1:0)).slice(0,3);
+  const recipeHtml=recipeRowsHtml(withReady);
   // 탭: 조합 후보가 없으면(최상위) 스킬 탭을 먼저
   const tab=G.selTab||(withReady.length?'combo':'skill');
   const skillHtml=nSkill
@@ -906,28 +968,44 @@ function renderInfoStrip(){
       <div class="sel-body">${tab==='skill'?skillHtml:comboHtml}</div>
     </div>`;
   strip.querySelectorAll('.sel-tab').forEach(b=>b.onclick=()=>{G.selTab=b.dataset.tab;renderInfoStrip();});
+  bindRecipeRows(strip,G.selected);
+}
+function matTxtOf(res){
+  const need=needOf(res);
+  return Object.keys(need).map(m=>{
+    const short=U[m]&&U[m].short?U[m].short:m;
+    return `${short} ${Math.min(CELL_UNIT.filter(v=>v===m).length,need[m])}/${need[m]}`;
+  }).join(' · ');
+}
+function recipeRowsHtml(list){
+  return list.map(c=>`<div class="recipe-row tap ${c.allReady?'ready':''}" data-res="${c.res}">
+      <img src="${ASSET_UNIT(c.res)}" alt="">
+      <span class="rc-name">${c.res}</span>
+      <span class="rc-cnt">${c.matTxt}</span>
+      ${c.allReady?`<button class="rc-make tap" data-res="${c.res}">만들기</button>`:''}
+    </div>`).join('');
+}
+// 줄 누르기 = 재료 칸 반짝 / 만들기 = 바로 합침
+function bindRecipeRows(strip,prefer){
+  strip.querySelectorAll('.recipe-row').forEach(r=>r.onclick=e=>{
+    const res=r.dataset.res;
+    if(e.target.closest('.rc-make')){doCombine(res,prefer);return;}
+    strip.querySelectorAll('.recipe-row.on').forEach(x=>x.classList.remove('on'));
+    r.classList.add('on');
+    flashCells(matCells(res,prefer));
+  });
 }
 
 function renderCmdRow(){
   const comboBtn=document.getElementById('comboBtn');
   const badge=document.getElementById('comboCntBadge');
-  if(G.selected!==null && CELL_UNIT[G.selected]){
-    const uname=CELL_UNIT[G.selected];
-    const candidates=Object.keys(RECIPE).filter(res=>RECIPE[res].includes(uname));
-    const ownCount=n=>CELL_UNIT.filter(v=>v===n).length;
-    const readyCount=candidates.filter(res=>{
-      const need={};RECIPE[res].forEach(m=>need[m]=(need[m]||0)+1);
-      return Object.keys(need).every(m=>ownCount(m)>=need[m]);
-    }).length;
-    badge.textContent=readyCount;
-    badge.classList.toggle('hidden',readyCount===0);
-    comboBtn.classList.toggle('armed',G.comboArmed);
-    comboBtn.classList.toggle('disabled',readyCount===0 && !G.comboArmed);
-  } else {
-    badge.classList.add('hidden');
-    comboBtn.classList.remove('armed');
-    comboBtn.classList.remove('disabled');
-  }
+  const sel=(G.selected!==null && CELL_UNIT[G.selected])?CELL_UNIT[G.selected]:null;
+  const n=sel&&!G.comboMode?readyFor(sel).length:allReady().length;
+  badge.textContent=n;
+  badge.classList.toggle('hidden',n===0||G.comboMode);
+  comboBtn.classList.toggle('armed',G.comboMode);
+  comboBtn.classList.toggle('disabled',allReady().length===0 && !G.comboMode);
+  comboBtn.querySelector('.lbl').textContent=G.comboMode?'닫기':'조합';
 }
 
 /* =======================================================================
@@ -944,40 +1022,18 @@ document.getElementById('summonBtn').addEventListener('click',()=>{
   drawCells();updateTopbar();
 });
 
+// 조합: 누르면 '조합 모드' → 합칠 수 있는 유닛만 반짝 → 유닛을 누르면 합쳐짐
 document.getElementById('comboBtn').addEventListener('click',()=>{
-  if(G.selected===null || !CELL_UNIT[G.selected])return;
-  const uname=CELL_UNIT[G.selected];
-  const candidates=Object.keys(RECIPE).filter(res=>RECIPE[res].includes(uname));
-  const ownCount=n=>CELL_UNIT.filter(v=>v===n).length;
-  const readyRes=candidates.find(res=>{
-    const need={};RECIPE[res].forEach(m=>need[m]=(need[m]||0)+1);
-    return Object.keys(need).every(m=>ownCount(m)>=need[m]);
-  });
-  if(!readyRes)return;
-  if(!G.comboArmed){
-    G.comboArmed=true; // 첫 클릭: 소비될 재료 표시
-    renderCmdRow();
-    highlightRecipeMats(readyRes);
-    return;
+  const sel=(G.selected!==null && CELL_UNIT[G.selected])?CELL_UNIT[G.selected]:null;
+  if(sel && !G.comboMode){
+    const r=readyFor(sel);
+    if(r.length===1){ doCombine(r[0],G.selected); return; }        // 고른 유닛 갈 곳이 하나면 바로
+    if(r.length>1){ G.selTab='combo'; renderInfoStrip(); flashCells(matCells(r[0],G.selected)); return; }
   }
-  // 두 번째 클릭: 실행
-  const need={};RECIPE[readyRes].forEach(m=>need[m]=(need[m]||0)+1);
-  Object.keys(need).forEach(m=>{
-    let left=need[m];
-    for(let i=0;i<CELL_UNIT.length && left>0;i++){
-      if(CELL_UNIT[i]===m){CELL_UNIT[i]=null;left--;}
-    }
-  });
-  const emptyIdx=CELL_UNIT.findIndex(v=>!v);
-  if(emptyIdx>=0)CELL_UNIT[emptyIdx]=readyRes;
-  G.selected=emptyIdx;
-  G.comboArmed=false;
-  drawCells();renderInfoStrip();renderCmdRow();updateTopbar();
+  G.comboMode=!G.comboMode;
+  G.selected=null; G.flashCells=[];
+  drawCells();renderInfoStrip();renderCmdRow();
 });
-function highlightRecipeMats(res){
-  // 소비될 재료 칸에 잠깐 파란 테두리(간단히 재그림으로 대체)
-  drawCells();
-}
 
 document.getElementById('enhanceBtn').addEventListener('click',()=>{
   document.getElementById('enhPop').classList.toggle('hidden');
@@ -1067,6 +1123,13 @@ function applyHash(){
   } else if(h==='#skill'){
     G.selected=0; G.selTab='skill'; // K2 흑표 칸(스킬 2개)
     drawCells();renderInfoStrip();renderCmdRow();
+  } else if(h==='#combo'){
+    G.comboMode=true;                       // 조합 모드 화면
+    drawCells();renderInfoStrip();renderCmdRow();
+  } else if(h==='#flash'){
+    G.selected=5; drawCells();renderInfoStrip();renderCmdRow();   // K21 선택 후 첫 조합 줄 누른 상태
+    const row=document.querySelector('.recipe-row'); row.classList.add('on');
+    flashCells(matCells(row.dataset.res,5),600000);
   } else if(h==='#mission'){
     openMission();
   }
