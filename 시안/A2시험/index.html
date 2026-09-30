@@ -580,8 +580,8 @@ let CELL_UNIT=[
   '박격포반','경계병','특공대','K2소총수',null,
   '지정사수',null,null,null,null,
 ];
-// 칸마다 몇 마리 겹쳐 있는지(겹쳐 쌓기 시험용: 주소 뒤에 ?stack=1)
-const STACK=location.search.includes('stack=1');
+// 칸마다 몇 마리 겹쳐 있는지 — 겹쳐 쌓기 확정(2026-09-30). 예전 방식 비교용: 주소 뒤에 ?stack=0
+const STACK=!location.search.includes('stack=0');
 const STACK_MAX=3;
 let CELL_N=CELL_UNIT.map(v=>v?1:0);
 if(STACK){ // 같은 유닛을 한 칸에 최대 3마리까지 모음
@@ -1195,7 +1195,7 @@ function applyHash(){
     G.zombieCnt=31;updateTopbar();
     [[1,'42'],[7,'118'],[11,'96'],[14,'380!','crit'],[18,'65'],[20,'210'],[26,'57'],[3,'255!','crit']].forEach(([i,t,c])=>spawnDmgFloat(i,t,true,c));
   } else if(h==='#bottom'){                // 맨 아랫줄 유닛 선택 + 판매 한 번 누른 상태
-    G.selected=35;G.sellArmed=true;drawCells();renderInfoStrip();renderCmdRow();
+    G.selected=CELL_UNIT.map((v,k)=>v?k:-1).filter(k=>k>=0).pop();G.sellArmed=true;drawCells();renderInfoStrip();renderCmdRow();
   } else if(h==='#long'){                  // 긴 이름 + 스킬 2개
     G.selected=idxOf('AH-64E 아파치');drawCells();renderInfoStrip();renderCmdRow();
   } else if(h==='#many'){                  // 상위 조합 4개
