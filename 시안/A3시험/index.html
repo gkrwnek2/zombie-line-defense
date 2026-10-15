@@ -1103,9 +1103,11 @@
   #unitCard .ucRow:disabled{ cursor:default; opacity:.88; color:#c2c9bd; filter:saturate(.75) !important; }
   #unitCard .ucRow:disabled b{ opacity:.85; }
   #unitCard .ucRow.ok:hover,#unitCard .ucRow.dp:hover{ background:rgba(126,224,138,.1) !important; }
+  #unitCard .ucMore{ display:block; width:100%; margin:2px 0 0; padding:6px 0 2px !important; background:none !important; border:0 !important; border-top:1px dashed rgba(255,255,255,.22) !important; border-radius:0 !important; color:#f2d27a !important; font:800 12px "Pretendard Variable",sans-serif; text-align:center; cursor:pointer; }
+  #unitCard .ucMore b{ font:900 12px "SUIT Variable",sans-serif; }
   #unitCard .ucEnd{ font-size:13px; color:#aab3a4; margin:4px 0; }
   @media (max-height:500px){
-    #unitCard .ucL,#unitCard .ucR{ padding:6px 8px; top:calc(var(--T) + var(--icH) * 3 + 8px); max-height:calc(100vh - var(--T) - var(--icH) * 3 - 12px); }
+    #unitCard .ucL,#unitCard .ucR{ width:calc(var(--edge) - 6px); padding:6px 8px; top:calc(var(--T) + var(--icH) * 3 + 8px); max-height:calc(100vh - var(--T) - var(--icH) * 3 - 12px); }
     #unitCard .ucL{ top:calc(var(--T) + var(--icH) * 4 + 8px); max-height:calc(100vh - var(--T) - var(--icH) * 4 - 12px); }
     #unitCard .ucPic{ width:34px; height:34px; } #unitCard .ucNm b{ font-size:14px; } #unitCard .ucNm span{ font-size:10px; }
     #unitCard .ucSt{ gap:10px; margin:5px 0 4px; padding:4px 0; } #unitCard .ucSt b{ font-size:15px; } #unitCard .ucSt small{ font-size:9px; }
@@ -1227,6 +1229,22 @@
   /* 창은 모두 불투명: 강화·스킬·선택권·조합 창, 미션·조합식 도감 화면 — 뒤 판이 비치지 않게 */
   #panel,body.hasBar #panel{ background:#10140f !important; }
   #book,#mission,#nav,#rec,#lab,#buffs{ background:#0f110b !important; }
+  /* ---------- 8차: 공격 타입 이름표 · 미션 창 좀비별 힌트 ---------- */
+  .a3Ty{ font-style:normal; font:800 11px/1.25 "Pretendard Variable",Pretendard,sans-serif; color:var(--ty); border-left:3px solid var(--ty); padding-left:5px; letter-spacing:.02em; align-self:flex-start; white-space:nowrap; }
+  #bookBody .bkHero .a3Ty{ display:inline-block; margin-left:10px; font-size:12px; vertical-align:1px; }
+  #a3MsHint{ margin-top:10px; padding-top:8px; border-top:1px dashed rgba(255,255,255,.2); }
+  #a3MsHint li.a3MhH{ font:800 13px/1.55 "SUIT Variable","SUIT",sans-serif; color:#e6e9dc; }
+  #a3MsHint .a3MhH small{ font:600 11px "Pretendard Variable",sans-serif; color:#9aa394; margin-left:6px; }
+  #a3MsHint ul{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); column-gap:18px; }
+  #a3MsHint li{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:12px; line-height:1.55; color:#c8d0c2; }
+  #a3MsHint li b{ color:#f1f3ea; font-weight:800; } #a3MsHint li small{ color:#8f9889; font-size:11px; margin-left:4px; }
+  #a3MsHint li i{ font-style:normal; color:#6f786a; margin:0 5px; } #a3MsHint li em{ font-style:normal; font-weight:800; }
+  @media (max-height:500px){
+    #unitCard .a3Ty{ font-size:9.5px; border-left-width:2px; padding-left:4px; }
+    #mission{ padding-top:4px !important; padding-bottom:4px !important; } #a3MsHint{ margin-top:1px; padding-top:2px; } #a3MsHint li.a3MhH{ font-size:11px; line-height:1.3; } #a3MsHint .a3MhH small{ font-size:10px; }
+    #a3MsHint ul{ grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); column-gap:12px; }
+    #a3MsHint li{ font-size:10.5px; line-height:1.3; } #a3MsHint li small{ font-size:9.5px; }
+  }
 .hidden{display:none !important;}
 </style>
 </head>
@@ -1300,6 +1318,7 @@
         </div>
         <p style="margin:0 0 10px;color:#a9b3bf;font-size:13px;">도전하면 트랙에 <b style="color:#ff7b72">특수 보스</b>가 등장합니다. 방어선으로 처치하면 보상! (한 번에 하나씩, 순서대로 해금)</p>
         <div id="missionBody"></div>
+        <div id="a3MsHint"><ul><li class="a3MhH">좀비별 힌트 <small>어떤 공격 타입이 잘 잡는지</small></li><li><b>강시</b><small>단단함</small><i>—</i><span><em style="color:#9ea9e6">관통형</em>·<em style="color:#e0906e">폭발형</em>이 잘 잡아요</span></li><li><b>철갑귀</b><small>아주 단단함</small><i>—</i><span><em style="color:#9ea9e6">관통형</em>이 잘 뚫어요</span></li><li><b>광란</b><small>빠름</small><i>—</i><span><em style="color:#bdb68a">연사형</em>·<em style="color:#79c4a0">전자형</em>으로 쏘고 묶어요</span></li><li><b>분열체</b><small>쪼개짐</small><i>—</i><span><em style="color:#e0906e">폭발형</em>·<em style="color:#a6c46e">지속피해형</em>으로 한 번에</span></li><li><b>방패병</b><small>앞을 막음</small><i>—</i><span><em style="color:#e0906e">폭발형</em>·<em style="color:#cfa0cf">진동형</em>으로 흔들어요</span></li><li><b>치유체</b><small>회복시킴</small><i>—</i><span><em style="color:#bdb68a">연사형</em>·<em style="color:#9ea9e6">관통형</em>으로 먼저 끊어요</span></li><li><b>보스</b><small>아주 튼튼함</small><i>—</i><span><em style="color:#9ea9e6">관통형</em>·<em style="color:#cfa0cf">진동형</em>의 큰 한 방</span></li></ul></div>
       </div>
     </div>
     <div id="nav" class="hidden">
@@ -4228,7 +4247,7 @@ function vDrawFloats(){const F=G.floats;if(!F||!F.length)return;a3FloatTop();con
       const sz=(f.crit?19:f.boss?15:n>=1000?14:12.5)*pop;ctx.font=`900 ${Math.round(sz)}px ${FNT_NUM}`;lw=f.crit?5:3.5;
       if(f.crit)txt+='!';}
     else{col=f.sk?'#e3ec8c':f.boss?'#ffd54a':'#fbf6e4';ctx.font=`800 ${Math.round(12.5*pop)}px ${FNT_BODY}`;}
-    const fy=Math.max(f.y,A3FY+11);ctx.save();a3X(f.x,fy);ctx.lineWidth=lw;ctx.strokeStyle='rgba(8,9,5,.92)';ctx.strokeText(txt,f.x,fy+1.5);ctx.strokeText(txt,f.x,fy);ctx.fillStyle=col;ctx.fillText(txt,f.x,fy);ctx.restore();}
+    let fy=Math.max(f.y,A3FY+11),fx=f.x;if(A3PC){const m=/([0-9.]+)px/.exec(ctx.font),fs=m?Math.max(9,Math.round(+m[1]*.87)):12;ctx.font=ctx.font.replace(/[0-9.]+px/,fs+'px');lw*=.87;const B=a3CellBox();if(B){const hh=fs/2+lw/2+1;if(f.y<B.t)fy=Math.min(fy,B.t-hh-2);}}ctx.save();a3X(fx,fy);ctx.lineWidth=lw;ctx.strokeStyle='rgba(8,9,5,.92)';ctx.strokeText(txt,fx,fy+1.5);ctx.strokeText(txt,fx,fy);ctx.fillStyle=col;ctx.fillText(txt,fx,fy);ctx.restore();}
   ctx.restore();}
 // ----- 배치칸 (바닥 받침은 지도 레이어에 미리 그려짐 — 여기선 끌어다 놓기 강조만) -----
 function vBrk(g,x,y,h,l){g.beginPath();for(const[sx,sy]of[[-1,-1],[1,-1],[1,1],[-1,1]]){g.moveTo(x+sx*h,y+sy*(h-l));g.lineTo(x+sx*h,y+sy*h);g.lineTo(x+sx*(h-l),y+sy*h);}g.stroke();}
@@ -5258,7 +5277,10 @@ function a3UpgHtml(){const mine=a3Mine(),TO=TIER_ORDER;let s='';
   return {h,s};}
 
 // --- 유닛을 누르면: 왼쪽 = 정보, 오른쪽 = 상위 조합 "이름 : 재료 + 재료" ---
-let A3UC='';
+let A3UC='',A3UCM=null;
+// 폰(높이 500 이하)에서 상위 조합이 5줄을 넘으면 4줄만 보이고 '더보기'로 펼침
+function a3IsPhone(){try{return innerHeight<=500;}catch(_){return false;}}
+function a3UcMore(){const t=G&&G.selected&&G.selected.tower;A3UCM=(A3UCM===t)?null:t;unitCardFill();}
 function a3UnitSig(){try{const t=G&&G.selected&&G.selected.tower;if(!t)return '';const inv=inventory(),ms={};
   for(const r of upgradesFrom(t.name))for(const m of RECIPE[r])ms[m]=inv[m]||0;
   return t.name+'|'+t.locked+'|'+(G.upg[U[t.name].dt]||0)+'|'+JSON.stringify(ms)+'|'+upgradesFrom(t.name).map(r=>canCraft(r)?2:canCraftDeepTop(r)?1:0).join('');}catch(_){return '';}}
@@ -5273,13 +5295,14 @@ function unitCardFill(){try{const el=document.getElementById('unitCard');if(!el)
     const ms=Object.keys(need).map(m=>{const hv=inv[m]||0,k=need[m],cl=hv>=k?'h':hv>0?'p':'n';return '<span class="'+cl+'">'+shortName(m)+(k>1?' <small>'+Math.min(hv,k)+'/'+k+'</small>':'')+'</span>';}).join('<i>+</i>');
     return '<button type="button" class="ucRow'+(o.ok?' ok':o.deep?' dp':'')+'" style="--uc:'+c+'" '+(go?'onclick="'+go+'"':'disabled')+'>'
       +'<b>'+shortName(o.r)+'</b><i>:</i>'+ms+(go?'<em>'+(o.ok?'조합':'한 번에')+'</em>':'')+'</button>';};
+  const cut=rs.length>5&&a3IsPhone()&&A3UCM!==t,mb=rs.length>5&&a3IsPhone()?'<button type="button" class="ucMore" onclick="a3UcMore()">'+(cut?'더보기 <b>+'+(rs.length-4)+'</b>':'접기')+'</button>':'';
   const nN=t.slot&&t.slot.ci!=null?cellN(CELLS[t.slot.ci]):1;
-  el.innerHTML='<div class="ucL" style="--rc:'+rc.color+'"><div class="ucHd">'+a3Img(t.name,'ucPic')+'<div class="ucNm"><b>'+t.name+'</b><span>'+rc.name+' · '+DT_NAME[u.dt]+(up>0?' · 강화 '+up:'')+(nN>1?' · 이 칸 '+nN+'마리':'')+'</span></div></div>'
+  el.innerHTML='<div class="ucL" style="--rc:'+rc.color+'"><div class="ucHd">'+a3Img(t.name,'ucPic')+'<div class="ucNm"><b>'+t.name+'</b><span>'+rc.name+' · '+DT_NAME[u.dt]+(up>0?' · 강화 '+up:'')+(nN>1?' · 이 칸 '+nN+'마리':'')+'</span>'+a3TyTag(t.name)+'</div></div>'
     +'<div class="ucSt"><span><small>공격력</small><b>'+dmg+'</b></span><span><small>공속/초</small><b>'+as+'</b></span><span><small>사거리</small><b>'+u.range+'</b></span></div>'
     +'<div class="ucAc"><button type="button" class="ucSell" onclick="sellSelected()" '+(t.locked?'disabled':'')+'>판매 <b>+'+sellPrice(t)+'</b></button>'
     +'<button type="button" class="ucLk" onclick="toggleLock()">'+(t.locked?'잠금 풀기':'잠금')+'</button><button type="button" class="ucX" onclick="unitCardClose()">닫기</button></div></div>'
     +'<div class="ucR"><div class="ucRh"><b>상위 조합</b><small>'+(rs.length?'<span class="h">초록</span> 가진 재료 · 밝은 줄을 누르면 바로 조합':'')+'</small></div>'
-    +(rs.length?'<div class="ucRl">'+rs.map(line).join('')+'</div>':'<p class="ucEnd">이 유닛으로 더 올릴 조합이 없어요</p>')+'</div>';
+    +(rs.length?'<div class="ucRl">'+(cut?rs.slice(0,4):rs).map(line).join('')+'</div>'+mb:'<p class="ucEnd">이 유닛으로 더 올릴 조합이 없어요</p>')+'</div>';
   if(el.style)el.style.cssText='';if(el.classList)el.classList.remove('hidden');}catch(_){}}
 
 // --- 조합식: 유닛을 누르면 바로 아래 재료 한 단계만 · 재료를 누르면 그 재료 안으로 ---
@@ -5296,7 +5319,7 @@ function renderBook(){const body=document.getElementById('bookBody');if(!body)re
     html+='<div class="bkNav"><button type="button" class="bkBack" onclick="bookBack()">‹ 뒤로</button><span class="bkPath"><button type="button" onclick="bookGo(null)">전체</button>'
       +bookPath.map((p,i)=>'<i>›</i>'+(i<bookPath.length-1?'<button type="button" onclick="bookGo(\''+p+'\')">'+(hidden(p)?'???':shortName(p))+'</button>':'<b>'+(hidden(p)?'???':shortName(p))+'</b>')).join('')+'</span></div>';
     if(hidden(cur)){html+='<p class="bkNote">비밀 조합이에요. 직접 조합해서 알아가 보세요.</p>';body.innerHTML=html;return;}
-    html+='<div class="bkHero" style="--rc:'+rc.color+'">'+a3Img(cur,'bkPic')+'<div><b>'+cur+'</b><span>'+(TN[u.t]||rc.name||'')+' · '+DT_NAME[u.dt]+'</span></div></div>';
+    html+='<div class="bkHero" style="--rc:'+rc.color+'">'+a3Img(cur,'bkPic')+'<div><b>'+cur+'</b><span>'+(TN[u.t]||rc.name||'')+' · '+DT_NAME[u.dt]+'</span>'+a3TyTag(cur)+'</div></div>';
     html+=skillListHtml(cur)||'';
     const R=RECIPE[cur];
     if(R){const need=needCount(R);
@@ -5329,9 +5352,13 @@ function renderBook(){const body=document.getElementById('bookBody');if(!body)re
 function a3XsCalc(hpx){try{if(typeof window==='undefined'||!(window.innerWidth>0)||!(hpx>0))return 1;const vw=window.innerWidth,vh=window.innerHeight,u=hpx/580,
   pm=vh<=500?170:Math.max(200,vw*.15),x=(vw/2-pm)/(265*u);return Math.max(1,Math.min(1.35,Math.floor(x*100)/100));}catch(_){return 1;}}
 let A3FY=-1e9,A3FX0=0,A3FX1=0,A3FT=-1e9;
-function a3FloatTop(){const n=(typeof performance!=='undefined'?performance.now():0);if(n-A3FT<400)return;A3FT=n;A3FY=-1e9;try{const cv=document.getElementById('cv')||document.querySelector('canvas');if(!cv)return;const r=cv.getBoundingClientRect();if(!(r.height>0))return;const ky=r.height/580,kx=r.width/760;let b=-1e9,l=1e9,rr=-1e9;for(const e of document.querySelectorAll('.a3Mid,.a3Mid *,#a3PzB')){const q=e.getBoundingClientRect();if(!(q.width>0&&q.height>0))continue;if(q.bottom>b)b=q.bottom;if(q.left<l)l=q.left;if(q.right>rr)rr=q.right;}if(b<-1e8)return;A3FY=(b-r.top)/ky;A3FX0=(l-r.left)/kx-14;A3FX1=(rr-r.left)/kx+14;}catch(_){A3FY=-1e9;}}
+function a3FloatTop(){const n=(typeof performance!=='undefined'?performance.now():0);if(n-A3FT<400)return;A3FT=n;try{A3PC=innerHeight>500;}catch(_){A3PC=false;}A3FY=-1e9;try{const cv=document.getElementById('cv')||document.querySelector('canvas');if(!cv)return;const r=cv.getBoundingClientRect();if(!(r.height>0))return;const ky=r.height/580,kx=r.width/760;let b=-1e9,l=1e9,rr=-1e9;for(const e of document.querySelectorAll('.a3Mid,.a3Mid *,#a3PzB')){const q=e.getBoundingClientRect();if(!(q.width>0&&q.height>0))continue;if(q.bottom>b)b=q.bottom;if(q.left<l)l=q.left;if(q.right>rr)rr=q.right;}if(b<-1e8)return;A3FY=(b-r.top)/ky;A3FX0=(l-r.left)/kx-14;A3FX1=(rr-r.left)/kx+14;}catch(_){A3FY=-1e9;}}
+let A3PC=false,A3CBX=null;
+function a3CellBox(){if(A3CBX)return A3CBX;if(typeof CELLS==='undefined'||!CELLS.length)return null;let t=1e9,l=1e9,r=-1e9;for(const c of CELLS){if(c.y-PAD_H<t)t=c.y-PAD_H;if(c.x-PAD_H<l)l=c.x-PAD_H;if(c.x+PAD_H>r)r=c.x+PAD_H;}return A3CBX={t,l,r};}
 function a3X(x,y){if(A3XS!==1){ctx.translate(x,y);ctx.scale(1/A3XS,1);ctx.translate(-x,-y);}}
 try{if(typeof window!=='undefined'&&window.addEventListener)window.addEventListener('resize',()=>{vFitT=-1e9;});}catch(_){}
+const A3TYP={"K2소총수":"연사형","K3기관총사수":"연사형","의무병":"연사형","수송병":"연사형","군견병":"연사형","경계병":"연사형","정비병":"연사형","K3기관총반":"연사형","발칸포반":"연사형","정찰병":"연사형","의무지원반":"연사형","수색대":"연사형","전방 수색조":"연사형","K6 중기관총반":"연사형","K200 APC":"연사형","K808 백호":"연사형","비호":"연사형","수리온":"연사형","K263 자주발칸":"연사형","UH-60 블랙호크":"연사형","K21 보병전투차":"연사형","천호 방공복합":"연사형","비호복합":"연사형","K30 비호Ⅱ":"연사형","K311A1 보급트럭":"연사형","K10 탄약운반":"연사형","LAH 편대":"연사형","판처파우스트":"관통형","신궁사수":"관통형","저격수":"관통형","지정사수":"관통형","미사일반":"관통형","90mm 무반동총":"관통형","천마":"관통형","특공대":"관통형","메티스-M 대전차":"관통형","K1A2 전차":"관통형","특전여단":"관통형","스파이크 NLOS":"관통형","K2 흑표":"관통형","707특임대":"관통형","현궁 대전차":"관통형","K1E1 전차":"관통형","AH-64E 아파치":"관통형","아파치 공격헬기대대":"관통형","수도기계화사단":"관통형","신속대응사단":"관통형","비밀정보부":"관통형","스텔스 저격조":"관통형","특수정찰대":"관통형","척탄병":"폭발형","박격포반":"폭발형","K4 고속유탄기관총":"폭발형","KH179 견인포":"폭발형","K105A1 자주포":"폭발형","500MD":"폭발형","K242 박격포차":"폭발형","K136 구룡":"폭발형","K9 천둥":"폭발형","LAMD 요격체계":"폭발형","천무 다연장":"폭발형","K9A1 자주포":"폭발형","군단 포병여단":"폭발형","육군 방공여단":"폭발형","자폭드론팀":"폭발형","공병":"진동형","공병중대":"진동형","KM9ACE 전투공병차":"진동형","현무-2":"진동형","현무-2A":"진동형","KTSSM":"진동형","현무-3":"진동형","미사일여단":"진동형","KTSSM-II":"진동형","K808A 천산":"진동형","현무-5":"진동형","ATACMS":"진동형","전략사령부":"진동형","현무-Ω":"진동형","코드네임 유령":"진동형","화염방사병":"지속피해형","화생방병":"지속피해형","화룡 화염장갑차":"지속피해형","제독차":"지속피해형","AH-1S 코브라":"지속피해형","120mm 자주박격포":"지속피해형","천광 레이저포대":"지속피해형","통신병":"전자형","정찰드론":"전자형","통신중대":"전자형","송골매":"전자형","무인수색차":"전자형","TICN 전술통신":"전자형","대포병 탐지레이더-II":"전자형","드론봇중대":"전자형","드론봇 전투단":"전자형","천검 무인편대":"전자형","군단 무인정찰대":"전자형","드론봇 군단":"전자형","한미연합사령부":"전자형","국군통수권":"전자형","전자전 부대":"전자형"},A3TYC={"연사형":"#bdb68a","관통형":"#9ea9e6","폭발형":"#e0906e","진동형":"#cfa0cf","지속피해형":"#a6c46e","전자형":"#79c4a0"},A3TYD={"연사형":"총알을 빠르게 쏟아붓는 타입","관통형":"한 발로 단단한 껍질을 꿰뚫는 타입","폭발형":"떨어진 자리에서 터져 주변까지 맞히는 타입","진동형":"큰 한 방으로 땅을 울려 주변을 흔드는 타입","지속피해형":"불·가스·레이저로 시간이 지나며 계속 피해를 주는 타입","전자형":"드론·통신·전파로 멀리서 돕고 묶는 타입"};
+function a3TyTag(n){const k=A3TYP[n];return k?'<i class="a3Ty" style="--ty:'+A3TYC[k]+'" title="'+A3TYD[k]+'">'+k+'</i>':'';}
 function a3Win(m){try{const bd=document.body;if(!bd||!bd.classList)return;
   if(m&&G&&G.paused&&m!=='ticket'){log('기술 카드를 먼저 골라 주세요','#e0a526');return;}
   if(m==='ticket'&&G&&pendingCount()>0){m=null;setTimeout(()=>{try{openRewardPop();}catch(_){}},0);}
