@@ -1014,12 +1014,13 @@
   .lrWrap{ display:block; cursor:pointer; position:relative; }
   .lrWrap .lrGo{ position:absolute; right:18px; bottom:12px; font:700 12px "Pretendard Variable",sans-serif; color:#9dee8a; }
   /* ===== A3 4차 (patch_a3.js 13절이 넣음): 판을 화면 높이에 꽉 · 메뉴는 판 바로 옆 · 소환은 아래 가운데 · 유닛 정보는 판 양옆 ===== */
-  /* 판 배율: 트랙 바깥 끝(위 78 ~ 아래 507, 429칸)이 [위 띠 아래 ~ 소환 줄 위]에 꼭 맞게 */
-  body{ --T:44px; --S:62px; --u:min(calc((100vh - var(--T) - var(--S)) / 429), calc((100vw - 280px) / 530)); }
-  @supports (height:100dvh){ body{ --u:min(calc((100dvh - var(--T) - var(--S)) / 429), calc((100vw - 280px) / 530)); } }
-  @media (max-height:500px){ body{ --T:30px; --S:34px; } }
-  #cv{ top:calc(var(--T) - var(--u) * 78) !important; }
-  #stage::before{ top:calc(var(--T) - var(--u) * 78) !important; }
+  /* 판 배율 (9차): [판 위 52 ~ 트랙 아래 끝 507, 455칸]이 [위 띠·'바로 시작' 아래 ~ 소환 줄 위]에 꼭 맞게
+     — 위쪽 길(95)을 지나는 보스의 체력 막대(약 57)·몸까지 위 띠에 가리지 않음. --Tc = 위 띠 + 아래로 튀어나온 '바로 시작' 버튼 */
+  body{ --T:44px; --Tc:calc(var(--T) + 4px); --S:62px; --u:min(calc((100vh - var(--Tc) - var(--S)) / 455), calc((100vw - 280px) / 530)); }
+  @supports (height:100dvh){ body{ --u:min(calc((100dvh - var(--Tc) - var(--S)) / 455), calc((100vw - 280px) / 530)); } }
+  @media (max-height:500px){ body{ --T:30px; --Tc:calc(var(--T) + 10px); --S:34px; } }
+  #cv{ top:calc(var(--Tc) - var(--u) * 52) !important; }
+  #stage::before{ top:calc(var(--Tc) - var(--u) * 52) !important; }
   /* 판 가로 늘림 --xs (실행 코드가 화면 폭에 맞춰 1~1.35로 정함 · 좌표·수치는 그대로, 그림만 가로로 늘림) */
   #cv{ width:calc(var(--u) * 760 * var(--xs, 1)) !important; left:calc(50vw - var(--u) * 380 * var(--xs, 1)) !important; }
   #stage::before{ background-size:calc(var(--u) * 1039.2 * var(--xs, 1)) 100% !important; }
@@ -1122,7 +1123,8 @@
   .msRow .mi{ flex:1 1 auto !important; min-width:0; }
   .msRow > button,.msRow .btn-wave{ flex:0 0 auto !important; width:auto !important; white-space:nowrap; }
   #panel,body.hasBar #panel{ top:calc(var(--T) + 2px) !important; max-height:calc(100vh - var(--T) - 10px) !important; }
-  #fieldLog{ top:calc(var(--T) + 4px) !important; }
+  /* 9차: 알림 한 줄이 위쪽 좀비 길(체력 막대)을 가리지 않게 길 아래(첫 줄 칸 위)로 */
+  #fieldLog{ top:calc(var(--Tc) + var(--u) * 72) !important; }
   @media (max-height:500px){
     #mission{ padding:6px 14px !important; }
     #mission h2{ font-size:16px !important; padding-bottom:2px !important; }
@@ -1229,21 +1231,72 @@
   /* 창은 모두 불투명: 강화·스킬·선택권·조합 창, 미션·조합식 도감 화면 — 뒤 판이 비치지 않게 */
   #panel,body.hasBar #panel{ background:#10140f !important; }
   #book,#mission,#nav,#rec,#lab,#buffs{ background:#0f110b !important; }
-  /* ---------- 8차: 공격 타입 이름표 · 미션 창 좀비별 힌트 ---------- */
+  /* ---------- 8차: 공격 타입 이름표 ---------- */
   .a3Ty{ font-style:normal; font:800 11px/1.25 "Pretendard Variable",Pretendard,sans-serif; color:var(--ty); border-left:3px solid var(--ty); padding-left:5px; letter-spacing:.02em; align-self:flex-start; white-space:nowrap; }
   #bookBody .bkHero .a3Ty{ display:inline-block; margin-left:10px; font-size:12px; vertical-align:1px; }
-  #a3MsHint{ margin-top:10px; padding-top:8px; border-top:1px dashed rgba(255,255,255,.2); }
-  #a3MsHint li.a3MhH{ font:800 13px/1.55 "SUIT Variable","SUIT",sans-serif; color:#e6e9dc; }
-  #a3MsHint .a3MhH small{ font:600 11px "Pretendard Variable",sans-serif; color:#9aa394; margin-left:6px; }
-  #a3MsHint ul{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); column-gap:18px; }
-  #a3MsHint li{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:12px; line-height:1.55; color:#c8d0c2; }
-  #a3MsHint li b{ color:#f1f3ea; font-weight:800; } #a3MsHint li small{ color:#8f9889; font-size:11px; margin-left:4px; }
-  #a3MsHint li i{ font-style:normal; color:#6f786a; margin:0 5px; } #a3MsHint li em{ font-style:normal; font-weight:800; }
   @media (max-height:500px){
     #unitCard .a3Ty{ font-size:9.5px; border-left-width:2px; padding-left:4px; }
-    #mission{ padding-top:4px !important; padding-bottom:4px !important; } #a3MsHint{ margin-top:1px; padding-top:2px; } #a3MsHint li.a3MhH{ font-size:11px; line-height:1.3; } #a3MsHint .a3MhH small{ font-size:10px; }
-    #a3MsHint ul{ grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); column-gap:12px; }
-    #a3MsHint li{ font-size:10.5px; line-height:1.3; } #a3MsHint li small{ font-size:9.5px; }
+    #mission{ padding-top:4px !important; padding-bottom:4px !important; }
+  }
+  /* ---------- 9차: 유닛 정보 '스킬' · 판매 확인 창 · 미션 힌트 한 줄 · 세로 화면 덮개 · 아주 낮은 화면 ---------- */
+  /* 버튼 넷이 좁은 창에서 글자가 세로로 쪼개지지 않게: 1줄 [판매 +골드] / 2줄 [스킬|잠금|닫기] */
+  #unitCard .ucAc{ flex-wrap:wrap; }
+  #unitCard .ucAc button{ white-space:nowrap; flex:1 1 0; min-width:0; }
+  #unitCard .ucAc .ucSell{ flex:1 0 100%; border-bottom:1px solid rgba(255,255,255,.16) !important; }
+  #unitCard .ucAc .ucSell b{ display:inline; font-size:14px; margin-left:3px; }
+  #unitCard .ucAc .ucSkB{ border-left:0 !important; }
+  #unitCard .ucAc button.ucSkB{ color:#cfe7c4 !important; }
+  #unitCard .ucAc button.ucSkB.on{ color:#7ee08a !important; box-shadow:inset 0 -2px 0 #7ee08a; }
+  #unitCard .ucRh .ucBk{ background:none !important; border:0 !important; padding:0 !important; color:#aab3a4 !important; font:700 11px "Pretendard Variable",sans-serif;
+    text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+  #unitCard .ucSkR{ padding:6px 0 7px; border-top:1px solid rgba(255,255,255,.12); }
+  #unitCard .ucSkR:first-child{ border-top:0; padding-top:2px; }
+  #unitCard .ucSkR b{ display:block; font:900 14px/1.3 "SUIT Variable","SUIT",sans-serif; color:#f2d27a; }
+  #unitCard .ucSkR span{ display:block; font-size:12px; line-height:1.45; color:#d3d9cd; }
+  #a3SellQ{ position:fixed; inset:0; z-index:130; display:flex; align-items:center; justify-content:center; padding:12px; box-sizing:border-box; background:rgba(4,6,4,.5); }
+  #a3SellQ .sqBox{ width:min(400px, 100%); background:#10140f; color:#eef2e8; border-top:3px solid #f2c14e; border-radius:0 0 12px 12px; padding:16px 18px 0; box-sizing:border-box;
+    font-family:"Pretendard Variable","Pretendard",sans-serif; box-shadow:0 10px 40px rgba(0,0,0,.55); }
+  #a3SellQ p{ margin:0 0 14px; font-size:16px; line-height:1.5; }
+  #a3SellQ p b{ font:900 18px "SUIT Variable","SUIT",sans-serif; color:#fff; }
+  #a3SellQ p em{ font-style:normal; font-weight:800; color:#f2c14e; white-space:nowrap; }
+  #a3SellQ .sqBt{ display:flex; margin:0 -18px; border-top:1px solid rgba(255,255,255,.14); }
+  #a3SellQ .sqBt button{ flex:1 1 0; padding:12px 0 !important; border:0 !important; border-radius:0 !important; font:800 15px "Pretendard Variable",sans-serif; cursor:pointer; }
+  #a3SellQ .sqNo{ background:none !important; color:#c8d0c2 !important; }
+  #a3SellQ .sqYes{ background:#c99a2e !important; color:#1b1404 !important; border-radius:0 0 12px 0 !important; }
+  #a3MsTip{ position:fixed; left:50%; top:45%; transform:translate(-50%, -50%); z-index:65; pointer-events:none; text-align:center; white-space:nowrap;
+    padding:8px 48px 10px; background:linear-gradient(90deg, rgba(8,10,8,0), rgba(8,10,8,.82) 18%, rgba(8,10,8,.82) 82%, rgba(8,10,8,0));
+    border-bottom:2px solid rgba(242,193,78,.7); animation:a3MtIn .28s ease-out; transition:opacity .45s; }
+  #a3MsTip.out{ opacity:0; }
+  #a3MsTip small{ display:block; font:800 13px "SUIT Variable","SUIT",sans-serif; letter-spacing:.04em; margin-bottom:2px; }
+  #a3MsTip p{ margin:0; font:700 24px/1.3 "Pretendard Variable","Pretendard",sans-serif; color:#eef2e8; text-shadow:0 2px 6px rgba(0,0,0,.8); }
+  #a3MsTip p b{ font:900 24px "SUIT Variable","SUIT",sans-serif; color:#fff; }
+  #a3MsTip p em{ font-style:normal; font-weight:900; }
+  @keyframes a3MtIn{ from{ opacity:0; transform:translate(-50%, -38%); } to{ opacity:1; transform:translate(-50%, -50%); } }
+  #a3Rot{ display:none; }
+  @media (max-aspect-ratio: 10/13){
+    #a3Rot{ position:fixed; inset:0; z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:24px; box-sizing:border-box;
+      background:#0f110b; color:#eef2e8; text-align:center; font-family:"Pretendard Variable","Pretendard",sans-serif; }
+    #a3Rot svg{ width:132px; height:99px; fill:none; stroke:#8f9889; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+    #a3Rot svg .on{ stroke:#f2c14e; }
+    #a3Rot b{ font:900 21px "SUIT Variable","SUIT",sans-serif; padding-bottom:6px; border-bottom:2px solid #f2c14e; }
+    #a3Rot span{ font-size:13px; line-height:1.55; color:#aab3a4; max-width:260px; }
+  }
+  @media (max-height:500px){
+    #unitCard .ucSkR{ padding:4px 0 5px; } #unitCard .ucSkR b{ font-size:12px; } #unitCard .ucSkR span{ font-size:10.5px; line-height:1.35; }
+    #unitCard .ucAc button{ padding:4px 1px !important; }
+    #a3SellQ .sqBox{ padding:12px 16px 0; } #a3SellQ p{ font-size:14px; margin-bottom:10px; } #a3SellQ p b{ font-size:15px; }
+    #a3SellQ .sqBt{ margin:0 -16px; } #a3SellQ .sqBt button{ padding:9px 0 !important; font-size:14px; }
+    #a3MsTip{ padding:5px 36px 7px; } #a3MsTip small{ font-size:11px; } #a3MsTip p,#a3MsTip p b{ font-size:17px; }
+  }
+  /* 폰 가로(높이 400 이하): 두 줄 버튼이 화면 아래로 넘치지 않게 유닛 정보를 아래에 붙인다 */
+  @media (max-height:400px){ #unitCard .ucL{ top:auto; bottom:4px; max-height:none; overflow:visible; } }
+  /* 아주 낮은 화면(폴드 겉화면 + 주소창 등, 높이 360 이하): 유닛 정보를 아래에 붙이고 그림을 빼서 판매·잠금·닫기가 화면 안에 */
+  @media (max-height:360px){
+    #unitCard .ucL{ top:auto; bottom:4px; max-height:none; overflow:visible; }
+    #unitCard .ucPic{ display:none; }
+    #unitCard .ucSt{ margin:3px 0 2px; padding:2px 0; } #unitCard .ucSt b{ font-size:13px; }
+    #unitCard .ucNm b{ font-size:13px; }
+    #unitCard .ucAc{ flex-wrap:nowrap; } #unitCard .ucAc .ucSell{ flex:1 1 auto; border-bottom:0 !important; } #unitCard .ucAc .ucSkB{ border-left:1px solid rgba(255,255,255,.16) !important; } #unitCard .ucSell b{ font-size:12px; }
   }
 .hidden{display:none !important;}
 </style>
@@ -1318,7 +1371,6 @@
         </div>
         <p style="margin:0 0 10px;color:#a9b3bf;font-size:13px;">도전하면 트랙에 <b style="color:#ff7b72">특수 보스</b>가 등장합니다. 방어선으로 처치하면 보상! (한 번에 하나씩, 순서대로 해금)</p>
         <div id="missionBody"></div>
-        <div id="a3MsHint"><ul><li class="a3MhH">좀비별 힌트 <small>어떤 공격 타입이 잘 잡는지</small></li><li><b>강시</b><small>단단함</small><i>—</i><span><em style="color:#9ea9e6">관통형</em>·<em style="color:#e0906e">폭발형</em>이 잘 잡아요</span></li><li><b>철갑귀</b><small>아주 단단함</small><i>—</i><span><em style="color:#9ea9e6">관통형</em>이 잘 뚫어요</span></li><li><b>광란</b><small>빠름</small><i>—</i><span><em style="color:#bdb68a">연사형</em>·<em style="color:#79c4a0">전자형</em>으로 쏘고 묶어요</span></li><li><b>분열체</b><small>쪼개짐</small><i>—</i><span><em style="color:#e0906e">폭발형</em>·<em style="color:#a6c46e">지속피해형</em>으로 한 번에</span></li><li><b>방패병</b><small>앞을 막음</small><i>—</i><span><em style="color:#e0906e">폭발형</em>·<em style="color:#cfa0cf">진동형</em>으로 흔들어요</span></li><li><b>치유체</b><small>회복시킴</small><i>—</i><span><em style="color:#bdb68a">연사형</em>·<em style="color:#9ea9e6">관통형</em>으로 먼저 끊어요</span></li><li><b>보스</b><small>아주 튼튼함</small><i>—</i><span><em style="color:#9ea9e6">관통형</em>·<em style="color:#cfa0cf">진동형</em>의 큰 한 방</span></li></ul></div>
       </div>
     </div>
     <div id="nav" class="hidden">
@@ -1397,8 +1449,7 @@
         <div class="resAct hidden" id="resAct"></div>
       </div>
       <div id="craftList"><span style="font-size:13px;color:#aeb6bf;">조합할 재료를 모으세요.</span></div>
-      <div class="invHead"><span class="secT" style="margin:0;">보유 유닛</span>
-        <button id="sellUnusedBtn" class="linkBtn" onclick="sellUnusedAsk()" title="목표 조합에 안 쓰는 남는 유닛을 한 번에 팔아요">안 쓰는 유닛 팔기</button></div>
+      <div class="invHead"><span class="secT" style="margin:0;">보유 유닛</span></div>
       <div id="invBox" style="display:flex;flex-wrap:wrap;gap:4px;font-size:12px;"><span style="color:#aeb6bf;">없음</span></div>
       <div id="roleCov" class="roleCov"></div>
       <div class="tipLine">지도에서 유닛을 누르면 아래에 정보·판매 버튼이 떠요 · 끌어다 놓으면 자리 이동</div>
@@ -2814,7 +2865,7 @@ function renderMissions(){
     let btn;
     if(done)btn=`<span class="done">완료</span>`;
     else if(active)btn=`<span class="lock">진행 중…</span>`;
-    else if(unlocked)btn=`<button class="btn-wave" onclick="startMission(${i})">도전</button>`;
+    else if(unlocked)btn=`<button class="btn-wave" onclick="a3MsGo(${i})">도전</button>`;
     else btn=`<span class="lock">잠김</span>`;
     html+=`<div class="msRow"><div class="mi"><div class="mn" style="color:${m.color}">${m.name}</div>`
       +`<div class="md">${missionLimit(m)}웨이브 안에 처치 — 못 잡으면 <b style="color:#ff7b72">패배</b> · 보상 <b style="color:#f2cc60">${m.rw}</b></div>`
@@ -3096,44 +3147,6 @@ function goalKeep(){const pool=inventory(),keep={};
     const r=RECIPE[nm];if(!r)return;for(const ing of r)alloc(ing,false);};
   for(const g of G.goals)if(U[g])alloc(g,true); // 목표는 "새로 1개 더 만든다"로 계산 (보유 중간 재료 우선)
   return keep;}
-function unusedPlan(){const gs=G.goals.filter(g=>U[g]);if(!gs.length)return {};
-  const inv=inventory(),keep=goalKeep(),minT=Math.min(...gs.map(g=>tIdx(U[g].t))),plan={};
-  for(const nm in inv){if(tIdx(U[nm].t)>=minT)continue; // 목표 등급 이상은 절대 안 팜
-    const ex=inv[nm]-(keep[nm]||0);if(ex>0)plan[nm]=ex;}
-  return plan;}
-function unusedUnits(plan){const out=[],left=Object.assign({},plan);
-  for(const t of resList())if(!t.locked&&left[t.name]>0){left[t.name]--;out.push({t,res:true});} // 싸우지 않는 대기소부터
-  for(const s of SLOTS)if(s.tower&&!s.tower.locked&&left[s.tower.name]>0){left[s.tower.name]--;out.push({t:s.tower,s});}
-  return out;}
-function sellRoleWarn(units){const before=roleCount(),lost={};
-  for(const u of units){if(u.res)continue;const uu=U[u.t.name];for(const [k] of ROLE_KEYS)if(uu[k])lost[k]=(lost[k]||0)+1;}
-  return ROLE_KEYS.filter(([k])=>before[k]&&lost[k]>=before[k]).map(([,label])=>`마지막 ${label} 유닛도 팔려요`).join(' · ');}
-function sellUnusedAsk(){if(!G||G.over||!G.started)return;
-  if(!G.goals.length){log('먼저 <b>목표 조합</b>을 정해 주세요 — 목표에 안 쓰는 유닛만 골라 팔아요. 조합식에서 를 누르세요.','#d29922');
-    try{if(typeof openBook==='function')openBook();}catch(_){}
-    return;}
-  const plan=unusedPlan(),units=unusedUnits(plan);
-  if(!units.length){log('팔 유닛이 없어요 — 지금 유닛은 모두 목표 조합에 쓰이거나 잠겨 있어요.','#aeb6bf');return;}
-  G.craftConfirm=null;G.sellAsk={plan,gold:units.reduce((a,u)=>a+sellPrice(u.t),0),n:units.length,warn:sellRoleWarn(units)};renderWarn();}
-function renderSellAsk(el){const a=G.sellAsk;el.classList.remove('hidden');
-  try{if(el.scrollIntoView)setTimeout(()=>{try{el.scrollIntoView({block:'nearest'});}catch(_){}},0);}catch(_){}
-  const names=Object.keys(a.plan).sort((x,y)=>tIdx(U[y].t)-tIdx(U[x].t));
-  el.innerHTML=`<div class="secT" style="color:#f2cc60;margin-bottom:4px;">안 쓰는 유닛 팔기 — ${a.n}기 · +${a.gold}골드</div>
-    <div style="font-size:12px;color:var(--ink);line-height:1.6;">${names.map(nm=>`<span style="color:${RARITY[U[nm].t].color}">${shortName(nm)} ×${a.plan[nm]}</span>`).join(' · ')}</div>
-    <div style="font-size:11.5px;color:var(--dim);margin-top:4px;">목표(${G.goals.map(shortName).join('·')})에 필요한 만큼은 남기고, 잠근 유닛·목표 등급 이상은 팔지 않아요.</div>
-    ${a.warn?`<div style="font-size:12px;color:#ffb3ad;margin-top:4px;">${a.warn}</div>`:''}
-    <div class="btn-row" style="margin-top:8px;"><button class="btn-sell" onclick="sellUnusedYes()" style="flex:1;">팔기 (+${a.gold}골드)</button>
-    <button onclick="sellUnusedNo()" style="flex:1;background:#30363d;">취소</button></div>`;}
-function sellUnusedYes(){const a=G&&G.sellAsk;if(!a)return 0;G.sellAsk=null;
-  const now=unusedPlan(),plan={};for(const nm in a.plan){const k=Math.min(a.plan[nm],now[nm]||0);if(k>0)plan[nm]=k;} // 확인 뒤 바뀐 게 있으면 더 적은 쪽
-  const units=unusedUnits(plan);let gold=0;
-  for(const u of units){gold+=sellPrice(u.t);
-    if(u.res){const i=G.reserve.indexOf(u.t);if(i>=0)G.reserve.splice(i,1);}
-    else{if(G.selected===u.s)G.selected=null;u.s.tower=null;}}
-  G.gold+=gold;G.resSel=null;
-  log(`안 쓰는 유닛 ${units.length}기 판매 (+${gold}골드)`,'#f2cc60');
-  G.invSig='';G._resSig='';G._selSig='';renderWarn();updateUI();return gold;}
-function sellUnusedNo(){if(G)G.sellAsk=null;renderWarn();}
 
 function buildWave(w){
   const q=[];
@@ -4939,7 +4952,7 @@ function confirmCraft(consumed,result,fn){
   G.sellAsk=null;G.craftConfirm={r:result,fn,msgs:items.map(x=>x.msg),keys:items.map(x=>x.k)};renderWarn();return false;
 }
 function renderWarn(){const el=document.getElementById('warnBox');if(!el)return;const c=G&&G.craftConfirm;
-  if(!c||!c.r){if(G&&G.sellAsk){renderSellAsk(el);return;}el.classList.add('hidden');el.innerHTML='';return;}
+  if(!c||!c.r){el.classList.add('hidden');el.innerHTML='';return;}
   el.classList.remove('hidden');
   try{if(el.scrollIntoView)setTimeout(()=>{try{el.scrollIntoView({block:'nearest'});}catch(_){}},0);}catch(_){}
   el.innerHTML=`<div class="secT" style="color:#ff7b72;margin-bottom:4px;">조합 전 확인 — ${shortName(c.r)}</div>
@@ -5226,7 +5239,7 @@ function a3Out(){try{if(!AC)return null;if(!AC._a3g){const g=AC.createGain();g.c
 function a3Spd0(){try{const v=+A3S.spd;return SPEEDS.indexOf(v)>=0?v:1;}catch(_){return 1;}}
 function a3CanVib(){try{return typeof navigator!=='undefined'&&typeof navigator.vibrate==='function';}catch(_){return false;}}
 // --- 일시정지 (기술 카드용 G.paused와 따로) ---
-let A3P=false,A3PZ='';
+let A3P=false,A3PZ='',A3SQ=null,A3UCS=null,A3MT=0;
 function a3Pause(on){try{if(on&&(!G||!G.started||G.over))return;A3P=!!on;A3PZ='';
   const el=document.getElementById('a3Pz');if(el&&el.classList)el.classList.toggle('hidden',!A3P);
   if(A3P){if(A3W)a3Win(null);a3PzFill();}}catch(_){}}
@@ -5249,6 +5262,7 @@ function a3PzAsk(k){try{if(A3PZ!==k){A3PZ=k;a3PzFill();return;}
   else if(k==='ex'){try{if(G&&G.started&&!G.over&&G.wave>=1)recSave('quit');}catch(_){}location.reload();}}catch(_){}}
 try{if(typeof document!=='undefined'&&document.addEventListener)document.addEventListener('keydown',function(e){try{
   if(e.key!=='Escape'&&e.key!=='Esc')return;
+  if(A3SQ){e.preventDefault();a3SellNo();return;}
   if(A3P){e.preventDefault();a3Pause(false);return;}
   if(G&&G.started&&!G.over){e.preventDefault();a3Pause(true);}}catch(_){}});}catch(_){}
 
@@ -5296,13 +5310,15 @@ function unitCardFill(){try{const el=document.getElementById('unitCard');if(!el)
     return '<button type="button" class="ucRow'+(o.ok?' ok':o.deep?' dp':'')+'" style="--uc:'+c+'" '+(go?'onclick="'+go+'"':'disabled')+'>'
       +'<b>'+shortName(o.r)+'</b><i>:</i>'+ms+(go?'<em>'+(o.ok?'조합':'한 번에')+'</em>':'')+'</button>';};
   const cut=rs.length>5&&a3IsPhone()&&A3UCM!==t,mb=rs.length>5&&a3IsPhone()?'<button type="button" class="ucMore" onclick="a3UcMore()">'+(cut?'더보기 <b>+'+(rs.length-4)+'</b>':'접기')+'</button>':'';
-  const nN=t.slot&&t.slot.ci!=null?cellN(CELLS[t.slot.ci]):1;
+  const nN=t.slot&&t.slot.ci!=null?cellN(CELLS[t.slot.ci]):1,skOn=A3UCS===t;
   el.innerHTML='<div class="ucL" style="--rc:'+rc.color+'"><div class="ucHd">'+a3Img(t.name,'ucPic')+'<div class="ucNm"><b>'+t.name+'</b><span>'+rc.name+' · '+DT_NAME[u.dt]+(up>0?' · 강화 '+up:'')+(nN>1?' · 이 칸 '+nN+'마리':'')+'</span>'+a3TyTag(t.name)+'</div></div>'
     +'<div class="ucSt"><span><small>공격력</small><b>'+dmg+'</b></span><span><small>공속/초</small><b>'+as+'</b></span><span><small>사거리</small><b>'+u.range+'</b></span></div>'
-    +'<div class="ucAc"><button type="button" class="ucSell" onclick="sellSelected()" '+(t.locked?'disabled':'')+'>판매 <b>+'+sellPrice(t)+'</b></button>'
+    +'<div class="ucAc"><button type="button" class="ucSell" onclick="a3SellAsk()" '+(t.locked?'disabled':'')+'>판매 <b>+'+sellPrice(t)+'</b></button>'
+    +'<button type="button" class="ucSkB'+(skOn?' on':'')+'" onclick="a3UcSkill()" aria-pressed="'+skOn+'">스킬</button>'
     +'<button type="button" class="ucLk" onclick="toggleLock()">'+(t.locked?'잠금 풀기':'잠금')+'</button><button type="button" class="ucX" onclick="unitCardClose()">닫기</button></div></div>'
-    +'<div class="ucR"><div class="ucRh"><b>상위 조합</b><small>'+(rs.length?'<span class="h">초록</span> 가진 재료 · 밝은 줄을 누르면 바로 조합':'')+'</small></div>'
-    +(rs.length?'<div class="ucRl">'+(cut?rs.slice(0,4):rs).map(line).join('')+'</div>'+mb:'<p class="ucEnd">이 유닛으로 더 올릴 조합이 없어요</p>')+'</div>';
+    +(skOn?'<div class="ucR ucSkP"><div class="ucRh"><b>스킬</b><button type="button" class="ucBk" onclick="a3UcSkill()">상위 조합 보기</button></div>'+a3SkHtml(t.name)+'</div>'
+    :'<div class="ucR"><div class="ucRh"><b>상위 조합</b><small>'+(rs.length?'<span class="h">초록</span> 가진 재료 · 밝은 줄을 누르면 바로 조합':'')+'</small></div>'
+    +(rs.length?'<div class="ucRl">'+(cut?rs.slice(0,4):rs).map(line).join('')+'</div>'+mb:'<p class="ucEnd">이 유닛으로 더 올릴 조합이 없어요</p>')+'</div>');
   if(el.style)el.style.cssText='';if(el.classList)el.classList.remove('hidden');}catch(_){}}
 
 // --- 조합식: 유닛을 누르면 바로 아래 재료 한 단계만 · 재료를 누르면 그 재료 안으로 ---
@@ -5348,6 +5364,46 @@ function renderBook(){const body=document.getElementById('bookBody');if(!body)re
   {const sc=SECRET_UNITS.filter(n=>U[n]&&(!bookRole||unitHasRole(n,bookRole)));
     if(sc.length){const rc=RARITY.secret||{color:'#c8d0c2'};html+='<div class="bkT" style="--rc:'+rc.color+'">비밀 <small>우라늄 연구소 비밀 도박에서만</small></div><div class="bkG">'+sc.map(n=>chip(n,rc)).join('')+'</div>';}}
   body.innerHTML=html;}
+
+// ===== 9차 (화면만 — 수치·전투 계산·판매 금액은 그대로) =====
+// --- 유닛 정보 '스킬': 누르면 오른쪽 칸에 그 유닛의 스킬 이름 + 한 줄 설명 ---
+function a3UcSkill(){const t=G&&G.selected&&G.selected.tower;A3UCS=(t&&A3UCS!==t)?t:null;unitCardFill();}
+function a3SkHtml(n){let L=[];try{L=(typeof SKILLS!=='undefined'&&SKILLS[n])||[];}catch(_){L=[];}
+  if(!L.length)return '<p class="ucEnd">스킬 없음</p>';
+  return '<div class="ucSkL">'+L.map(s=>'<div class="ucSkR"><b>'+s.nm+'</b><span>'+skillText(s)+'</span></div>').join('')+'</div>';}
+// --- 판매 확인 창: 판매 버튼을 한 번 더 눌러도 바로 팔리지 않게 화면 가운데에서 한 번 더 묻기 ---
+function a3Jo(w){const c=String(w).charCodeAt(String(w).length-1)-0xAC00;return (c>=0&&c<11172)?(c%28?'을':'를'):'을(를)';}
+function a3SellAsk(){try{const t=G&&G.selected&&G.selected.tower;if(!t||t.locked||!G.started||G.over)return;A3SQ=t;
+  let el=document.getElementById('a3SellQ');
+  if(!el){el=document.createElement('div');el.id='a3SellQ';document.body.appendChild(el);el.addEventListener('click',function(e){if(e.target===el)a3SellNo();});}
+  el.innerHTML='<div class="sqBox" role="dialog" aria-modal="true" aria-label="판매 확인"><p><b>'+t.name+'</b>'+a3Jo(t.name)+' 판매할까요? <em>(+'+sellPrice(t)+'골드)</em></p>'
+    +'<div class="sqBt"><button type="button" class="sqNo" onclick="a3SellNo()">취소</button><button type="button" class="sqYes" onclick="a3SellYes()">판매</button></div></div>';
+  if(el.classList)el.classList.remove('hidden');}catch(_){}}
+function a3SellNo(){A3SQ=null;try{const el=document.getElementById('a3SellQ');if(el&&el.classList)el.classList.add('hidden');}catch(_){}}
+function a3SellYes(){try{const t=A3SQ;a3SellNo();if(!t||!G||G.over||!G.selected||G.selected.tower!==t)return;sellSelected();if(A3W)a3WinFill(true);}catch(_){}}
+// --- 미션 도전: 그 보스에 맞는 힌트 한 줄을 판 위에 크게 3.5초 ---
+function a3MsGo(i){try{const was=G&&G.activeMission;startMission(i);const m=G&&G.activeMission;if(m&&m!==was)a3MsTip(i);}catch(_){}}
+function a3MsTip(i){try{const h=(typeof A3MSH!=='undefined')&&A3MSH[i];if(!h||typeof document==='undefined')return;
+  let el=document.getElementById('a3MsTip');
+  if(!el){el=document.createElement('div');el.id='a3MsTip';el.setAttribute('aria-live','polite');document.body.appendChild(el);}
+  const m=MISSIONS[i];el.innerHTML='<small style="color:'+m.color+'">'+m.name+'</small><p>'+h+'</p>';
+  try{const r=cv.getBoundingClientRect();el.style.top=Math.round(r.top+r.height*0.60)+'px';}catch(_){}
+  el.classList.remove('hidden','out');clearTimeout(A3MT);
+  A3MT=setTimeout(function(){el.classList.add('out');A3MT=setTimeout(function(){el.classList.add('hidden');},450);},4000);}catch(_){}}
+// --- 세로로 긴 화면: '가로로 돌려 주세요' 덮개 + 게임 중이면 자동 멈춤 ---
+function a3RotInit(){try{if(typeof document==='undefined'||typeof matchMedia!=='function'||!document.body)return;
+  if(!document.getElementById('a3Rot')){const d=document.createElement('div');d.id='a3Rot';d.setAttribute('role','alert');
+    d.innerHTML='<svg viewBox="0 0 120 90" aria-hidden="true"><rect x="12" y="20" width="30" height="54" rx="5"/><path d="M24 66h6"/>'
+      +'<rect x="58" y="34" width="54" height="30" rx="5" class="on"/><path d="M66 46v6" class="on"/><path d="M40 12q26-8 46 14" /><path d="M80 18l6 8-9 2"/></svg>'
+      +'<b>휴대폰을 가로로 돌려 주세요</b><span>가로 화면에서 판이 꽉 차게 보여요. 돌리면 멈췄던 곳부터 이어서 해요.</span>';
+    document.body.appendChild(d);}
+  const mq=matchMedia('(max-aspect-ratio: 10/13)');
+  let byRot=false;
+  const f=function(){try{if(mq.matches){if(G&&G.started&&!G.over&&!A3P){a3Pause(true);byRot=A3P;}}
+    else if(byRot){byRot=false;if(A3P)a3Pause(false);}}catch(_){}};
+  if(mq.addEventListener)mq.addEventListener('change',f);else if(mq.addListener)mq.addListener(f);
+  setInterval(f,700);f();}catch(_){}}
+try{if(typeof document!=='undefined'&&typeof matchMedia==='function'){if(document.body)a3RotInit();else document.addEventListener('DOMContentLoaded',a3RotInit);}}catch(_){}
 // 판 가로 늘림 배율: 판 양옆에 메뉴·유닛 정보 칸(PC 화면 폭 15%·최소 200px, 휴대폰 170px)만 남기고 판을 넓힘
 function a3XsCalc(hpx){try{if(typeof window==='undefined'||!(window.innerWidth>0)||!(hpx>0))return 1;const vw=window.innerWidth,vh=window.innerHeight,u=hpx/580,
   pm=vh<=500?170:Math.max(200,vw*.15),x=(vw/2-pm)/(265*u);return Math.max(1,Math.min(1.35,Math.floor(x*100)/100));}catch(_){return 1;}}
@@ -5359,6 +5415,7 @@ function a3X(x,y){if(A3XS!==1){ctx.translate(x,y);ctx.scale(1/A3XS,1);ctx.transl
 try{if(typeof window!=='undefined'&&window.addEventListener)window.addEventListener('resize',()=>{vFitT=-1e9;});}catch(_){}
 const A3TYP={"K2소총수":"연사형","K3기관총사수":"연사형","의무병":"연사형","수송병":"연사형","군견병":"연사형","경계병":"연사형","정비병":"연사형","K3기관총반":"연사형","발칸포반":"연사형","정찰병":"연사형","의무지원반":"연사형","수색대":"연사형","전방 수색조":"연사형","K6 중기관총반":"연사형","K200 APC":"연사형","K808 백호":"연사형","비호":"연사형","수리온":"연사형","K263 자주발칸":"연사형","UH-60 블랙호크":"연사형","K21 보병전투차":"연사형","천호 방공복합":"연사형","비호복합":"연사형","K30 비호Ⅱ":"연사형","K311A1 보급트럭":"연사형","K10 탄약운반":"연사형","LAH 편대":"연사형","판처파우스트":"관통형","신궁사수":"관통형","저격수":"관통형","지정사수":"관통형","미사일반":"관통형","90mm 무반동총":"관통형","천마":"관통형","특공대":"관통형","메티스-M 대전차":"관통형","K1A2 전차":"관통형","특전여단":"관통형","스파이크 NLOS":"관통형","K2 흑표":"관통형","707특임대":"관통형","현궁 대전차":"관통형","K1E1 전차":"관통형","AH-64E 아파치":"관통형","아파치 공격헬기대대":"관통형","수도기계화사단":"관통형","신속대응사단":"관통형","비밀정보부":"관통형","스텔스 저격조":"관통형","특수정찰대":"관통형","척탄병":"폭발형","박격포반":"폭발형","K4 고속유탄기관총":"폭발형","KH179 견인포":"폭발형","K105A1 자주포":"폭발형","500MD":"폭발형","K242 박격포차":"폭발형","K136 구룡":"폭발형","K9 천둥":"폭발형","LAMD 요격체계":"폭발형","천무 다연장":"폭발형","K9A1 자주포":"폭발형","군단 포병여단":"폭발형","육군 방공여단":"폭발형","자폭드론팀":"폭발형","공병":"진동형","공병중대":"진동형","KM9ACE 전투공병차":"진동형","현무-2":"진동형","현무-2A":"진동형","KTSSM":"진동형","현무-3":"진동형","미사일여단":"진동형","KTSSM-II":"진동형","K808A 천산":"진동형","현무-5":"진동형","ATACMS":"진동형","전략사령부":"진동형","현무-Ω":"진동형","코드네임 유령":"진동형","화염방사병":"지속피해형","화생방병":"지속피해형","화룡 화염장갑차":"지속피해형","제독차":"지속피해형","AH-1S 코브라":"지속피해형","120mm 자주박격포":"지속피해형","천광 레이저포대":"지속피해형","통신병":"전자형","정찰드론":"전자형","통신중대":"전자형","송골매":"전자형","무인수색차":"전자형","TICN 전술통신":"전자형","대포병 탐지레이더-II":"전자형","드론봇중대":"전자형","드론봇 전투단":"전자형","천검 무인편대":"전자형","군단 무인정찰대":"전자형","드론봇 군단":"전자형","한미연합사령부":"전자형","국군통수권":"전자형","전자전 부대":"전자형"},A3TYC={"연사형":"#bdb68a","관통형":"#9ea9e6","폭발형":"#e0906e","진동형":"#cfa0cf","지속피해형":"#a6c46e","전자형":"#79c4a0"},A3TYD={"연사형":"총알을 빠르게 쏟아붓는 타입","관통형":"한 발로 단단한 껍질을 꿰뚫는 타입","폭발형":"떨어진 자리에서 터져 주변까지 맞히는 타입","진동형":"큰 한 방으로 땅을 울려 주변을 흔드는 타입","지속피해형":"불·가스·레이저로 시간이 지나며 계속 피해를 주는 타입","전자형":"드론·통신·전파로 멀리서 돕고 묶는 타입"};
 function a3TyTag(n){const k=A3TYP[n];return k?'<i class="a3Ty" style="--ty:'+A3TYC[k]+'" title="'+A3TYD[k]+'">'+k+'</i>':'';}
+const A3MSH=["<b>연습 상대 — </b>아무 타입이나 괜찮아요","<b>느려지게 하기가 절반만 통함 — </b><em style=\"color:#bdb68a\">연사형</em>·<em style=\"color:#9ea9e6\">관통형</em>으로 세게","<b>단단함 — </b><em style=\"color:#9ea9e6\">관통형</em>·<em style=\"color:#e0906e\">폭발형</em>이 잘 뚫어요","<b>주변 좀비를 회복시킴 — </b><em style=\"color:#e0906e\">폭발형</em>·<em style=\"color:#a6c46e\">지속피해형</em>으로 주변부터","<b>기절이 안 통함 — </b><em style=\"color:#9ea9e6\">관통형</em>·<em style=\"color:#e0906e\">폭발형</em> 큰 화력으로","<b>폭발에 강함 — </b><em style=\"color:#bdb68a\">연사형</em>·<em style=\"color:#9ea9e6\">관통형</em>이 잘 들어요","<b>한 번 다시 일어남 — </b><em style=\"color:#a6c46e\">지속피해형</em>으로 끝까지"];
 function a3Win(m){try{const bd=document.body;if(!bd||!bd.classList)return;
   if(m&&G&&G.paused&&m!=='ticket'){log('기술 카드를 먼저 골라 주세요','#e0a526');return;}
   if(m==='ticket'&&G&&pendingCount()>0){m=null;setTimeout(()=>{try{openRewardPop();}catch(_){}},0);}
@@ -5372,12 +5429,12 @@ function a3Win(m){try{const bd=document.body;if(!bd||!bd.classList)return;
 function a3Mine(){const m={};for(const s of SLOTS)if(s.tower)m[s.tower.name]=(m[s.tower.name]||0)+1;for(const n of (G.reserve||[]))if(n&&n.name)m[n.name]=(m[n.name]||0)+1;return m;}
 function a3WinFill(force){try{const x=document.getElementById('a3WinX');if(!x||!G||!A3W)return;let h='',sig=A3W;
   if(A3W==='craft'){sig+=G.comboMode;
-    h=`<div class="a3Row"><button type="button" onclick="a3Win(null);comboToggle()">판에서 직접 골라 조합</button><button type="button" onclick="a3Win(null);openBook()">조합식 도감</button></div><div class="a3Row"><button type="button" onclick="sellUnusedAsk();a3Win('sell')">목표에 안 쓰는 유닛 한꺼번에 팔기</button></div>`;}
+    h=`<div class="a3Row"><button type="button" onclick="a3Win(null);comboToggle()">판에서 직접 골라 조합</button><button type="button" onclick="a3Win(null);openBook()">조합식 도감</button></div>`;}
   else if(A3W==='upg'){const o=a3UpgHtml();sig+=o.s;h=o.h;}
-  else if(A3W==='sell'){const t=G.selected&&G.selected.tower;sig+=(t?t.name+t.locked+sellPrice(t):'')+'|'+!!G.sellAsk;
-    h=t?`<div class="a3Sel"><div><b>${t.name}</b><span>${RARITY[U[t.name].t].name}</span></div>${t.locked?'<p class="a3Note">잠긴 유닛이에요. 잠금을 풀어야 팔 수 있어요.</p>':`<button type="button" class="a3Sell" onclick="sellSelected();a3WinFill(true)">이 유닛 팔기 +${sellPrice(t)}골드</button>`}</div>`
+  else if(A3W==='sell'){const t=G.selected&&G.selected.tower;sig+=(t?t.name+t.locked+sellPrice(t):'');
+    h=t?`<div class="a3Sel"><div><b>${t.name}</b><span>${RARITY[U[t.name].t].name}</span></div>${t.locked?'<p class="a3Note">잠긴 유닛이에요. 잠금을 풀어야 팔 수 있어요.</p>':`<button type="button" class="a3Sell" onclick="a3SellAsk()">이 유닛 팔기 +${sellPrice(t)}골드</button>`}</div>`
       :'<p class="a3Note">판에서 유닛을 누르면 그 유닛을 바로 팔 수 있어요.</p>';
-    h+='<div class="a3Row"><button type="button" onclick="sellUnusedAsk();a3WinFill(true)">목표에 안 쓰는 유닛 한꺼번에 팔기</button></div>';}
+}
   else if(A3W==='skill'){const cd=Math.max(0,Math.ceil(((G.strikeCd||0)-G.t)/1000)),u=G.uran||0;sig+=cd+'|'+u+'|'+sfxOn+'|'+G.strikeMode;
     h=`<div class="a3Sk"><button type="button" onclick="a3Win(null);toggleStrike()"><b>지정 포격</b><small>${G.strikeMode?'지금 조준 중 — 판을 누르세요':cd>0?cd+'초 뒤 다시 쏠 수 있어요':'판을 눌러 그 자리에 포격'}</small></button>`+
       `<button type="button" onclick="a3Win(null);openLab()"><b>우라늄 연구소</b><small>우라늄 ${u}개 · 운에 맡기는 강화</small></button>`+
@@ -5399,7 +5456,6 @@ function a3BarSync(){try{const $=id=>document.getElementById(id),put=(id,v)=>{co
   {const sp=$('a3Spd');if(sp)put('a3Spd',(G.speed||1)+'배');}
   if(A3W)a3WinFill(false);}catch(_){}}
 function fullHelp(){if(!G||G.over)return;
-  if(G.goals&&G.goals.length){sellUnusedAsk();return;}
   let best=null,bt=99;for(const c of CELLS){const s=cellTop(c);if(!s||s.tower.locked)continue;const ti=TIER_ORDER.indexOf(U[s.tower.name].t);if(ti>=0&&ti<bt){bt=ti;best=s;}}
   if(best){G.selected=best;updateUI();showSelCard();log('가장 낮은 등급 칸을 골랐어요 — 조합 재료로 쓰거나 팔면 칸이 비어요. 조합 모드로 만들 수 있는 조합도 확인해 보세요.','#c2b27a');}}
 function slotAt(mx,my){let best=null,bd=34; // A3: 가장 가까운 칸 → 그 칸의 맨 위 유닛(없으면 1층)
