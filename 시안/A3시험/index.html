@@ -877,6 +877,8 @@
   /* 도감·미션·연구소 등 큰 창: 화면 위에 꽉 차게 떴다 닫힘 (페이지는 안 움직임) */
   #book,#mission,#nav,#lab,#buffs,#rec,#meta,#rewardPop{ position:fixed !important; inset:0 !important; z-index:90 !important; overflow-y:auto !important; overscroll-behavior:contain; }
   #overlay{ position:fixed !important; inset:0 !important; z-index:95 !important; overflow-y:auto !important; overscroll-behavior:contain; }
+  /* 11차: 시작·결과 화면(#overlay, 95)에서 여는 영구 기술·내 기록 창은 그 위로 — 전엔 화면 뒤에 열려 안 보였음 */
+  #meta,#rec{ z-index:96 !important; }
   #overlay.hidden,#book.hidden,#mission.hidden,#nav.hidden,#lab.hidden,#buffs.hidden,#rec.hidden,#meta.hidden,#rewardPop.hidden{ display:none !important; }
 
   /* 피해 종류 표시는 화면에서 뺌 (계산은 그대로) */
@@ -1201,6 +1203,15 @@
   #bookBody .bkGo{ margin-top:12px; }
   #bookBody .bkMake{ background:#7ee08a !important; color:#0b2410 !important; border:0 !important; border-radius:8px !important; padding:9px 18px !important; font:900 15px "Pretendard Variable",sans-serif; cursor:pointer; }
   #bookBody .bkNo{ font-size:13px; color:#ffb3ad; }
+  /* 11차: 깎기·저격 한 줄 설명(밑줄 구분, 박스 아님) · 쓰이는 곳 */
+  #bookBody .bkEx{ margin:-2px 0 8px; padding:0 0 6px; border-bottom:1px dashed rgba(255,255,255,.18); }
+  #bookBody .bkEx p{ margin:2px 0; font-size:13px; color:#c8d0c2; line-height:1.4; }
+  #bookBody .bkEx b{ color:#f2d27a; font-weight:900; margin-right:4px; }
+  #bookBody .bkUsed .bkM em{ color:#8c9488; font-size:18px; }
+  #unitCard .ucEx{ margin:0 0 5px; padding:0 0 4px; border-bottom:1px dashed rgba(255,255,255,.18); }
+  #unitCard .ucEx p{ margin:1px 0; font-size:11px; line-height:1.35; color:#c8d0c2; }
+  #unitCard .ucEx b{ color:#f2d27a; font-weight:900; margin-right:3px; }
+  @media (max-height:500px){ #unitCard .ucEx p{ font-size:10px; } #bookBody .bkEx p{ font-size:12px; } }
 
   /* ---------- ESC 일시정지·설정 ---------- */
   #a3Pz{ position:fixed; inset:0; z-index:120; background:rgba(4,6,4,.62); display:flex; align-items:center; justify-content:center; padding:12px; box-sizing:border-box; }
@@ -1533,10 +1544,10 @@ const PATH=[{x:130,y:95},{x:630,y:95},{x:630,y:490},{x:130,y:490}];
 const LANE_W=30;
 const STACK_DEFAULT=8; // A3: 한 칸에 같은 유닛을 몇 마리까지 겹쳐 쌓나 (시뮬로 결정)
 const SLOTS=[],CELLS=[];
-const CELL=44,PAD_H=27,A3SC=1.45;let A3XS=1; // A3 9차: 트랙 안쪽 6줄×8칸 = 48칸
+const CELL=44,PAD_H=21,PAD_Y=23,PAD_SY=1.0909090909090908,A3SC=1.15;let A3XS=1; // A3 11차: 트랙 안쪽 7줄×10칸 = 56칸
 const STACK_MAX=(function(){let v=null;try{const q=new URLSearchParams(location.search).get('stack');if(q!=null){const n=parseInt(q,10);v=(n>0)?Math.min(n,30):30;}}catch(_){}
   if(v==null&&typeof globalThis!=='undefined'&&globalThis.__STACK)v=+globalThis.__STACK;return v||STACK_DEFAULT;})();
-(function(){const cx=[177,235,293,351,409,467,525,583],cy=[140,201,262,322,383,444];
+(function(){const cx=[177,222,267,312,357,403,448,493,538,583],cy=[140,191,241,292,343,393,444];
   for(const y of cy)for(const x of cx)CELLS.push({x,y,i:CELLS.length,subs:[]});
   // SLOTS = 겹치는 자리 전부. 순서는 "1층 40칸 → 2층 40칸 …" (SLOTS[0..39]는 서로 다른 칸)
   for(let k=0;k<STACK_MAX;k++)for(const c of CELLS){const s={x:c.x,y:c.y,tower:null,zone:'in',ci:c.i,sub:k};c.subs.push(s);SLOTS.push(s);}
@@ -2198,7 +2209,7 @@ const META_INT=['startGold','freeSummons','brkAdd','mbrkAdd','capAdd','techBank'
 const META_PTS={BASE:{쉬움:3,보통:5,어려움:8,지옥:11,신:14},WIN:{쉬움:2,보통:3,어려움:5,지옥:7,신:9},FIRST_WIN:{쉬움:5,보통:10,어려움:15,지옥:20,신:25}};
 function metaPc(v){return Math.round(v*1000)/10;}
 let META=null,metaSaveOk=true,metaTab='보급',metaAsk=false;
-function metaFresh(){return {v:1,pts:0,earned:0,lv:{},firstWin:{},on:true,games:0,awarded:{}};}
+function metaFresh(){return {v:1,pts:0,earned:0,lv:{},firstWin:{},on:true,games:0,awarded:{},disc:{}};}
 function metaSpent(lv){let s=0;for(const t of META_TREE){const n=Math.min(t.max,(lv&&lv[t.id])|0);for(let i=0;i<n;i++)s+=t.cost[i];}return s;}
 // 불러오기 검사: 깨진 저장 → 옛 값 보관 후 새로 · 모르는 기술 버림 · 단계 0~최대 · 점수 음수 0 · 쓴 점수가 번 점수보다 많으면 단계 초기화 후 환급
 function metaClean(o){const m=metaFresh();if(!o||typeof o!=='object'||Array.isArray(o))return m;
@@ -2208,6 +2219,7 @@ function metaClean(o){const m=metaFresh();if(!o||typeof o!=='object'||Array.isAr
   for(const t of META_TREE){const n=Math.min(t.max,int(lv[t.id]));if(n>0)m.lv[t.id]=n;}
   if(o.firstWin&&typeof o.firstWin==='object')for(const d in DIFF)if(o.firstWin[d])m.firstWin[d]=true;
   if(o.awarded&&typeof o.awarded==='object')for(const k of Object.keys(o.awarded).slice(-20))m.awarded[k]=int(o.awarded[k]);
+  if(o.disc&&typeof o.disc==='object')for(const k of Object.keys(o.disc))if(o.disc[k]&&typeof U!=='undefined'&&U[k])m.disc[k]=1;
   const sp=metaSpent(m.lv);
   if(sp>m.earned){m.lv={};m.pts=m.earned;}
   else m.pts=Math.min(m.pts,m.earned-sp);
@@ -2424,7 +2436,7 @@ function techBuffSection(stat){if(!G)return '';
   if(mm!=='off'&&ml.length)h+=stat('영구 기술',ml.length+'종'+(mm==='half'?' · 신 난이도라 절반':''),ml.map(k=>META_BY[k].name+' '+G.metaLv[k]+'단계').join(' · '));
   return h;}
 // ----- 영구 기술 화면 (시작 화면에서만 열림 · 휴대폰은 갈래 탭, 넓은 화면은 4열) -----
-function metaOpenable(){return !(G&&G.started&&!G.over);}
+function metaOpenable(){if(!(G&&G.started&&!G.over))return true;try{const o=document.getElementById('overlay');return !!(o&&o.classList.contains('lobbyOn')&&!o.classList.contains('hidden'));}catch(e){return false;}}
 function openMeta(){if(!metaOpenable())return;metaLoad();metaAsk=false;renderMeta();
   const el=document.getElementById('meta');if(el)el.classList.remove('hidden');}
 function closeMeta(){const el=document.getElementById('meta');if(el)el.classList.add('hidden');metaAsk=false;
@@ -3010,8 +3022,8 @@ function craftSilent(result){
   if(where)where.tower=mkTower(result,where);
   else if(resAdd(result))where=RES_SPOT; // 칸이 꽉 찼으면 결과는 대기소로
   else return null;
-  if(!G.discovered[result])G._newDiscovers=(G._newDiscovers||0)+1;
-  G.discovered[result]=true;
+  if(!G.discovered[result]&&!discKnown(result))G._newDiscovers=(G._newDiscovers||0)+1;
+  G.discovered[result]=true;discSave(result);
   if(result===GHOST){if(!ghostStored())log('<b style="color:#ffd23a">비밀 조합 발견!</b> 미사일여단이 핵폐기물을 삼켰다… 코드네임 유령 합류','#ffd23a');ghostSave();}
   G.crafts++;questProgress('craft',1);
   if(G.goals&&G.goals.includes(result)){G.goals=G.goals.filter(x=>x!==result);log(`목표 달성! <b>${result}</b> 완성`,'#d29922');}
@@ -3066,7 +3078,9 @@ const WASTE='핵폐기물',GHOST='코드네임 유령',PART_NEED=2,GHOST_KEY='zl
 function apexPartShort(r){return !!(U[r]&&U[r].t==='apex'&&((G&&G.parts)||0)<APEX_PART);}
 function ghostStored(){try{return localStorage.getItem(GHOST_KEY)==='1';}catch(_){return false;}}
 function ghostSave(){try{localStorage.setItem(GHOST_KEY,'1');}catch(_){}}
-function secretKnown(r){return !!(G&&G.discovered&&G.discovered[r])||(r===GHOST&&ghostStored());}
+function discKnown(r){try{const M=metaLoad();return !!(M.disc&&M.disc[r]);}catch(_){return false;}}
+function discSave(r){try{const M=metaLoad();if(!M.disc)M.disc={};if(!M.disc[r]){M.disc[r]=1;metaSave();}}catch(_){}}
+function secretKnown(r){return !!(G&&G.discovered&&G.discovered[r])||discKnown(r)||(r===GHOST&&ghostStored());}
 const URAN_MAX=6; // S35b 한 판 최대 우라늄(무한 모드 포함)
 function uranGain(n,why,x,y){if(!G)return;n=Math.min(n,URAN_MAX-(G.uranGot||0));if(!(n>0))return;G.uran=(G.uran||0)+n;G.uranGot=(G.uranGot||0)+n;G._uranT=G.t;
   if(x!=null&&G.floats)G.floats.push({x,y:y-30,txt:`우라늄 +${n}`,life:1200,sk:true});
@@ -3996,7 +4010,7 @@ function vLanePath(g){g.beginPath();g.moveTo(PATH[0].x,PATH[0].y);for(let i=1;i<
 function vPerim(){let s=0;for(let i=0;i<PATH.length;i++){const a=PATH[i],b=PATH[(i+1)%PATH.length];s+=Math.hypot(b.x-a.x,b.y-a.y);}return s;}
 function vAlong(d){for(let i=0;i<PATH.length;i++){const a=PATH[i],b=PATH[(i+1)%PATH.length],l=Math.hypot(b.x-a.x,b.y-a.y);if(d<=l){const t=d/(l||1);return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,a:Math.atan2(b.y-a.y,b.x-a.x),i};}d-=l;}return{x:PATH[0].x,y:PATH[0].y,a:0,i:0};}
 function vLaneDist(x,y){let best=1e9;for(let i=0;i<PATH.length;i++){const a=PATH[i],b=PATH[(i+1)%PATH.length],dx=b.x-a.x,dy=b.y-a.y,L2=dx*dx+dy*dy||1;let t=((x-a.x)*dx+(y-a.y)*dy)/L2;t=Math.max(0,Math.min(1,t));const d=Math.hypot(x-a.x-dx*t,y-a.y-dy*t);if(d<best)best=d;}return best;}
-function vFree(x,y,pad){if(vLaneDist(x,y)<LANE_W/2+8+pad)return false;for(const s of CELLS)if(Math.abs(s.x-x)<PAD_H+1+pad&&Math.abs(s.y-y)<PAD_H+1+pad)return false;return true;}
+function vFree(x,y,pad){if(vLaneDist(x,y)<LANE_W/2+8+pad)return false;for(const s of CELLS)if(Math.abs(s.x-x)<PAD_H+1+pad&&Math.abs(s.y-y)<PAD_Y+1+pad)return false;return true;}
 function vCen(){let x=0,y=0;for(const p of PATH){x+=p.x;y+=p.y;}return{x:x/PATH.length,y:y/PATH.length};}
 // 트랙 중심선을 off만큼 바깥(+)/안쪽(-)으로 평행이동한 다각형 꼭짓점
 function vOff(off){const n=PATH.length,c=vCen(),L=[],out=[];
@@ -4026,7 +4040,8 @@ function vProp(g,x,y,R){const t=R();g.save();g.translate(x,y);g.rotate(R()*TAU);
 function vBag(g,x,y,a,s){g.save();g.translate(x,y);g.rotate(a);g.scale(s||1,s||1);g.fillStyle='rgba(0,0,0,.35)';rrP(g,-4.5,-2,11,7,3);g.fill();
   const gr=g.createLinearGradient(0,-3.5,0,3.5);gr.addColorStop(0,'#b3a577');gr.addColorStop(1,'#766a44');g.fillStyle=gr;rrP(g,-5.5,-3.5,11,7,3);g.fill();
   g.strokeStyle='rgba(50,40,20,.6)';g.lineWidth=.7;g.stroke();g.beginPath();g.moveTo(-2.5,-3);g.lineTo(-2.5,3);g.stroke();g.restore();}
-function vPadIn(g,x,y,R){const h=PAD_H;g.fillStyle='rgba(0,0,0,.18)';g.fillRect(x-h+1.5,y-h+2,h*2,h*2);
+function vPadIn(g,x,y,R){g.save();g.translate(x,y);g.scale(1,PAD_SY);g.translate(-x,-y);try{vPadIn0(g,x,y,R);}finally{g.restore();}}
+function vPadIn0(g,x,y,R){const h=PAD_H;g.fillStyle='rgba(0,0,0,.18)';g.fillRect(x-h+1.5,y-h+2,h*2,h*2);
   const gr=g.createLinearGradient(x-h,y-h,x+h,y+h);gr.addColorStop(0,'#a3a088');gr.addColorStop(1,'#83826d');g.fillStyle=gr;g.fillRect(x-h,y-h,h*2,h*2);
   g.fillStyle='rgba(255,250,220,.13)';g.fillRect(x-h,y-h,h*2,1.2);g.fillRect(x-h,y-h,1.2,h*2);g.fillStyle='rgba(0,0,0,.3)';g.fillRect(x-h,y+h-1.2,h*2,1.2);g.fillRect(x+h-1.2,y-h,1.2,h*2);
   g.fillStyle='rgba(20,20,15,.6)';for(const[bx,by]of[[-1,-1],[1,-1],[-1,1],[1,1]]){g.beginPath();g.arc(x+bx*(h-3),y+by*(h-3),1,0,TAU);g.fill();}
@@ -4272,7 +4287,8 @@ function vDrawFloats(){const F=G.floats;if(!F||!F.length)return;a3FloatTop();con
 // ----- 배치칸 (바닥 받침은 지도 레이어에 미리 그려짐 — 여기선 끌어다 놓기 강조만) -----
 function vBrk(g,x,y,h,l){g.beginPath();for(const[sx,sy]of[[-1,-1],[1,-1],[1,1],[-1,1]]){g.moveTo(x+sx*h,y+sy*(h-l));g.lineTo(x+sx*h,y+sy*h);g.lineTo(x+sx*(h-l),y+sy*h);}g.stroke();}
 let _comboSet=null;
-function drawSlotCell(c,hi){const dragging=drag&&drag.moved,h=PAD_H+1;
+function drawSlotCell(c,hi){ctx.save();ctx.translate(c.x,c.y);ctx.scale(1,PAD_SY);ctx.translate(-c.x,-c.y);try{drawSlotCell0(c,hi);}finally{ctx.restore();}}
+function drawSlotCell0(c,hi){const dragging=drag&&drag.moved,h=PAD_H+1;
   if(hi){const pl=.5+.5*Math.sin(vNow()*.012);ctx.fillStyle='rgba(160,190,80,.2)';ctx.fillRect(c.x-h,c.y-h,h*2,h*2);ctx.strokeStyle='#cfe07a';ctx.lineWidth=2;vBrk(ctx,c.x,c.y,h+pl*2,7);}
   else if(_comboSet){const nm=cellName(c);if(nm&&_comboSet.has(nm)){const pl=.5+.5*Math.sin(vNow()*.008+c.i);ctx.strokeStyle='rgba(242,184,64,'+(.5+.5*pl).toFixed(2)+')';ctx.lineWidth=2.2;vBrk(ctx,c.x,c.y,h+1,9);}}
   else if(dragging&&!cellTop(c)){ctx.fillStyle='rgba(207,224,122,.4)';ctx.beginPath();ctx.arc(c.x,c.y,2,0,TAU);ctx.fill();}}
@@ -4281,11 +4297,11 @@ function comboNames(){const set=new Set();try{const inv=inventory();
   for(const r in RECIPE){if((isSecret(r)&&!secretKnown(r))||(typeof GHOST!=='undefined'&&r===GHOST))continue;const need=needCount(RECIPE[r]);
     if(Object.entries(need).every(([n,k])=>(inv[n]||0)>=k))for(const n in need)set.add(n);}}catch(_){}return set;}
 // A3 겹친 수 ×N · 새 유닛 이름 띠(임시 그림이라 글자로 구분)
-function drawStackTag(c,s){const n=cellN(c),nm=s.tower.name,h=PAD_H;ctx.save();ctx.textBaseline='middle';
+function drawStackTag(c,s){const n=cellN(c),nm=s.tower.name,h=PAD_H,hv=PAD_Y;ctx.save();ctx.textBaseline='middle';
   if(A3_NEW.has(nm)){const t=shortName(nm);ctx.font='700 9px '+FNT_BODY;const w=ctx.measureText(t).width+6;
-    ctx.save();a3X(c.x,c.y);ctx.fillStyle='rgba(12,13,9,.82)';ctx.fillRect(c.x-w/2,c.y+h-4,w,11);ctx.fillStyle='#f2e6b8';ctx.textAlign='center';ctx.fillText(t,c.x,c.y+h+1.5);ctx.restore();}
+    ctx.save();a3X(c.x,c.y);ctx.fillStyle='rgba(12,13,9,.82)';ctx.fillRect(c.x-w/2,c.y+hv-4,w,11);ctx.fillStyle='#f2e6b8';ctx.textAlign='center';ctx.fillText(t,c.x,c.y+hv+1.5);ctx.restore();}
   if(n>1){const full=n>=STACK_MAX,t='×'+n;ctx.font='900 12px '+FNT_NUM;ctx.textAlign='right';ctx.lineWidth=3;ctx.strokeStyle='rgba(10,11,8,.9)';
-    ctx.save();a3X(c.x+h,c.y-h-1);ctx.strokeText(t,c.x+h,c.y-h-1);ctx.fillStyle=full?'#f2b840':'#eef3e6';ctx.fillText(t,c.x+h,c.y-h-1);ctx.restore();}
+    ctx.save();a3X(c.x+h,c.y-hv-1);ctx.strokeText(t,c.x+h,c.y-hv-1);ctx.fillStyle=full?'#f2b840':'#eef3e6';ctx.fillText(t,c.x+h,c.y-hv-1);ctx.restore();}
   ctx.restore();}
 // ===== 유닛 스프라이트: 73종을 종류별 탑뷰(위에서 본) 그림으로. 처음 한 번만 그려 캐시 =====
 // [그림 종류, 인원/대수, 탄 모양]
@@ -4574,7 +4590,7 @@ function drawTower(s){const t=s&&s.tower;if(!t)return;ctx.save();ctx.translate(t
 function drawTower0(s){const t=s.tower,u=U[t.name];if(!u)return;vInitFx();const c=vHex(RARITY[u.t]?RARITY[u.t].color:'#9aa5b1'),sel=G&&G.selected&&(G.selected===s||(G.selected.ci!=null&&G.selected.ci===s.ci));
   const ti=u.t==='secret'?5:TIER_ORDER.indexOf(u.t),now=vNow(),x=t.x,y=t.y;
   if(u.junk){vBlit(ctx,vWaste(),x,y); // S34 핵폐기물: 드럼통만(공격·휘장 없음)
-    if(sel){ctx.save();ctx.strokeStyle='#e8d9a0';ctx.lineWidth=2;vBrk(ctx,x,y,(19+Math.sin(now*.008))*1.25/A3SC,6*1.25/A3SC);ctx.restore();}return;}
+    if(sel){ctx.save();ctx.strokeStyle='#e8d9a0';ctx.lineWidth=2;vBrk(ctx,x,y,(19+Math.sin(now*.008))*1.25/A3SC*Math.min(PAD_H+1,PAD_Y+1)/28,6*1.25/A3SC);ctx.restore();}return;}
   // 전설↑ 은은한 광채(미리 그린 빛 그림을 겹쳐 그림 — 매 프레임 흐림효과 없음)
   if(ti>=4){const gl=vGlow(u.t);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=(ti>=6?.5:.34)+.14*Math.sin(now*.004+x);vBlit(ctx,gl,x,y,ti>=6?.62:.52);ctx.restore();}
   vBlit(ctx,vBase(u.t),x,y);
@@ -4598,7 +4614,7 @@ function drawTower0(s){const t=s.tower,u=U[t.name];if(!u)return;vInitFx();const 
   if(u.role){const rb=vRoleBadge(u.role);if(rb)vBlit(ctx,rb,x+12.5,y+12.5,VCSS<.7?1.3:1);}
   if(t.locked){const lx=x+12,ly=y-12;ctx.save();ctx.fillStyle='#0d0e0a';ctx.beginPath();ctx.arc(lx,ly,5.5,0,TAU);ctx.fill();ctx.strokeStyle='#e0a526';ctx.lineWidth=1.3;
     ctx.beginPath();ctx.arc(lx,ly-1.4,2,Math.PI,0);ctx.stroke();ctx.fillStyle='#e0a526';ctx.fillRect(lx-2.4,ly-1,4.8,3.6);ctx.restore();}
-  if(sel){ctx.save();ctx.strokeStyle='#e8d9a0';ctx.lineWidth=2;vBrk(ctx,x,y,(19+Math.sin(now*.008))*1.25/A3SC,6*1.25/A3SC);ctx.restore();}
+  if(sel){ctx.save();ctx.strokeStyle='#e8d9a0';ctx.lineWidth=2;vBrk(ctx,x,y,(19+Math.sin(now*.008))*1.25/A3SC*Math.min(PAD_H+1,PAD_Y+1)/28,6*1.25/A3SC);ctx.restore();}
 }
 // 예전 호출 호환용(끌어다 놓는 중 반투명 유닛 등): 캐시된 스프라이트를 그대로 찍음
 function drawUnit(cat,c,fired,name){vInitFx();const v=vUnit(name||VCAT_REP[cat]||'K2소총수');
@@ -5321,7 +5337,7 @@ function unitCardFill(){try{const el=document.getElementById('unitCard');if(!el)
   const cut=rs.length>5&&a3IsPhone()&&A3UCM!==t,mb=rs.length>5&&a3IsPhone()?'<button type="button" class="ucMore" onclick="a3UcMore()">'+(cut?'더보기 <b>+'+(rs.length-4)+'</b>':'접기')+'</button>':'';
   const nN=t.slot&&t.slot.ci!=null?cellN(CELLS[t.slot.ci]):1,skOn=A3UCS===t;
   el.innerHTML='<div class="ucL" style="--rc:'+rc.color+'"><div class="ucHd">'+a3Img(t.name,'ucPic')+'<div class="ucNm"><b>'+t.name+'</b><span>'+rc.name+' · '+DT_NAME[u.dt]+(up>0?' · 강화 '+up:'')+(nN>1?' · 이 칸 '+nN+'마리':'')+'</span>'+a3TyTag(t.name)+'</div></div>'
-    +'<div class="ucSt"><span><small>공격력</small><b>'+dmg+'</b></span><span><small>공속/초</small><b>'+as+'</b></span><span><small>사거리</small><b>'+u.range+'</b></span></div>'
+    +'<div class="ucSt"><span><small>공격력</small><b>'+dmg+'</b></span><span><small>공속/초</small><b>'+as+'</b></span><span><small>사거리</small><b>'+u.range+'</b></span></div>'+a3ExHtml(t.name,'ucEx')
     +'<div class="ucAc"><button type="button" class="ucSell" onclick="a3SellAsk()" '+(t.locked?'disabled':'')+'>판매 <b>+'+sellPrice(t)+'</b></button>'
     +'<button type="button" class="ucSkB'+(skOn?' on':'')+'" onclick="a3UcSkill()" aria-pressed="'+skOn+'">스킬</button>'
     +'<button type="button" class="ucLk" onclick="toggleLock()">'+(t.locked?'잠금 풀기':'잠금')+'</button><button type="button" class="ucX" onclick="unitCardClose()">닫기</button></div></div>'
@@ -5329,6 +5345,25 @@ function unitCardFill(){try{const el=document.getElementById('unitCard');if(!el)
     :'<div class="ucR"><div class="ucRh"><b>상위 조합</b><small>'+(rs.length?'<span class="h">초록</span> 가진 재료 · 밝은 줄을 누르면 바로 조합':'')+'</small></div>'
     +(rs.length?'<div class="ucRl">'+(cut?rs.slice(0,4):rs).map(line).join('')+'</div>'+mb:'<p class="ucEnd">이 유닛으로 더 올릴 조합이 없어요</p>')+'</div>');
   if(el.style)el.style.cssText='';if(el.classList)el.classList.remove('hidden');}catch(_){}}
+
+// --- 11차: 깎기·저격 한 줄 설명 / 도감 '쓰이는 곳' ---
+function a3ExTxt(n){const u=U[n];if(!u)return [];const o=[];
+  if(u.armBrk)o.push(['갑옷깎기','좀비 갑옷을 깎아 총격대가 더 세게 때려요']);
+  if(u.mBrk)o.push(['맷집깎기','좀비 맷집을 깎아 포격대가 더 세게 때려요']);
+  if(u.dt==='pierce')o.push(['저격대','갑옷·맷집을 무시하고 그대로 때려요 — 단단한 좀비에 강해요']);
+  return o;}
+function a3ExHtml(n,cls){const o=a3ExTxt(n);return o.length?'<div class="'+cls+'">'+o.map(x=>'<p><b>'+x[0]+'</b> '+x[1]+'</p>').join('')+'</div>':'';}
+function a3UsedHtml(cur,inv,TN){const TO=TIER_ORDER;
+  const rs=upgradesFrom(cur).filter(r=>!(isSecret(r)&&!secretKnown(r))).sort((a,b)=>(TO.indexOf(U[a].t)-TO.indexOf(U[b].t))||(a<b?-1:1));
+  const hid=upgradesFrom(cur).length-rs.length;
+  let h='<div class="bkH">쓰이는 곳 <small>'+(rs.length?'이 유닛이 재료로 들어가는 조합 · 누르면 그 유닛으로 가요':'')+'</small></div>';
+  if(!rs.length)return h+'<p class="bkNote">'+(hid?'아직 발견하지 못한 비밀 조합에만 쓰여요.':'이 유닛으로 더 올릴 조합이 없어요.')+'</p>';
+  h+='<div class="bkMs bkUsed">'+rs.map(r=>{const ru=U[r]||{},rc=(RARITY[ru.t]||{}).color||'#c8d0c2',need=needCount(RECIPE[r]),ok=G&&G.started&&!G.over&&canCraft(r);
+    const ms=Object.keys(need).map(m=>shortName(m)+(need[m]>1?'×'+need[m]:'')).join(' + ')+(a3PartNeed(r)?' + 초월 부품':'');
+    return '<button type="button" class="bkM'+(ok?' h':'')+'" style="--rc:'+rc+'" onclick="bookGo(\''+r+'\')">'+a3Img(r,'bkMp')
+      +'<span><b>'+shortName(r)+'</b><small>'+(TN[ru.t]||'')+' · '+ms+'</small></span><em>›</em></button>';}).join('')+'</div>';
+  if(hid)h+='<p class="bkNote">아직 발견하지 못한 비밀 조합 '+hid+'개는 숨겨 두었어요.</p>';
+  return h;}
 
 // --- 조합식: 유닛을 누르면 바로 아래 재료 한 단계만 · 재료를 누르면 그 재료 안으로 ---
 let bookPath=[];
@@ -5345,13 +5380,14 @@ function renderBook(){const body=document.getElementById('bookBody');if(!body)re
       +bookPath.map((p,i)=>'<i>›</i>'+(i<bookPath.length-1?'<button type="button" onclick="bookGo(\''+p+'\')">'+(hidden(p)?'???':shortName(p))+'</button>':'<b>'+(hidden(p)?'???':shortName(p))+'</b>')).join('')+'</span></div>';
     if(hidden(cur)){html+='<p class="bkNote">비밀 조합이에요. 직접 조합해서 알아가 보세요.</p>';body.innerHTML=html;return;}
     html+='<div class="bkHero" style="--rc:'+rc.color+'">'+a3Img(cur,'bkPic')+'<div><b>'+cur+'</b><span>'+(TN[u.t]||rc.name||'')+' · '+DT_NAME[u.dt]+'</span>'+a3TyTag(cur)+'</div></div>';
+    html+=a3ExHtml(cur,'bkEx');
     html+=skillListHtml(cur)||'';
     const R=RECIPE[cur];
     if(R){const need=needCount(R);
       html+='<div class="bkH">바로 아래 재료 <small>재료를 누르면 그 재료의 조합식으로 들어가요</small></div><div class="bkMs">'
         +Object.keys(need).map(m=>{const hv=inv[m]||0,k=need[m],cl=hv>=k?'h':hv>0?'p':'n',mu=U[m]||{},mc=(RARITY[mu.t]||{}).color||'#c8d0c2',deep=!!RECIPE[m];
-          return '<button type="button" class="bkM '+cl+'" style="--rc:'+mc+'" '+(deep?'onclick="bookGo(\''+m+'\')"':'disabled')+'>'+a3Img(m,'bkMp')
-            +'<span><b>'+shortName(m)+'</b><small>'+(TN[mu.t]||'')+(deep?' · 조합식 보기 ›':' · 뽑기로 나와요')+'</small></span><em>'+hv+'<i>/'+k+'</i></em></button>';}).join('')
+          return '<button type="button" class="bkM '+cl+'" style="--rc:'+mc+'" '+'onclick="bookGo(\''+m+'\')"'+'>'+a3Img(m,'bkMp')
+            +'<span><b>'+shortName(m)+'</b><small>'+(TN[mu.t]||'')+(deep?' · 조합식 보기 ›':' · 뽑기로 나와요 · 쓰이는 곳 ›')+'</small></span><em>'+hv+'<i>/'+k+'</i></em></button>';}).join('')
         +(a3PartNeed(cur)?(()=>{const k=a3PartNeed(cur),hv=(G&&G.parts)||0;return '<button type="button" class="bkM '+(hv>=k?'h':hv>0?'p':'n')+'" style="--rc:#ffd166" disabled><i class="bkMp a3NoImg"></i><span><b>초월 부품</b><small>우라늄 연구소에서 만들어요</small></span><em>'+hv+'<i>/'+k+'</i></em></button>';})():'')+'</div>';
       const ok=G&&canCraft(cur),dp=G&&!ok&&canCraftDeepTop(cur);
       html+='<div class="bkGo">'+(ok?'<button type="button" class="bkMake" onclick="bookMake(\''+cur+'\',false)">지금 조합하기</button>'
@@ -5359,6 +5395,7 @@ function renderBook(){const body=document.getElementById('bookBody');if(!body)re
         :'<span class="bkNo">'+(a3PartNeed(cur)&&((G&&G.parts)||0)<a3PartNeed(cur)&&Object.keys(need).every(m=>(inv[m]||0)>=need[m])?'초월 부품이 모자라요 — 우라늄 연구소에서 만들어요':'재료가 모자라요')+'</span>')+'</div>';}
     else if(SECRET_UNITS.includes(cur))html+='<p class="bkNote">조합으로는 못 만들어요. 우라늄 연구소 비밀 도박(2개, 성공 30%)에서만 나와요.</p>';
     else html+='<p class="bkNote">흔함 유닛이에요. 소환(뽑기)으로 나와요.</p>';
+    html+=a3UsedHtml(cur,inv,TN);
     body.innerHTML=html;return;}
   bookPath=[];
   html+='<p class="bkNote">유닛을 누르면 바로 아래 재료가 보여요. <span class="h">초록 글씨</span>는 지금 조합할 수 있는 유닛이에요.</p>';
@@ -5420,7 +5457,7 @@ function a3XsCalc(hpx){try{if(typeof window==='undefined'||!(window.innerWidth>0
 let A3FY=-1e9,A3FX0=0,A3FX1=0,A3FT=-1e9;
 function a3FloatTop(){const n=(typeof performance!=='undefined'?performance.now():0);if(n-A3FT<400)return;A3FT=n;try{A3PC=innerHeight>500;}catch(_){A3PC=false;}A3FY=-1e9;try{const cv=document.getElementById('cv')||document.querySelector('canvas');if(!cv)return;const r=cv.getBoundingClientRect();if(!(r.height>0))return;const ky=r.height/580,kx=r.width/760;let b=-1e9,l=1e9,rr=-1e9;for(const e of document.querySelectorAll('.a3Mid,.a3Mid *,#a3PzB')){const q=e.getBoundingClientRect();if(!(q.width>0&&q.height>0))continue;if(q.bottom>b)b=q.bottom;if(q.left<l)l=q.left;if(q.right>rr)rr=q.right;}if(b<-1e8)return;A3FY=(b-r.top)/ky;A3FX0=(l-r.left)/kx-14;A3FX1=(rr-r.left)/kx+14;}catch(_){A3FY=-1e9;}}
 let A3PC=false,A3CBX=null;
-function a3CellBox(){if(A3CBX)return A3CBX;if(typeof CELLS==='undefined'||!CELLS.length)return null;let t=1e9,l=1e9,r=-1e9;for(const c of CELLS){if(c.y-PAD_H<t)t=c.y-PAD_H;if(c.x-PAD_H<l)l=c.x-PAD_H;if(c.x+PAD_H>r)r=c.x+PAD_H;}return A3CBX={t,l,r};}
+function a3CellBox(){if(A3CBX)return A3CBX;if(typeof CELLS==='undefined'||!CELLS.length)return null;let t=1e9,l=1e9,r=-1e9;for(const c of CELLS){if(c.y-PAD_Y<t)t=c.y-PAD_Y;if(c.x-PAD_H<l)l=c.x-PAD_H;if(c.x+PAD_H>r)r=c.x+PAD_H;}return A3CBX={t,l,r};}
 function a3X(x,y){if(A3XS!==1){ctx.translate(x,y);ctx.scale(1/A3XS,1);ctx.translate(-x,-y);}}
 try{if(typeof window!=='undefined'&&window.addEventListener)window.addEventListener('resize',()=>{vFitT=-1e9;});}catch(_){}
 const A3TYP={"K2소총수":"연사형","K3기관총사수":"연사형","의무병":"연사형","수송병":"연사형","군견병":"연사형","경계병":"연사형","정비병":"연사형","K3기관총반":"연사형","발칸포반":"연사형","정찰병":"연사형","의무지원반":"연사형","수색대":"연사형","전방 수색조":"연사형","K6 중기관총반":"연사형","K200 APC":"연사형","K808 백호":"연사형","비호":"연사형","수리온":"연사형","K263 자주발칸":"연사형","UH-60 블랙호크":"연사형","K21 보병전투차":"연사형","천호 방공복합":"연사형","비호복합":"연사형","K30 비호Ⅱ":"연사형","K311A1 보급트럭":"연사형","K10 탄약운반":"연사형","LAH 편대":"연사형","판처파우스트":"관통형","신궁사수":"관통형","저격수":"관통형","지정사수":"관통형","미사일반":"관통형","90mm 무반동총":"관통형","천마":"관통형","특공대":"관통형","메티스-M 대전차":"관통형","K1A2 전차":"관통형","특전여단":"관통형","스파이크 NLOS":"관통형","K2 흑표":"관통형","707특임대":"관통형","현궁 대전차":"관통형","K1E1 전차":"관통형","AH-64E 아파치":"관통형","아파치 공격헬기대대":"관통형","수도기계화사단":"관통형","신속대응사단":"관통형","비밀정보부":"관통형","스텔스 저격조":"관통형","특수정찰대":"관통형","척탄병":"폭발형","박격포반":"폭발형","K4 고속유탄기관총":"폭발형","KH179 견인포":"폭발형","K105A1 자주포":"폭발형","500MD":"폭발형","K242 박격포차":"폭발형","K136 구룡":"폭발형","K9 천둥":"폭발형","LAMD 요격체계":"폭발형","천무 다연장":"폭발형","K9A1 자주포":"폭발형","군단 포병여단":"폭발형","육군 방공여단":"폭발형","자폭드론팀":"폭발형","공병":"진동형","공병중대":"진동형","KM9ACE 전투공병차":"진동형","현무-2":"진동형","현무-2A":"진동형","KTSSM":"진동형","현무-3":"진동형","미사일여단":"진동형","KTSSM-II":"진동형","K808A 천산":"진동형","현무-5":"진동형","ATACMS":"진동형","전략사령부":"진동형","현무-Ω":"진동형","코드네임 유령":"진동형","화염방사병":"지속피해형","화생방병":"지속피해형","화룡 화염장갑차":"지속피해형","제독차":"지속피해형","AH-1S 코브라":"지속피해형","120mm 자주박격포":"지속피해형","천광 레이저포대":"지속피해형","통신병":"전자형","정찰드론":"전자형","통신중대":"전자형","송골매":"전자형","무인수색차":"전자형","TICN 전술통신":"전자형","대포병 탐지레이더-II":"전자형","드론봇중대":"전자형","드론봇 전투단":"전자형","천검 무인편대":"전자형","군단 무인정찰대":"전자형","드론봇 군단":"전자형","한미연합사령부":"전자형","국군통수권":"전자형","전자전 부대":"전자형"},A3TYC={"연사형":"#bdb68a","관통형":"#9ea9e6","폭발형":"#e0906e","진동형":"#cfa0cf","지속피해형":"#a6c46e","전자형":"#79c4a0"},A3TYD={"연사형":"총알을 빠르게 쏟아붓는 타입","관통형":"한 발로 단단한 껍질을 꿰뚫는 타입","폭발형":"떨어진 자리에서 터져 주변까지 맞히는 타입","진동형":"큰 한 방으로 땅을 울려 주변을 흔드는 타입","지속피해형":"불·가스·레이저로 시간이 지나며 계속 피해를 주는 타입","전자형":"드론·통신·전파로 멀리서 돕고 묶는 타입"};
