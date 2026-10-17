@@ -1528,12 +1528,12 @@ const W=cv.width, H=cv.height;
 // 네모난 순환 트랙 (시계방향, 좌상단 코너에서 스폰 → 끝없이 회전)
 const PATH=[{x:130,y:95},{x:630,y:95},{x:630,y:490},{x:130,y:490}];
 const LANE_W=30;
-const STACK_DEFAULT=5; // A3: 한 칸에 같은 유닛을 몇 마리까지 겹쳐 쌓나 (시뮬로 결정)
+const STACK_DEFAULT=8; // A3: 한 칸에 같은 유닛을 몇 마리까지 겹쳐 쌓나 (시뮬로 결정)
 const SLOTS=[],CELLS=[];
-const CELL=44,PAD_H=27,A3SC=1.45;let A3XS=1; // A3: 트랙 안쪽 5줄×8칸 = 40칸
+const CELL=44,PAD_H=27,A3SC=1.45;let A3XS=1; // A3 9차: 트랙 안쪽 6줄×8칸 = 48칸
 const STACK_MAX=(function(){let v=null;try{const q=new URLSearchParams(location.search).get('stack');if(q!=null){const n=parseInt(q,10);v=(n>0)?Math.min(n,30):30;}}catch(_){}
   if(v==null&&typeof globalThis!=='undefined'&&globalThis.__STACK)v=+globalThis.__STACK;return v||STACK_DEFAULT;})();
-(function(){const cx=[177,235,293,351,409,467,525,583],cy=[140,216,292,368,444];
+(function(){const cx=[177,235,293,351,409,467,525,583],cy=[140,201,262,322,383,444];
   for(const y of cy)for(const x of cx)CELLS.push({x,y,i:CELLS.length,subs:[]});
   // SLOTS = 겹치는 자리 전부. 순서는 "1층 40칸 → 2층 40칸 …" (SLOTS[0..39]는 서로 다른 칸)
   for(let k=0;k<STACK_MAX;k++)for(const c of CELLS){const s={x:c.x,y:c.y,tower:null,zone:'in',ci:c.i,sub:k};c.subs.push(s);SLOTS.push(s);}
@@ -2003,10 +2003,10 @@ const ZTYPE={
 // S22 재조정: 실코드 시뮬 기반 (초보AI 쉬움~보통 100%·어려움 75% / 사람AI 어려움 100%·지옥 75%·신 38%)
 const DIFF={
   '쉬움':{hp:1.3,late:1.2,reward:1.15,cap:44,arm:25,spd:1.0,spdW:0.011,lap:0,need:0}, // S27: 초반 완충 도입과 함께 중후반 압박으로 재조정
-  '보통':{hp:1.75,late:1.6,reward:1.0,cap:36,arm:71,spd:1.03,spdW:0.013,lap:0.04,need:0.35},
+  '보통':{hp:2.15,late:1.6,reward:1.0,cap:36,arm:71,spd:1.03,spdW:0.013,lap:0.04,need:0.35},
   '어려움':{hp:2.9,late:1.5,reward:0.9,cap:30,arm:132,spd:1.08,spdW:0.016,lap:0.07,need:0.65},
-  '지옥':{hp:4,late:1.5,reward:0.85,cap:20,arm:173,spd:1.14,spdW:0.019,lap:0.10,need:0.85},
-  '신':{hp:8.5,late:0.9,reward:0.8,cap:18,arm:203,spd:1.2,spdW:0.022,lap:0.12,need:1.0}, // S32: 역할·시너지로 강해진 만큼 좀비 체력 보정(보통×1.2·어려움×1.35·지옥×1.7·신×1.25)
+  '지옥':{hp:4.8,late:1.5,reward:0.85,cap:20,arm:173,spd:1.14,spdW:0.019,lap:0.10,need:0.85},
+  '신':{hp:10.8,late:0.9,reward:0.8,cap:18,arm:203,spd:1.2,spdW:0.022,lap:0.12,need:1.0}, // S32: 역할·시너지로 강해진 만큼 좀비 체력 보정(보통×1.2·어려움×1.35·지옥×1.7·신×1.25)
 };
 // S35 체력 재조정(갑옷·속도·회복이 붙은 만큼): 보통 그대로 · 어려움 8.37→9 · 지옥 12.92→8.5 · 신 10.75→9.7 (모의 대전 기준)
 // S36 체력 재조정(흔함~특별 능력 제거 · 갑옷 오름 늦춤): 보통 3.12→1.8 · 어려움 9→4.1(후반 2.2→1.5) · 지옥 8.5→4 · 신 9.7→5.85 (모의 대전 기준)
@@ -2804,9 +2804,10 @@ function claimReward(name){
 // ===== S27 받을 보상 챙기기: 개수 표시 → 3개 이상 쌓이면 웨이브 시작 때 창 열기 → 그래도 2웨이브 방치하면 추천 유닛 자동 수령 =====
 function pendingCount(){return G?(G.pendingReward?1:0)+G.rewardQueue.length:0;}
 function treeUses(target,name){if(target===name)return 1;const r=RECIPE[target];if(!r)return 0;let n=0;for(const ing of r)n+=treeUses(ing,name);return n;}
+const PICK_HP=2000; // 9차: 추천 점수에서 최대체력 비례 피해를 셀 때 쓰는 기준 체력(중반 큰 좀비 한 마리)
 function recommendPick(tier){const pool=Object.keys(U).filter(n=>U[n].t===tier);if(!pool.length)return null;
   const score=n=>{const u=U[n];let v=0;for(const g of G.goals)v+=treeUses(g,n)*1e6;
-    return v+(u.dmg||0)/Math.max(u.cd||1000,1)*1000*(u.splash?1.5:1);};
+    return v+((u.dmg||0)+(u.maxHpPct||0)*PICK_HP)/Math.max(u.cd||1000,1)*1000*(u.splash?1.5:1);};
   return pool.slice().sort((a,b)=>score(b)-score(a))[0];}
 function renderRewardPop(){const body=document.getElementById('rewardPopBody');if(!body||!G.pendingReward)return;
   const tier=G.pendingReward,rc=RARITY[tier],rec=recommendPick(tier),n=pendingCount(),empty=anyRoom()||resRoom();
@@ -2846,7 +2847,7 @@ const MISSIONS=[
   {name:'부패 거인',     color:RARITY.uncommon.color,hpMul:12, limit:3,reward:{type:'pick',tier:'uncommon'}, rw:'안흔함 선택권',trait:'감속이 절반만 먹힘',slowRes:0.5},
   {name:'강철 골렘',     color:RARITY.special.color,hpMul:20, limit:3,reward:{type:'pick',tier:'special'},  rw:'특별 선택권',trait:'단단한 좀비 — 포격대·저격대가 유리',armX:1.2,mresX:0.4},
   {name:'역병 군주',     color:RARITY.rare.color,hpMul:32, limit:4,reward:{type:'pick',tier:'rare'},     rw:'희귀 선택권',trait:'주변 좀비 체력 회복 → 주변 잡몹부터 정리',healAura:0.03},
-  {name:'파멸의 타이탄', color:RARITY.legend.color,hpMul:48, limit:4,reward:{type:'pick',tier:'legend'},   rw:'전설 선택권',trait:'기절 면역',stunImm:true},
+  {name:'파멸의 타이탄', color:RARITY.legend.color,hpMul:48, limit:5,reward:{type:'pick',tier:'legend'},   rw:'전설 선택권',trait:'기절 면역',stunImm:true},
   {name:'심연의 군주',   color:RARITY.mythic.color,hpMul:70, limit:5,reward:{type:'pick',tier:'legend',gold:300},   rw:'전설 선택권 + 300골드',trait:'맷집 좋은 좀비 — 총격대·저격대가 유리',armX:0.4,mresX:1.2},
   {name:'종말의 화신',   color:RARITY.apex.color,hpMul:84,limit:5,reward:{type:'pick',tier:'legend',n:2,gold:300},     rw:'전설 선택권 ×2 + 300골드',trait:'한 번 쓰러지면 체력 30%로 부활',revive:0.3},
 ];
@@ -2933,7 +2934,7 @@ function inventory(){const m={};SLOTS.forEach(s=>{if(s.tower&&!s.tower.locked)m[
   for(const t of resList())if(!t.locked)m[t.name]=(m[t.name]||0)+1; // S30: 대기소도 조합 재료
   return m;}
 function needCount(recipe){const m={};recipe.forEach(n=>m[n]=(m[n]||0)+1);return m;}
-function canCraft(result){const inv=inventory(),need=needCount(RECIPE[result]);
+function canCraft(result){if(apexPartShort(result))return false;const inv=inventory(),need=needCount(RECIPE[result]);
   return Object.entries(need).every(([n,c])=>(inv[n]||0)>=c);}
 // 재귀 조합 가능 여부: 보유수량 사본(pool)에서 target을 want개 만들 수 있나 (필요한 만큼만 소비)
 function canCraftDeep(target,want,pool){
@@ -2943,6 +2944,7 @@ function canCraftDeep(target,want,pool){
   let remain=want-use;
   if(remain<=0)return true;
   const r=RECIPE[target];if(!r)return false;            // 흔함인데 모자람 → 불가
+  if(U[target]&&U[target].t==='apex'){if(pool.__part==null)pool.__part=G.parts||0;if(pool.__part<APEX_PART*remain)return false;pool.__part-=APEX_PART*remain;} // 9차: 초월은 부품도 필요
   const need=needCount(r);
   for(let k=0;k<remain;k++){                              // 모자란 만큼 하나씩 만들어봄
     for(const [ing,c] of Object.entries(need)){if(!canCraftDeep(ing,c,pool))return false;}
@@ -2965,7 +2967,7 @@ function ensureN(target,count){
 // 상위 유닛을 재귀로 "딱 1개" 만들기 (UI 버튼용)
 function craftDeep(target){
   const inv=inventory(),pool=Object.assign({},inv);delete pool[target]; // 새로 1개 만드는 데 드는 재료 계산
-  if(!canCraftDeep(target,1,pool)){nope();return;}
+  if(!canCraftDeep(target,1,pool)){if(apexPartShort(target))log(`초월 부품이 모자라요 (${G.parts||0}/${APEX_PART}) — <b>우라늄 연구소</b>에서 만들 수 있어요`,'#ff7b72');nope();return;}
   const consumed={};for(const nm in inv){if(nm===target)continue;const d=inv[nm]-(pool[nm]||0);if(d>0)consumed[nm]=d;}
   if(!confirmCraft(consumed,target,()=>craftDeep(target)))return;
   G._newDiscovers=0;
@@ -2998,6 +3000,7 @@ function craftSilent(result){
   if(!(frees||roomFor(result)||resRoom()||usesRes))return null;
   for(const s of take)s.tower=null;
   for(const [n,r] of Object.entries(resNeed))resTake(n,r);
+  if(U[result].t==='apex')G.parts=Math.max(0,(G.parts||0)-APEX_PART); // 9차: 초월 부품 사용
   let where=null;
   if(at&&(!cellTop(at)||cellName(at)===result))where=freeSub(at);
   if(!where)where=freeFor(result)[0]||null;
@@ -3016,6 +3019,7 @@ function craftSilent(result){
   return where;
 }
 function craft(result){
+  if(apexPartShort(result)){log(`초월 부품이 모자라요 (${G.parts||0}/${APEX_PART}) — <b>우라늄 연구소</b>에서 만들 수 있어요`,'#ff7b72');nope();return;}
   if(!canCraft(result)){nope();return;}
   if(!confirmCraft(needCount(RECIPE[result]),result,()=>craft(result)))return;
   G._newDiscovers=0;
@@ -3033,7 +3037,7 @@ function isSecret(name){return U[name]&&U[name].t==='hidden';}
 // 조합식 표시: 비밀이 아니거나 해금됐으면 전체, 아니면 첫 재료만 + ???
 function recipeHint(result){
   const ing=RECIPE[result];if(!ing)return '';
-  if(!isSecret(result)||secretKnown(result))return ing.map(shortName).join(' + ');
+  if(!isSecret(result)||secretKnown(result))return ing.map(shortName).join(' + ')+(U[result]&&U[result].t==='apex'?' + 초월 부품'+(APEX_PART>1?'×'+APEX_PART:''):'');
   if(result===GHOST)return '??? — 비밀 조합';
   return shortName(ing[0])+' + ???' + (ing.length>2?' + ???':'');
 }
@@ -3055,7 +3059,8 @@ const LAB={rare:{cost:1,p:0.4},secret:{cost:2,p:0.3},part:{cost:3,p:1}},LAB_PITY
 function labPity(k){return Math.min(LAB_PITY_MAX,(G&&G.labPity&&G.labPity[k])||0);}
 function labP(k){const L=LAB[k];return L?Math.min(1,L.p+(k==='part'?0:labPity(k)*LAB_PITY)):0;}
 const SECRET_UNITS=['특수정찰대','전자전 부대','스텔스 저격조','자폭드론팀'];
-const WASTE='핵폐기물',GHOST='코드네임 유령',PART_NEED=2,GHOST_KEY='zld_secret_v1';
+const WASTE='핵폐기물',GHOST='코드네임 유령',PART_NEED=2,GHOST_KEY='zld_secret_v1',APEX_PART=1; // 9차: 초월 조합 1번에 드는 초월 부품 수
+function apexPartShort(r){return !!(U[r]&&U[r].t==='apex'&&((G&&G.parts)||0)<APEX_PART);}
 function ghostStored(){try{return localStorage.getItem(GHOST_KEY)==='1';}catch(_){return false;}}
 function ghostSave(){try{localStorage.setItem(GHOST_KEY,'1');}catch(_){}}
 function secretKnown(r){return !!(G&&G.discovered&&G.discovered[r])||(r===GHOST&&ghostStored());}
@@ -3073,8 +3078,7 @@ function labBuy(kind){if(!G||G.over)return null;const L=LAB[kind];if(!L)return n
   if(kind!=='part'&&!labRoom()){log(RES_FULL_MSG,'#ff7b72');return null;}
   G.uran-=L.cost;G.labN=(G.labN||0)+1;let res;
   if(kind==='part'){G.parts=(G.parts||0)+1;
-    if(G.parts>=PART_NEED){G.parts-=PART_NEED;res={ok:true,txt:'초월 부품 완성! → <b>초월 선택권</b>'};grantPick('apex');}
-    else res={ok:true,txt:`초월 부품 ${G.parts}/${PART_NEED} — 하나 더 모으면 초월 선택권`};
+    res={ok:true,txt:`초월 부품 ${G.parts}개 보유 — 초월 유닛 조합 재료 (1번에 ${APEX_PART}개)`};
     try{SFX.reward();}catch(_){}}
   else if(rnd()<labP(kind)){G.labPity=G.labPity||{};G.labPity[kind]=0;const pool=kind==='rare'?Object.keys(U).filter(n=>U[n].t==='rare'):SECRET_UNITS;
     const nm=pool[Math.floor(rnd()*pool.length)],at=labPlace(nm);G.seen&&(G.seen[nm]=1);
@@ -3101,7 +3105,7 @@ function renderLab(){const el=document.getElementById('labBody');if(!el||!G)retu
   el.innerHTML=`<div class="labHave">가진 우라늄 <b>${u}</b><span>보스 1마리마다 +1 · 한 판 최대 ${URAN_MAX}개 (지금까지 ${G.uranGot||0}개)</span></div>`
     +row('rare','희귀 도박','성공하면 희귀 유닛 1기 · 실패하면 핵폐기물'+pity('rare'))
     +row('secret','비밀 도박','성공하면 <b style="color:'+RARITY.secret.color+'">비밀 유닛</b> 4종 중 1기 — 여기서만 나와요 · 실패하면 핵폐기물'+pity('secret'))
-    +row('part','초월 부품',`부품 ${G.parts||0}/${PART_NEED} — 다 모으면 초월 선택권`)
+    +row('part','초월 부품',`보유 ${G.parts||0}개 — 초월 유닛 조합 재료 (1번에 ${APEX_PART}개)`)
     +(last?`<div class="labRes ${last.ok?'win':'lose'}">${last.txt}</div>`:'')
     +(room?'':`<div class="labNote" style="color:#ff7b72">칸과 대기소가 꽉 차서 도박을 못 해요 — 먼저 비우세요</div>`)
     +`<div class="labNote">핵폐기물: 공격하지 않고 자리만 차지해요 · 팔면 0골드 · 보통 조합 재료로는 못 써요<br>실패 보정: 도박이 실패할 때마다 같은 도박의 다음 성공 확률 +10% (최대 +30%) · 성공하면 처음으로</div>`;}
@@ -5298,6 +5302,7 @@ function a3UcMore(){const t=G&&G.selected&&G.selected.tower;A3UCM=(A3UCM===t)?nu
 function a3UnitSig(){try{const t=G&&G.selected&&G.selected.tower;if(!t)return '';const inv=inventory(),ms={};
   for(const r of upgradesFrom(t.name))for(const m of RECIPE[r])ms[m]=inv[m]||0;
   return t.name+'|'+t.locked+'|'+(G.upg[U[t.name].dt]||0)+'|'+JSON.stringify(ms)+'|'+upgradesFrom(t.name).map(r=>canCraft(r)?2:canCraftDeepTop(r)?1:0).join('');}catch(_){return '';}}
+function a3PartNeed(r){return (typeof APEX_PART!=='undefined'&&APEX_PART>0&&U[r]&&U[r].t==='apex')?APEX_PART:0;} // 10차: 초월 조합에 드는 초월 부품 수(0=필요 없음)
 function unitCardFill(){try{const el=document.getElementById('unitCard');if(!el)return;const t=G&&G.selected&&G.selected.tower;
   if(!t||!G.started||G.over){el.innerHTML='';A3UC='';if(el.classList)el.classList.add('hidden');return;}
   A3UC=a3UnitSig();
@@ -5306,7 +5311,8 @@ function unitCardFill(){try{const el=document.getElementById('unitCard');if(!el)
   const rs=upgradesFrom(t.name).filter(r=>!(isSecret(r)&&!secretKnown(r))).map(r=>{const ok=canCraft(r);return {r,ok,deep:!ok&&canCraftDeepTop(r)};})
     .sort((a,b)=>((b.ok?1:0)-(a.ok?1:0))||((b.deep?1:0)-(a.deep?1:0))||(TO.indexOf(U[a.r].t)-TO.indexOf(U[b.r].t))||(a.r<b.r?-1:1));
   const line=o=>{const need=needCount(RECIPE[o.r]),c=(RARITY[U[o.r].t]||{}).color||'#fff',go=o.ok?"craft('"+o.r+"')":o.deep?"craftDeep('"+o.r+"')":'';
-    const ms=Object.keys(need).map(m=>{const hv=inv[m]||0,k=need[m],cl=hv>=k?'h':hv>0?'p':'n';return '<span class="'+cl+'">'+shortName(m)+(k>1?' <small>'+Math.min(hv,k)+'/'+k+'</small>':'')+'</span>';}).join('<i>+</i>');
+    const ms=Object.keys(need).map(m=>{const hv=inv[m]||0,k=need[m],cl=hv>=k?'h':hv>0?'p':'n';return '<span class="'+cl+'">'+shortName(m)+(k>1?' <small>'+Math.min(hv,k)+'/'+k+'</small>':'')+'</span>';}).join('<i>+</i>')
+      +(a3PartNeed(o.r)?(()=>{const k=a3PartNeed(o.r),hv=G.parts||0;return '<i>+</i><span class="'+(hv>=k?'h':hv>0?'p':'n')+'">초월 부품 <small>'+Math.min(hv,k)+'/'+k+'</small></span>';})():'');
     return '<button type="button" class="ucRow'+(o.ok?' ok':o.deep?' dp':'')+'" style="--uc:'+c+'" '+(go?'onclick="'+go+'"':'disabled')+'>'
       +'<b>'+shortName(o.r)+'</b><i>:</i>'+ms+(go?'<em>'+(o.ok?'조합':'한 번에')+'</em>':'')+'</button>';};
   const cut=rs.length>5&&a3IsPhone()&&A3UCM!==t,mb=rs.length>5&&a3IsPhone()?'<button type="button" class="ucMore" onclick="a3UcMore()">'+(cut?'더보기 <b>+'+(rs.length-4)+'</b>':'접기')+'</button>':'';
@@ -5342,11 +5348,12 @@ function renderBook(){const body=document.getElementById('bookBody');if(!body)re
       html+='<div class="bkH">바로 아래 재료 <small>재료를 누르면 그 재료의 조합식으로 들어가요</small></div><div class="bkMs">'
         +Object.keys(need).map(m=>{const hv=inv[m]||0,k=need[m],cl=hv>=k?'h':hv>0?'p':'n',mu=U[m]||{},mc=(RARITY[mu.t]||{}).color||'#c8d0c2',deep=!!RECIPE[m];
           return '<button type="button" class="bkM '+cl+'" style="--rc:'+mc+'" '+(deep?'onclick="bookGo(\''+m+'\')"':'disabled')+'>'+a3Img(m,'bkMp')
-            +'<span><b>'+shortName(m)+'</b><small>'+(TN[mu.t]||'')+(deep?' · 조합식 보기 ›':' · 뽑기로 나와요')+'</small></span><em>'+hv+'<i>/'+k+'</i></em></button>';}).join('')+'</div>';
+            +'<span><b>'+shortName(m)+'</b><small>'+(TN[mu.t]||'')+(deep?' · 조합식 보기 ›':' · 뽑기로 나와요')+'</small></span><em>'+hv+'<i>/'+k+'</i></em></button>';}).join('')
+        +(a3PartNeed(cur)?(()=>{const k=a3PartNeed(cur),hv=(G&&G.parts)||0;return '<button type="button" class="bkM '+(hv>=k?'h':hv>0?'p':'n')+'" style="--rc:#ffd166" disabled><i class="bkMp a3NoImg"></i><span><b>초월 부품</b><small>우라늄 연구소에서 만들어요</small></span><em>'+hv+'<i>/'+k+'</i></em></button>';})():'')+'</div>';
       const ok=G&&canCraft(cur),dp=G&&!ok&&canCraftDeepTop(cur);
       html+='<div class="bkGo">'+(ok?'<button type="button" class="bkMake" onclick="bookMake(\''+cur+'\',false)">지금 조합하기</button>'
         :dp?'<button type="button" class="bkMake" onclick="bookMake(\''+cur+'\',true)">아래 단계부터 한 번에 조합</button>'
-        :'<span class="bkNo">재료가 모자라요</span>')+'</div>';}
+        :'<span class="bkNo">'+(a3PartNeed(cur)&&((G&&G.parts)||0)<a3PartNeed(cur)&&Object.keys(need).every(m=>(inv[m]||0)>=need[m])?'초월 부품이 모자라요 — 우라늄 연구소에서 만들어요':'재료가 모자라요')+'</span>')+'</div>';}
     else if(SECRET_UNITS.includes(cur))html+='<p class="bkNote">조합으로는 못 만들어요. 우라늄 연구소 비밀 도박(2개, 성공 30%)에서만 나와요.</p>';
     else html+='<p class="bkNote">흔함 유닛이에요. 소환(뽑기)으로 나와요.</p>';
     body.innerHTML=html;return;}
