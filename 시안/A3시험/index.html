@@ -1019,6 +1019,9 @@
   body{ --T:44px; --Tc:calc(var(--T) + 4px); --S:62px; --u:min(calc((100vh - var(--Tc) - var(--S)) / 455), calc((100vw - 280px) / 530)); }
   @supports (height:100dvh){ body{ --u:min(calc((100dvh - var(--Tc) - var(--S)) / 455), calc((100vw - 280px) / 530)); } }
   @media (max-height:500px){ body{ --T:30px; --Tc:calc(var(--T) + 10px); --S:34px; } }
+  /* 10차: 낮은 가로 화면(폰·폴드 겉화면)은 판을 조금 줄여 맨 아래 칸 줄과 [소환] 줄 사이에 숨 쉴 틈을 둔다(455 → 475). 칸 위치·규칙은 그대로 */
+  @media (max-height:500px){ body{ --u:min(calc((100vh - var(--Tc) - var(--S)) / 475), calc((100vw - 280px) / 530)); }
+    @supports (height:100dvh){ body{ --u:min(calc((100dvh - var(--Tc) - var(--S)) / 475), calc((100vw - 280px) / 530)); } } }
   #cv{ top:calc(var(--Tc) - var(--u) * 52) !important; }
   #stage::before{ top:calc(var(--Tc) - var(--u) * 52) !important; }
   /* 판 가로 늘림 --xs (실행 코드가 화면 폭에 맞춰 1~1.35로 정함 · 좌표·수치는 그대로, 그림만 가로로 늘림) */
