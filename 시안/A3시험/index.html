@@ -6249,5 +6249,5 @@ try{UVAR['육군참모총장']=['cos',1,'shell'];SOLO.cos={w:'rifle',u:'#3b4227'
 // 난이도 보정(14차): 웨이브가 빨라지고 좀비가 진화하는 만큼 체력 배수 조정
 try{const H={'보통':2.15,'어려움':2.9,'지옥':4.8,'신':10.8};const CBH=(typeof CB_DIFF_HP!=='undefined')?CB_DIFF_HP:{};for(const k in H)if(DIFF[k]&&CBH[k])DIFF[k].hp=CBH[k];}catch(_){}
 </script>
-</body>
+<script>/*ROLE_PLAN_V3_BOOKLINK*/(function(){function chk(){var h='';try{h=decodeURIComponent(location.hash||'');}catch(e){h=location.hash||'';}if(h==='#도감'||h==='#book'){try{openBook();var bk=document.getElementById('book');bk.style.setProperty('z-index','100','important');var cb=window.closeBook;if(cb&&!cb._lk){window.closeBook=function(){bk.style.removeProperty('z-index');return cb.apply(this,arguments);};window.closeBook._lk=1;}}catch(e){}}}window.addEventListener('load',function(){setTimeout(chk,400);});window.addEventListener('hashchange',chk);})();</script></body>
 </html>
