@@ -1987,7 +1987,7 @@ const CB_MINE_MAX=40,CB_ZONE_MAX=24;
 // 15차 독·불 성격: 독 = 한 마리·보스에 강함(2겹부터 겹마다 +10%, 보스에게 +50%) · 불 = 무리에 강함(옆 좀비로 번짐, 보스에겐 70%)
 const CB_PS={stack:0.1,boss:1.5},CB_FIRE={boss:0.7,spread:0.6,r:42,gen:2,per:2};
 const CB_DIFF_HP={'보통':3.0,'어려움':2.35,'지옥':2.3,'신':3.3}; // 16차 난이도별 좀비 체력 배수(15차 3.0/2.9/3.2/5.6, 가상 플레이 8판씩으로 정함)
-const CB_HELL={cnt:0.9,spd:0.9}; // 16차: 지옥만 좀비 수 −10% · 이동 속도 −10%
+const CB_HELL={cnt:0.9,spd:0.9,cap:23}; // 16차: 지옥만 좀비 수 −10% · 이동 속도 −10%
 // 16차: 희귀 약화 — 스킬 배율 절반 · 발동 빈도 절반 · 효과(기절·감속·깎기·표식·처형선) 절반 · 기본 공격력 −10% → 전설보다 확실히 약하게
 const CB_RARE={k:0.5,freq:0.5,eff:0.5,dmg:0.9};
 function cbRareNerf(){for(const n in U){const u=U[n];if(u.t!=='rare'||u.cbNerf)continue;u.cbNerf=1;u.dmg=Math.round(u.dmg*CB_RARE.dmg);
@@ -6422,7 +6422,7 @@ try{UVAR['육군참모총장']=['cos',1,'shell'];SOLO.cos={w:'rifle',u:'#3b4227'
 // 난이도 보정(14차): 웨이브가 빨라지고 좀비가 진화하는 만큼 체력 배수 조정
 try{const H={'보통':2.15,'어려움':2.9,'지옥':4.8,'신':10.8};const CBH=(typeof CB_DIFF_HP!=='undefined')?CB_DIFF_HP:{};for(const k in H)if(DIFF[k]&&CBH[k])DIFF[k].hp=CBH[k];}catch(_){}
 // 16차: 지옥만 좀비 수 −10% · 이동 속도 −10%
-try{if(DIFF['지옥']&&!DIFF['지옥'].cnt){DIFF['지옥'].cnt=CB_HELL.cnt;DIFF['지옥'].spd=+(DIFF['지옥'].spd*CB_HELL.spd).toFixed(3);}}catch(_){}
+try{if(DIFF['지옥']&&!DIFF['지옥'].cnt){DIFF['지옥'].cnt=CB_HELL.cnt;DIFF['지옥'].spd=+(DIFF['지옥'].spd*CB_HELL.spd).toFixed(3);if(CB_HELL.cap)DIFF['지옥'].cap=CB_HELL.cap;}}catch(_){}
 // 16차 비밀 3종 그림·아이콘(기존 그림 종류 재사용) · 공격 종류 표
 try{SP['지상작전사령부']='tank';SP['특수전사령부']='soldier';SP['육군미사일전략사령부']='arty';}catch(_){}
 try{UVAR['지상작전사령부']=['k2',3,'shell0'];UVAR['특수전사령부']=['spec707',3,'bul'];UVAR['육군미사일전략사령부']=['tel5',2,'bal'];}catch(_){}
