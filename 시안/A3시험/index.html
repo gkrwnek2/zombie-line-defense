@@ -3652,7 +3652,7 @@ function buffCap(dm,as,amp){const cap=Math.min(BUFF_HARD,1+(BUFF_CAP-1)*amp);ret
 // S35 저격대 유닛은 강화(버프) 효과를 더 크게 받음 — 저격대 덱의 짝은 '강화'
 function buffAmpOf(t,M){M=M||(G&&G.mod)||{};const u=t&&U[t.name];return (M.buffAmp||1)*(u&&u.dt==='pierce'?(M.pierceBuff||1)+(M.pierceBuffAdd||0):1);}
 function update(dt){
-  G.t+=dt;
+  G.t+=dt;pasTick();
   // 자동 웨이브 카운트다운
   if(!G.over&&(G.wave<MAX_WAVE||G.endless)){G.nextWaveT-=dt;if(G.nextWaveT<=0)nextWave();}
   else if(!G.over&&G.activeMission&&G.enemies.some(e=>e.mission)){G.nextWaveT-=dt;if(G.nextWaveT<=0&&G.wave>=G.activeMission.deadlineWave){missionFail();return;}} // 30웨이브: 마지막 웨이브 시간이 끝나면 판정
@@ -6489,4 +6489,18 @@ function kcDraw(){if(!G)return;const c=ctx,now=G.t;
   for(const s of SLOTS){const t=s.tower;if(!t||t.name!==KC_HIT||kcRush(t)===1)continue;c.save();
     c.font='900 10px '+FNT_HEAD;c.textAlign='center';const w=c.measureText('긴급 투입').width+8;
     c.fillStyle='#ff3d3d';c.fillRect(t.x-w/2,t.y-34,w,13);c.fillStyle='#fff';c.fillText('긴급 투입',t.x,t.y-24);c.restore();}}
+</script><script>/*ROLE_PLAN_V3_PAS 20차-2 상시 효과*/
+// s=감속(속도 배율, 0.9=10% 느리게) · b=방어력 깎기 점수 — 같은 부대끼리는 안 겹침, 다른 부대끼리는 기존 규칙대로(감속 최대 60%)
+const PAS={'TICN 전술통신':{s:0.92},'드론봇중대':{s:0.90},'육군 방공여단':{s:0.88},'드론봇 군단':{s:0.85},'연막 차장반':{s:0.88},'전자전 부대':{s:0.85},
+  'KM9ACE 전투공병차':{b:5},'무인수색차':{b:5},'현궁 대전차':{b:8},'LAH 편대':{b:10},'수도기계화사단':{b:12},'대전차 매복조':{b:8},'특수정찰대':{b:10}};
+for(const n in PAS){const u=U[n];if(!u)continue;if(PAS[n].s)u.pSlow=PAS[n].s;if(PAS[n].b)u.pBrk=PAS[n].b;}
+let _pasT=-1e9;
+function pasTick(){if(!G||G.t-_pasT<100)return;_pasT=G.t;
+  for(const sl of SLOTS){const t=sl.tower;if(!t)continue;const u=U[t.name];if(!u||!(u.pSlow||u.pBrk))continue;const key='P:'+t.name;
+    for(const e of G.enemies){if(Math.hypot(t.x-e.x,t.y-e.y)>u.range)continue;
+      if(u.pSlow)applySlow(e,u.pSlow,260,key);if(u.pBrk)applyBrk(e,key,u.pBrk,260);}}}
+function pasText(u){if(!u)return '';const a=[];if(u.pSlow)a.push(Math.round((1-u.pSlow)*100)+'% 느리게');if(u.pBrk)a.push('방어력 −'+u.pBrk);
+  return a.length?'상시: 사거리 안 모든 좀비 '+a.join(' · '):'';}
+{const _pt=rpPassiveText;rpPassiveText=function(n){const a=_pt(n),b=pasText(U[n]);return a&&b?a+' / '+b:(a||b);};}
+{const _ut=unitTags;unitTags=function(u){const fx=_ut(u);if(u&&u.pSlow)fx.unshift('상시둔화'+Math.round((1-u.pSlow)*100)+'%');if(u&&u.pBrk)fx.unshift('상시방깍'+u.pBrk);return fx;};}
 </script></html>
