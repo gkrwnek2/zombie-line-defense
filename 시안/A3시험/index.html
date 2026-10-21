@@ -3280,7 +3280,7 @@ function craftSilent(result){
   let where=null;
   if(at&&(!cellTop(at)||cellName(at)===result))where=freeSub(at);
   if(!where)where=freeFor(result)[0]||null;
-  if(where)where.tower=mkTower(result,where);
+  if(where){where.tower=mkTower(result,where);if(where&&!where.res&&G.floats&&G.floats.length<60)G.floats.push({x:where.x,y:where.y-20,txt:rkPromo(result),col:RARITY[U[result].t].color,life:1300});}
   else if(resAdd(result))where=RES_SPOT; // 칸이 꽉 찼으면 결과는 대기소로
   else return null;
   if(!G.discovered[result]&&!discKnown(result))G._newDiscovers=(G._newDiscovers||0)+1;
@@ -3304,7 +3304,7 @@ function craft(result){
   const rc=RARITY[U[result].t];
   log(`조합 완성! <b style="color:${rc.color}">[${rc.name}] ${result}</b>${G._newDiscovers?' <i>조합식 해금!</i>':''}`,rc.color);
   if(slot&&slot.res)log('칸이 꽉 차서 결과를 대기소로 보냈어요.','#c2b27a');
-  if(slot){if(!slot.res)G.floats.push({x:slot.x,y:slot.y-20,txt:'+',life:600});SFX.craft();}
+  if(slot){SFX.craft();}
   if(slot)roleHint('craft');
   G.selected=(slot&&!slot.res)?slot:null;G.invSig='';updateUI();
 }
@@ -3362,7 +3362,7 @@ function labBuy(kind){if(!G||G.over)return null;const L=LAB[kind];if(!L)return n
     const nm=pool[Math.floor(rnd()*pool.length)],at=labPlace(nm);G.seen&&(G.seen[nm]=1);
     const rc=RARITY[U[nm].t];res={ok:true,nm,txt:`성공! <b style="color:${rc.color}">[${rc.name}] ${shortName(nm)}</b>${at&&at.res?' → 대기소':''}`};
     if(kind==='secret')G.celebrate={name:nm,tier:rc.name,color:rc.color,t0:G.t};
-    if(at&&!at.res)G.floats.push({x:at.x,y:at.y-20,txt:'+',life:900});
+    if(at&&!at.res)G.floats.push({x:at.x,y:at.y-20,txt:rkPromo(nm),col:rc.color,life:1300});
     try{SFX.legend();}catch(_){}}
   else{G.labPity=G.labPity||{};G.labPity[kind]=Math.min(LAB_PITY_MAX,(G.labPity[kind]||0)+1);
     const at=labPlace(WASTE,true);res={ok:false,nm:WASTE,txt:`실패… <b style="color:${RARITY.waste.color}">핵폐기물</b>이 생겼어요${at&&at.res?' → 대기소':''}`};
@@ -4514,7 +4514,7 @@ function draw(){
       ctx.globalAlpha=a;ctx.fillStyle=col;ctx.fillRect(W*.12,cy-42,W*.76,2);ctx.fillRect(W*.12,cy+28,W*.76,2);
       ctx.textAlign='center';ctx.textBaseline='middle';
       ctx.font='14px '+FNT_HEAD;ctx.fillStyle=col;
-      ctx.fillText('['+G.celebrate.tier+'] 유닛 합류 ',W/2,cy-26);
+      ctx.fillText(rkPromoT(G.celebrate.tier),W/2,cy-26);
       const ps=1+Math.max(0,.35-el2/400);ctx.translate(W/2,cy+4);ctx.scale(ps,ps);
       ctx.font='32px '+FNT_HEAD;ctx.lineWidth=6;ctx.lineJoin='round';ctx.strokeStyle='#0b0d07';
       ctx.strokeText(G.celebrate.name,0,0);
@@ -4568,7 +4568,7 @@ function vDrawFloats(){const F=G.floats;if(!F||!F.length)return;a3FloatTop();con
       col=f.crit?'#ff9a2e':f.boss?'#ffd54a':n>=1000?'#ffe07a':'#ffffff';
       const sz=(f.crit?19:f.boss?15:n>=1000?14:12.5)*pop;ctx.font=`900 ${Math.round(sz)}px ${FNT_NUM}`;lw=f.crit?5:3.5;
       if(f.crit)txt+='!';}
-    else{col=f.sk?'#e3ec8c':f.boss?'#ffd54a':'#fbf6e4';ctx.font=`800 ${Math.round(12.5*pop)}px ${FNT_BODY}`;}
+    else{col=f.col||(f.sk?'#e3ec8c':f.boss?'#ffd54a':'#fbf6e4');ctx.font=f.col?`900 ${Math.round(14*pop)}px ${FNT_HEAD}`:`800 ${Math.round(12.5*pop)}px ${FNT_BODY}`;}
     let fy=Math.max(f.y,A3FY+11),fx=f.x;if(A3PC){const m=/([0-9.]+)px/.exec(ctx.font),fs=m?Math.max(9,Math.round(+m[1]*.87)):12;ctx.font=ctx.font.replace(/[0-9.]+px/,fs+'px');lw*=.87;const B=a3CellBox();if(B){const hh=fs/2+lw/2+1;if(f.y<B.t)fy=Math.min(fy,B.t-hh-2);}}ctx.save();a3X(fx,fy);ctx.lineWidth=lw;ctx.strokeStyle='rgba(8,9,5,.92)';ctx.strokeText(txt,fx,fy+1.5);ctx.strokeText(txt,fx,fy);ctx.fillStyle=col;ctx.fillText(txt,fx,fy);ctx.restore();}
   ctx.restore();}
 // ----- 배치칸 (바닥 받침은 지도 레이어에 미리 그려짐 — 여기선 끌어다 놓기 강조만) -----
@@ -6464,5 +6464,10 @@ try{const _vI2=vIns;vIns=function(tier,dt){const R=RANK_D[tier];if(!R||typeof Pa
     if(R.s){g.lineWidth=9;g.stroke(p);g.strokeStyle=c;g.lineWidth=4.5;g.stroke(p);}
     else{g.lineWidth=5;g.stroke(p);g.fillStyle=c;g.fill(p);if(R.h){g.fillStyle='#0d0e0a';g.fill(new Path2D(R.h));}}
     g.restore();});return VINS[k];};}catch(_){}
+</script>
+<script>/*ROLE_PLAN_V3_PROMO 19차 진급 문구*/
+const RK_PROMO={common:'이병 입대',uncommon:'일병 진급!',special:'상병 진급!',rare:'병장 진급!',legend:'부사관 임관!',lab:'특임 투입!',mythic:'장교 임관!',hidden:'특명 하달!',apex:'장군 진급!',secret:'원수 추대!',waste:'폐기물'};
+function rkPromo(name){const t=U[name]&&U[name].t;return RK_PROMO[t]||'+';}
+function rkPromoT(tn){const k=Object.keys(RARITY).find(k=>RARITY[k].name===tn);return RK_PROMO[k]||('['+tn+'] 합류');}
 </script>
 </html>
