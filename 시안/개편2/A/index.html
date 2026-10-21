@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>A안 — 원랜디 클래식</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0f14;
+    --panel:#171b22;
+    --panel2:#0f1319;
+    --edge:#2c3340;
+    --gold:#f2c14e;
+    --green:#5fd97a;
+    --red:#ff5d5d;
+    --ink:#e8ecf1;
+    --dim:#7b8494;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#05060a;
+    font-family:'Pretendard',sans-serif;
+    color:var(--ink);
+    padding:36px 28px 60px;
+  }
+  h1.pagetitle{
+    font-family:'Black Han Sans',sans-serif;
+    font-size:34px;
+    color:#fff;
+    margin:0 0 6px;
+    letter-spacing:0.5px;
+  }
+  p.lede{
+    font-size:15px;
+    color:#aab2c2;
+    max-width:820px;
+    line-height:1.6;
+    margin:0 0 4px;
+    border-left:3px solid var(--gold);
+    padding-left:12px;
+  }
+  .row{
+    display:flex;
+    gap:26px;
+    margin-top:30px;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    padding-bottom:20px;
+  }
+  .col{
+    flex:0 0 375px;
+    width:375px;
+  }
+  .col .caption{
+    font-size:13.5px;
+    color:#cbd3e0;
+    line-height:1.55;
+    margin-top:12px;
+    background:var(--panel2);
+    border-left:3px solid var(--green);
+    padding:10px 12px;
+  }
+  .col .caption b{color:var(--gold);}
+
+  /* ===== 폰 프레임 ===== */
+  .phone{
+    width:375px;
+    height:812px;
+    background:#000;
+    border-radius:26px;
+    overflow:hidden;
+    position:relative;
+    border:1px solid #333;
+    box-shadow:0 20px 50px rgba(0,0,0,.6);
+  }
+  .screen{
+    width:100%;
+    height:100%;
+    position:relative;
+    background:#10151c;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ===== 상단 HUD (사장님 지시 반영: 웨이브+시작+배속 좌측 / 골드·특별권·미션·일시정지 우측) ===== */
+  .topbar{
+    position:relative;
+    height:58px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 8px 0;
+    z-index:5;
+    gap:6px;
+  }
+  .topbar .side{display:flex;align-items:center;gap:6px;}
+
+  .wave-launch{
+    display:flex;align-items:center;gap:6px;
+    background:rgba(0,0,0,.5);
+    border:1px solid #3a4252;
+    border-radius:10px;
+    padding:5px 8px 5px 6px;
+  }
+  .wave-launch .wnum{font-weight:900;font-size:15px;color:#fff;white-space:nowrap;}
+  .wave-launch .wnum small{font-size:9px;color:var(--gold);font-weight:700;display:block;margin-top:-2px;}
+  .wave-launch .go{
+    background:var(--green);color:#08210f;font-weight:900;font-size:11px;
+    padding:6px 10px;border-radius:7px;white-space:nowrap;
+  }
+  .wave-launch .go.wait{background:#2a2f38;color:#6b7280;}
+
+  .speed-btn{
+    background:rgba(0,0,0,.5);
+    border:1px solid #3a4252;
+    border-radius:9px;
+    padding:6px 9px;
+    font-weight:800;font-size:12px;color:var(--gold);
+    white-space:nowrap;
+  }
+
+  .res-pill{
+    background:rgba(0,0,0,.5);
+    border-radius:20px;
+    padding:5px 10px 5px 5px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font-weight:800;
+    font-size:13.5px;
+  }
+  .res-pill .coin{
+    width:17px;height:17px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ffe89a, #c99a1f);
+    box-shadow:inset 0 0 0 1px #8a6a12;
+  }
+  .badge-btn{
+    position:relative;
+    width:34px;height:34px;border-radius:9px;
+    background:rgba(0,0,0,.5);
+    border:1px solid #3a4252;
+    display:flex;align-items:center;justify-content:center;
+    color:#e8ecf1;font-size:15px;
+  }
+  .badge-btn .cnt{
+    position:absolute;top:-5px;right:-5px;
+    background:var(--gold);color:#231a04;
+    font-size:9px;font-weight:900;
+    min-width:14px;height:14px;border-radius:7px;
+    display:flex;align-items:center;justify-content:center;
+    padding:0 2px;
+    border:1px solid #05060a;
+  }
+  .pause-btn{
+    width:34px;height:34px;border-radius:9px;
+    background:rgba(0,0,0,.5);
+    border:1px solid #454e5f;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:14px;
+  }
+
+  /* 짧게 떴다 사라지는 한 줄 알림 (도움말 상자·긴 로그 대신) */
+  .toast{
+    position:absolute;top:64px;left:50%;transform:translateX(-50%);
+    background:rgba(10,12,16,.85);
+    border:1px solid #3a4252;
+    border-radius:20px;
+    padding:5px 14px;
+    font-size:11.5px;font-weight:700;color:#e8ecf1;
+    white-space:nowrap;
+    z-index:6;
+  }
+  .toast b{color:var(--gold);}
+
+  /* ===== 게임판(네모 트랙) ===== */
+  .board-wrap{
+    flex:1;
+    position:relative;
+    margin:2px 10px 6px;
+    border-radius:8px;
+    overflow:hidden;
+    background:#1a2a1f;
+  }
+  .board-wrap svg{width:100%;height:100%;display:block;}
+
+  /* ===== 하단 원랜디 패널 ===== */
+  .cmdpanel{
+    height:150px;
+    background:linear-gradient(180deg,#161a21,#0c0f14);
+    border-top:1px solid #2c3340;
+    display:flex;
+    padding:8px;
+    gap:8px;
+  }
+  .portrait-slot{
+    width:96px;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .portrait-box{
+    width:96px;height:96px;
+    border-radius:6px;
+    border:2px solid #4a5568;
+    background:#0a0c10;
+    overflow:hidden;
+    position:relative;
+  }
+  .portrait-box img{width:100%;height:100%;object-fit:cover;}
+  .portrait-box .rk{
+    position:absolute;bottom:0;left:0;right:0;
+    background:rgba(0,0,0,.6);
+    font-size:9px;text-align:center;padding:1px 0;color:var(--gold);font-weight:700;
+  }
+  .hp-mini{
+    height:8px;border-radius:4px;background:#1a1f27;overflow:hidden;border:1px solid #333;
+  }
+  .hp-mini .fill{height:100%;background:var(--green);}
+
+  .stat-slot{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:5px;
+    padding:0 6px;
+    border-left:1px solid #262b34;
+    border-right:1px solid #262b34;
+  }
+  .stat-slot .uname{font-weight:800;font-size:15px;color:#fff;}
+  .stat-line{display:flex;gap:10px;font-size:12px;color:var(--dim);}
+  .stat-line b{color:#fff;font-weight:800;}
+  .stat-line .atk b{color:#ff9d6e;}
+  .stat-line .def b{color:#7ec8ff;}
+
+  .cmdgrid{
+    width:150px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    grid-template-rows:repeat(4,1fr);
+    gap:4px;
+  }
+  .cmd{
+    background:#1c212a;
+    border:1px solid #343c49;
+    border-radius:5px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    color:#e8ecf1;
+    font-size:9.5px;
+    font-weight:700;
+    line-height:1.15;
+    gap:2px;
+    position:relative;
+  }
+  .cmd .ic{font-size:17px;}
+  .cmd.gold{border-color:#6b5220;background:#241d10;color:var(--gold);}
+  .cmd.empty{visibility:hidden;}
+  .cmd .key{
+    position:absolute;top:2px;right:3px;font-size:7px;color:#5c6472;font-weight:600;
+  }
+
+  /* ===== 화면2: 유닛 정보 카드 ===== */
+  .infocard{
+    position:absolute;left:0;right:0;bottom:150px;
+    background:#12151b;
+    border-top:2px solid var(--gold);
+    padding:12px 12px 10px;
+    z-index:8;
+  }
+  .infocard .head{display:flex;gap:10px;align-items:center;}
+  .infocard .portrait-lg{
+    width:64px;height:64px;border-radius:6px;border:2px solid var(--gold);overflow:hidden;flex:0 0 auto;
+  }
+  .infocard .portrait-lg img{width:100%;height:100%;object-fit:cover;}
+  .infocard .name{font-weight:900;font-size:18px;color:#fff;}
+  .infocard .tag{font-size:11px;color:var(--gold);font-weight:700;}
+  .infocard .close{
+    margin-left:auto;width:28px;height:28px;border-radius:50%;background:#242a34;
+    display:flex;align-items:center;justify-content:center;color:#9aa4b2;font-size:14px;
+  }
+  .skillrow{display:flex;gap:8px;margin-top:10px;}
+  .skill{
+    flex:1;background:#1a1f27;border:1px solid #333c48;border-radius:6px;
+    padding:7px 6px;text-align:center;font-size:10.5px;font-weight:700;color:#cdd5e2;
+  }
+  .skill .ic{font-size:16px;display:block;margin-bottom:2px;}
+  .upgrade-line{
+    margin-top:10px;
+    display:flex;align-items:center;gap:8px;
+    font-size:11px;color:var(--dim);
+  }
+  .upgrade-line .bar{flex:1;height:6px;background:#1a1f27;border-radius:3px;overflow:hidden;border:1px solid #2c333f;}
+  .upgrade-line .bar .f{height:100%;background:var(--gold);width:62%;}
+
+  /* ===== 화면3: 미션창 ===== */
+  .mission-modal{
+    position:absolute;inset:0;
+    background:rgba(4,5,8,.86);
+    display:flex;flex-direction:column;
+    z-index:20;
+  }
+  .mission-head{
+    padding:16px 16px 10px;
+    border-bottom:1px solid #2c3340;
+  }
+  .mission-head .t{
+    font-family:'Black Han Sans',sans-serif;
+    font-size:22px;color:#fff;
+  }
+  .paused-chip{
+    display:inline-flex;align-items:center;gap:5px;
+    background:#241d10;border:1px solid #6b5220;color:var(--gold);
+    font-size:11px;font-weight:800;padding:3px 9px;border-radius:20px;margin-top:6px;
+  }
+  .mission-list{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px;}
+  .mrow{
+    display:flex;align-items:center;gap:10px;
+    background:#161a21;border-bottom:1px solid #262c36;
+    padding:10px 8px;
+    border-radius:4px;
+  }
+  .mrow.done{opacity:.45;}
+  .mrow.locked{opacity:.35;}
+  .mrow .dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;}
+  .mrow .txt{flex:1;min-width:0;}
+  .mrow .line1{display:flex;justify-content:space-between;gap:8px;font-size:14px;font-weight:800;color:#fff;}
+  .mrow .line2{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--dim);margin-top:3px;}
+  .mrow .line2 b{color:var(--gold);font-weight:700;}
+  .mrow .go{
+    flex:0 0 auto;background:var(--green);color:#08210f;font-weight:900;font-size:12px;
+    padding:8px 14px;border-radius:6px;
+  }
+  .mrow .go.locked-btn{background:#2a2f38;color:#6b7280;}
+  .mrow .go.doing{background:#3a3120;color:var(--gold);}
+  .mission-close{
+    margin:10px 16px 16px;
+    background:#1c212a;border:1px solid #343c49;color:#fff;font-weight:800;font-size:14px;
+    padding:12px;border-radius:6px;text-align:center;
+  }
+
+  /* ===== 화면3: 특별 선택권 펼쳐진 목록(작은 팝오버 예시) ===== */
+  .special-pop{
+    position:absolute;top:58px;right:8px;
+    background:#161a21;border:1px solid #4a3a1f;border-radius:8px;
+    padding:8px;width:150px;
+    box-shadow:0 10px 24px rgba(0,0,0,.5);
+    z-index:15;
+  }
+  .special-pop .t{font-size:11px;font-weight:800;color:var(--gold);margin-bottom:6px;}
+  .special-pop .opt{
+    display:flex;align-items:center;gap:6px;
+    background:#1c212a;border:1px solid #333c49;border-radius:5px;
+    padding:5px 6px;margin-bottom:5px;font-size:10.5px;font-weight:700;
+  }
+</style>
+</head>
+<body>
+
+<h1 class="pagetitle">A안 — 원랜디 클래식</h1>
+<p class="lede">
+  워크래프트3 원랜디 하단 패널(왼쪽 초상화 · 가운데 이름/스탯 · 오른쪽 3×4 명령칸) 구조를 세로 폰 화면에 옮긴 안입니다. 사장님 추가 지시(웨이브 시작 버튼 상단 이동·배속 순환·특별선택권 작은 버튼화·미션 작은 배지화·긴 알림줄 제거)를 반영해 <b>기본 화면에 보이는 요소를 최소</b>로 줄였습니다.<br>
+  <b>장점 1</b> — 원랜디를 해본 사람에게는 설명이 필요 없을 만큼 낯익어, 배우는 시간이 0에 가깝습니다.<br>
+  <b>장점 2</b> — 명령칸이 "아무것도 안 눌렀을 때"와 "유닛을 눌렀을 때"로 통째로 바뀌는 방식이라, 화면에 항상 보이는 버튼 수가 12개 이하로 고정됩니다.
+</p>
+
+<div class="row">
+
+<!-- ============ 화면 ① 기본 게임 화면 ============ -->
+<div class="col">
+  <div class="phone">
+    <div class="screen">
+
+      <div class="topbar">
+        <div class="side">
+          <div class="wave-launch">
+            <div class="wnum">12<small>웨이브</small></div>
+            <div class="go">▶ 시작</div>
+          </div>
+          <div class="speed-btn">1.5×</div>
+        </div>
+        <div class="side">
+          <div class="res-pill"><span class="coin"></span>128</div>
+          <div class="badge-btn">🎁<span class="cnt">2</span></div>
+          <div class="badge-btn">🎖</div>
+          <div class="pause-btn">Ⅱ</div>
+        </div>
+      </div>
+
+      <div class="toast">웨이브 13 곧 시작 — <b>8초</b> 남음</div>
+
+      <div class="board-wrap">
+        <svg viewBox="0 0 320 460">
+          <rect x="14" y="14" width="292" height="432" rx="6" fill="#213024" stroke="#3a5a3f" stroke-width="3"/>
+          <rect x="46" y="46" width="228" height="368" rx="4" fill="#182a1c"/>
+          <path d="M30 30 H290 V446 H30 Z" fill="none" stroke="#4b5a3c" stroke-width="30"/>
+          <path d="M30 30 H290 V446 H30 Z" fill="none" stroke="#63784a" stroke-width="26"/>
+          <!-- 안쪽 유닛 배치 칸 4 -->
+          <g>
+            <rect x="90" y="120" width="46" height="46" rx="4" fill="#0e1a12" stroke="#3a4a2f"/>
+            <rect x="184" y="120" width="46" height="46" rx="4" fill="#0e1a12" stroke="#3a4a2f"/>
+            <rect x="90" y="290" width="46" height="46" rx="4" fill="#0e1a12" stroke="#3a4a2f"/>
+            <rect x="184" y="290" width="46" height="46" rx="4" fill="#0e1a12" stroke="#3a4a2f"/>
+          </g>
+          <!-- 배치된 유닛(선택됨=금색 테두리) -->
+          <image href="./img/units/K2 흑표.png" x="92" y="122" width="42" height="42"/>
+          <rect x="90" y="120" width="46" height="46" rx="4" fill="none" stroke="#f2c14e" stroke-width="3"/>
+          <image href="./img/units/K2소총수.png" x="186" y="122" width="42" height="42"/>
+          <image href="./img/units/저격수.png" x="92" y="292" width="42" height="42"/>
+          <!-- 좀비들(트랙 위) -->
+          <image href="./img/zombies/좀비.png" x="16" y="200" width="30" height="30"/>
+          <image href="./img/zombies/좀비.png" x="16" y="240" width="30" height="30"/>
+          <image href="./img/zombies/강시.png" x="140" y="18" width="34" height="34"/>
+          <image href="./img/zombies/광란.png" x="270" y="330" width="28" height="28"/>
+        </svg>
+      </div>
+
+      <!-- 원랜디 하단 패널: 기본 상태(선택 없음) -->
+      <div class="cmdpanel">
+        <div class="portrait-slot">
+          <div class="portrait-box" style="display:flex;align-items:center;justify-content:center;color:#3d4552;font-size:28px;">⛶</div>
+          <div class="hp-mini"><div class="fill" style="width:0"></div></div>
+        </div>
+        <div class="stat-slot">
+          <div class="uname" style="color:#6b7280;">부대 없음</div>
+          <div class="stat-line">배치 칸을 눌러 소환하세요</div>
+        </div>
+        <div class="cmdgrid">
+          <div class="cmd gold"><span class="ic">➕</span>소환<span class="key">10G</span></div>
+          <div class="cmd"><span class="ic">🔀</span>조합</div>
+          <div class="cmd"><span class="ic">⚡</span>공격강화</div>
+          <div class="cmd"><span class="ic">🛡</span>방어강화</div>
+          <div class="cmd"><span class="ic">🗲</span>방무강화</div>
+          <div class="cmd"><span class="ic">🔬</span>연구소</div>
+          <div class="cmd"><span class="ic">📖</span>도감</div>
+          <div class="cmd"><span class="ic">🔊</span>소리</div>
+          <div class="cmd empty"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <p class="caption">
+    <b>①기본 화면</b> — 상단 왼쪽에 <b>웨이브 번호 + 시작 버튼</b>(누르면 다음 1웨이브만 시작, 미리 쌓아둘 수 없음)과 그 옆에 <b>배속 버튼</b>(1×→1.25×→1.5×→1.75×→2× 순환, 지금은 1.5×). 오른쪽엔 골드, <b>특별 선택권을 작은 선물 버튼</b>(오른쪽 위 숫자 배지 "2")으로, <b>미션은 작은 배지 버튼</b> 하나로 축소했고 항상 보이는 <b>일시정지(Ⅱ)</b>가 맨 끝에 있습니다. 도움말 상자·긴 알림줄은 없애고, 짧은 한 줄 토스트만 잠깐 떴다 사라집니다. 지정 포격은 이번 화면에서 뺐습니다(나중 추가).
+  </p>
+</div>
+
+<!-- ============ 화면 ② 유닛 선택 화면 ============ -->
+<div class="col">
+  <div class="phone">
+    <div class="screen">
+
+      <div class="topbar">
+        <div class="side">
+          <div class="wave-launch">
+            <div class="wnum">12<small>웨이브</small></div>
+            <div class="go wait">대기</div>
+          </div>
+          <div class="speed-btn">1.5×</div>
+        </div>
+        <div class="side">
+          <div class="res-pill"><span class="coin"></span>128</div>
+          <div class="badge-btn">🎁<span class="cnt">2</span></div>
+          <div class="badge-btn">🎖</div>
+          <div class="pause-btn">Ⅱ</div>
+        </div>
+      </div>
+
+      <div class="board-wrap">
+        <svg viewBox="0 0 320 460">
+          <rect x="14" y="14" width="292" height="432" rx="6" fill="#213024" stroke="#3a5a3f" stroke-width="3"/>
+          <rect x="46" y="46" width="228" height="368" rx="4" fill="#182a1c"/>
+          <path d="M30 30 H290 V446 H30 Z" fill="none" stroke="#4b5a3c" stroke-width="30"/>
+          <path d="M30 30 H290 V446 H30 Z" fill="none" stroke="#63784a" stroke-width="26"/>
+          <rect x="90" y="120" width="46" height="46" rx="4" fill="#0e1a12" stroke="#f2c14e" stroke-width="3"/>
+          <rect x="184" y="120" width="46" height="46" rx="4" fill="#0e1a12" stroke="#3a4a2f"/>
+          <rect x="90" y="290" width="46" height="46" rx="4" fill="#0e1a12" stroke="#3a4a2f"/>
+          <rect x="184" y="290" width="46" height="46" rx="4" fill="#0e1a12" stroke="#3a4a2f"/>
+          <image href="./img/units/K2 흑표.png" x="92" y="122" width="42" height="42"/>
+          <image href="./img/units/K2소총수.png" x="186" y="122" width="42" height="42"/>
+          <image href="./img/units/저격수.png" x="92" y="292" width="42" height="42"/>
+          <image href="./img/zombies/좀비.png" x="16" y="200" width="30" height="30"/>
+          <image href="./img/zombies/강시.png" x="140" y="18" width="34" height="34"/>
+        </svg>
+      </div>
+
+      <!-- 유닛 정보 카드: 하단 패널 위에 뜸 -->
+      <div class="infocard">
+        <div class="head">
+          <div class="portrait-lg"><img src="./img/units/K2 흑표.png" alt="K2 흑표"></div>
+          <div>
+            <div class="name">K2 흑표</div>
+            <div class="tag">희귀 · 물리 방깎</div>
+          </div>
+          <div class="close">✕</div>
+        </div>
+        <div class="skillrow">
+          <div class="skill"><span class="ic">🗲</span>철갑탄 관통<br>방어력 −18%</div>
+          <div class="skill"><span class="ic">🎯</span>사거리 120</div>
+          <div class="skill"><span class="ic">⏱</span>공속 0.9/초</div>
+        </div>
+        <div class="upgrade-line">강화 3단계 <div class="bar"><div class="f"></div></div> 다음 60G</div>
+      </div>
+
+      <!-- 하단 패널: 유닛 선택 상태 → 명령칸이 조합/판매/강화로 바뀜 -->
+      <div class="cmdpanel">
+        <div class="portrait-slot">
+          <div class="portrait-box"><img src="./img/units/K2 흑표.png" alt="K2 흑표"><div class="rk">희귀</div></div>
+          <div class="hp-mini"><div class="fill" style="width:82%"></div></div>
+        </div>
+        <div class="stat-slot">
+          <div class="uname">K2 흑표</div>
+          <div class="stat-line atk">공격 <b>142</b></div>
+          <div class="stat-line def">방깎 <b>18%</b></div>
+        </div>
+        <div class="cmdgrid">
+          <div class="cmd gold"><span class="ic">⚡</span>강화<span class="key">60G</span></div>
+          <div class="cmd"><span class="ic">🔒</span>잠금</div>
+          <div class="cmd"><span class="ic">💰</span>판매</div>
+          <div class="cmd"><span class="ic">↩</span>선택취소</div>
+          <div class="cmd empty"></div>
+          <div class="cmd empty"></div>
+          <div class="cmd empty"></div>
+          <div class="cmd empty"></div>
+          <div class="cmd empty"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <p class="caption">
+    <b>②유닛을 눌렀을 때</b> — 상단바는 ①과 같은 구조를 유지하되 웨이브 진행 중이라 시작 버튼이 "대기"로 회색 처리됩니다. 트랙 위 카드가 초상화·희귀도·스킬 3개·강화 단계를 보여주고, 아래 명령칸은 이 유닛에 맞는 것(강화·잠금·판매·선택취소)으로 <b>완전히 바뀌어</b> 4개만 남습니다. "상위 조합"은 재료가 되는 유닛일 때만 조합칸에 나타나며(예시 화면은 완성형 유닛이라 조합 없음), 재료 유닛을 누르면 이 자리에 결과 초상화+재료 밝기 표시가 나옵니다(재료 다 모이면 빛남, "부족"·"필요" 글자는 안 씀).
+  </p>
+</div>
+
+<!-- ============ 화면 ③ 미션 창 ============ -->
+<div class="col">
+  <div class="phone">
+    <div class="screen">
+
+      <div class="topbar" style="opacity:.4;">
+        <div class="side">
+          <div class="wave-launch">
+            <div class="wnum">12<small>웨이브</small></div>
+            <div class="go wait">대기</div>
+          </div>
+          <div class="speed-btn">1.5×</div>
+        </div>
+        <div class="side">
+          <div class="res-pill"><span class="coin"></span>128</div>
+          <div class="badge-btn">🎁<span class="cnt">2</span></div>
+          <div class="badge-btn">🎖</div>
+          <div class="pause-btn">▶</div>
+        </div>
+      </div>
+
+      <div class="board-wrap" style="opacity:.35;">
+        <svg viewBox="0 0 320 460">
+          <rect x="14" y="14" width="292" height="432" rx="6" fill="#213024" stroke="#3a5a3f" stroke-width="3"/>
+          <path d="M30 30 H290 V446 H30 Z" fill="none" stroke="#4b5a3c" stroke-width="30"/>
+          <image href="./img/units/K2 흑표.png" x="92" y="122" width="42" height="42"/>
+        </svg>
+      </div>
+
+      <!-- 미션 모달 -->
+      <div class="mission-modal">
+        <div class="mission-head">
+          <div class="t">작전 임무</div>
+          <span class="paused-chip">Ⅱ 일시정지됨 — 골라도 시간 안 감</span>
+        </div>
+        <div class="mission-list">
+
+          <div class="mrow done">
+            <div class="dot" style="background:#8a97a8;"></div>
+            <div class="txt">
+              <div class="line1">거대 골렘 좀비 <span style="color:#8a97a8;">✔ 완료</span></div>
+              <div class="line2">특성 없음 — 연습 상대 <span><b>흔함 뽑기권 ×3</b></span></div>
+            </div>
+          </div>
+
+          <div class="mrow">
+            <div class="dot" style="background:#5fd97a;"></div>
+            <div class="txt">
+              <div class="line1">부패 거인 <span style="color:#8a97a8;">3웨이브 안에 처치</span></div>
+              <div class="line2">감속이 절반만 먹힘 <span><b>안흔함 선택권</b></span></div>
+            </div>
+            <div class="go">도전</div>
+          </div>
+
+          <div class="mrow locked">
+            <div class="dot" style="background:#569bd6;"></div>
+            <div class="txt">
+              <div class="line1">강철 골렘 <span>🔒 잠김</span></div>
+              <div class="line2">방어력 높음 · 마법방어력 낮음 <span><b>특별 선택권</b></span></div>
+            </div>
+            <div class="go locked-btn">🔒</div>
+          </div>
+
+          <div class="mrow locked">
+            <div class="dot" style="background:#c98ce0;"></div>
+            <div class="txt">
+              <div class="line1">역병 군주 <span>🔒 잠김</span></div>
+              <div class="line2">주변 좀비 체력 회복 <span><b>희귀 선택권</b></span></div>
+            </div>
+            <div class="go locked-btn">🔒</div>
+          </div>
+
+          <div class="mrow locked">
+            <div class="dot" style="background:#f2c14e;"></div>
+            <div class="txt">
+              <div class="line1">파멸의 타이탄 <span>🔒 잠김</span></div>
+              <div class="line2">기절 면역 <span><b>전설 선택권</b></span></div>
+            </div>
+            <div class="go locked-btn">🔒</div>
+          </div>
+
+        </div>
+        <div class="mission-close">닫고 계속하기</div>
+      </div>
+
+      <!-- 특별 선택권 버튼을 눌렀을 때 펼쳐지는 작은 팝오버(참고용, 미션창과 별개 흐름) -->
+      <div class="special-pop">
+        <div class="t">🎁 특별 선택권 2장</div>
+        <div class="opt">특별 등급에서 1개 선택</div>
+        <div class="opt">지금 열기 →</div>
+      </div>
+
+    </div>
+  </div>
+  <p class="caption">
+    <b>③미션 창</b> — 상단의 작은 <b>🎖 배지 버튼</b>을 누르면 열립니다. 이름·상태를 한 줄, 조건·보상을 한 줄로만 써서 세로로 늘어지던 문제를 없앴고, 각 미션은 <b>구분선(밑줄)</b>으로만 나눠 같은 박스가 반복되지 않게 했습니다. 창이 열리면 자동 <b>일시정지</b>되고 "Ⅱ 일시정지됨" 표시가 뜹니다. 오른쪽 위의 작은 팝오버는 <b>🎁 특별 선택권 배지</b>를 눌렀을 때 나오는 모습(펼쳐진 목록 대신 필요할 때만 열림)을 같이 보여드린 참고 예시입니다.
+  </p>
+</div>
+
+</div>
+
+</body>
+</html>

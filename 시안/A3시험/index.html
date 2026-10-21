@@ -1456,7 +1456,7 @@
         <span id="craftCount" class="craftN zero">지금 가능 0</span>
         <button id="bookBtn" class="linkBtn" onclick="openBook()">조합식 보기</button>
       </div>
-      <div class="craftRule">흔함 2종 → 안흔함 · 그 위부터는 3종 → 1개</div>
+      <div class="craftRule">이병 2종 → 일병 · 그 위부터는 3종 → 1개</div>
       <div class="resRow" id="resRow">
         <div class="resHead"><span>대기소 <b id="resN">0/8</b></span><span>칸이 꽉 차면 여기로 · 싸우진 않고 조합 재료로 쓰여요</span></div>
         <div class="resCells" id="resCells"></div>
@@ -1482,7 +1482,7 @@
       <div id="prevBox">다음 웨이브 정보</div>
       <div class="tpRow">
         <span>특성포인트 <b id="tp" style="color:#d2a8ff">0</b></span>
-        <button class="btn-wisp" id="wispBtn" onclick="toggleWisp()" style="flex:1;">선택흔함 (TP 2)</button>
+        <button class="btn-wisp" id="wispBtn" onclick="toggleWisp()" style="flex:1;">선택이병 (TP 2)</button>
       </div>
       <div id="wispMenu" class="hidden" style="flex-wrap:wrap; gap:6px; margin-top:8px; display:flex;"></div>
     </div>
@@ -1567,22 +1567,22 @@ function anyRoom(){for(const c of CELLS)if(!cellTop(c))return true;return false;
 function roomFor(name){return freeFor(name).length>0;}
 function freeCells(){let n=0;for(const c of CELLS)if(!cellTop(c))n++;return n;}
 
-// 등급 (전설=뽑기 상한 / 신화·히든=조합 전용)
+// 등급 (부사관=뽑기 상한 / 장교·특명=조합 전용)
 const RARITY={
-  common:{name:'흔함',color:'#a3a89a',odds:0.55},
-  uncommon:{name:'안흔함',color:'#52d160',odds:0.27},
-  special:{name:'특별',color:'#4aaeff',odds:0.12},
-  rare:{name:'희귀',color:'#a45cff',odds:0.05},
-  legend:{name:'전설',color:'#ff8a1c',odds:0.01},
-  mythic:{name:'신화',color:'#ff3d3d',odds:0},
-  apex:{name:'초월',color:'#3ff0e6',odds:0},
-  hidden:{name:'히든',color:'#ffd23a',odds:0},
-  // S34 조합 사다리(TIER_ORDER) 밖 등급: 비밀=우라늄 연구소 비밀 도박 전용 · 폐기물=도박 실패물
-  secret:{name:'비밀',color:'#ff4fa3',odds:0},
+  common:{name:'이병',color:'#a3a89a',odds:0.55},
+  uncommon:{name:'일병',color:'#52d160',odds:0.27},
+  special:{name:'상병',color:'#4aaeff',odds:0.12},
+  rare:{name:'병장',color:'#a45cff',odds:0.05},
+  legend:{name:'부사관',color:'#ff8a1c',odds:0.01},
+  mythic:{name:'장교',color:'#ff3d3d',odds:0},
+  apex:{name:'장군',color:'#3ff0e6',odds:0},
+  hidden:{name:'특명',color:'#ffd23a',odds:0},
+  // S34 조합 사다리(TIER_ORDER) 밖 등급: 원수=우라늄 연구소 원수 도박 전용 · 폐기물=도박 실패물
+  secret:{name:'원수',color:'#ff4fa3',odds:0},
   waste:{name:'폐기물',color:'#8a8f5a',odds:0},
 };
 const TIER_ORDER=['common','uncommon','special','rare','legend','mythic','apex','hidden'];
-// S34 정렬·판매가용 등급 위치: 비밀은 전설과 신화 사이(4.5), 폐기물은 맨 아래
+// S34 정렬·판매가용 등급 위치: 원수는 부사관과 장교 사이(4.5), 폐기물은 맨 아래
 function tIdx(t){if(t==='hidden')return 5.5;if(t==='lab')return 4.5;if(t==='secret')return 7.5;const i=TIER_ORDER.indexOf(t);return i>=0?i:-1;}
 
 // 피해 종류: phys(총격대·방어력 영향) magic(포격대·맷집 영향) pierce(저격대)
@@ -1606,7 +1606,7 @@ function dmgMult(dt,e){
 
 // 유닛 도감 — dt=데미지타입
 const U={
-  // ===== 흔함 common (12) — 소환 전용 · S36: 흔함~특별은 특수능력 없음(기본 공격만) =====
+  // ===== 이병 common (12) — 소환 전용 · S36: 이병~상병은 특수능력 없음(기본 공격만) =====
   'K2소총수':{t:'common',dt:'phys',dmg:11,range:95,cd:600},
   'K3기관총사수':{t:'common',dt:'phys',dmg:7,range:88,cd:320,short:'K3기관총'},
   '판처파우스트':{t:'common',dt:'pierce',dmg:16,range:98,cd:1100,short:'판처'},
@@ -1619,7 +1619,7 @@ const U={
   '군견병':{t:'common',dt:'phys',dmg:9,range:76,cd:450},
   '경계병':{t:'common',dt:'phys',dmg:15,range:122,cd:880},
   '정비병':{t:'common',dt:'phys',dmg:11,range:82,cd:620},
-  // ===== 안흔함 uncommon (14) — 흔함 2종 =====
+  // ===== 일병 uncommon (14) — 이병 2종 =====
   '저격수':{t:'uncommon',dt:'pierce',dmg:38,range:160,cd:900},
   '지정사수':{t:'uncommon',dt:'phys',dmg:32,range:145,cd:540},
   'K3기관총반':{t:'uncommon',dt:'phys',dmg:13,range:100,cd:230,short:'K3반'},
@@ -1639,7 +1639,7 @@ const U={
   '90mm 무반동총':{t:'uncommon',dt:'pierce',dmg:60,range:130,cd:1150,short:'무반동총'},
   '전방 수색조':{t:'uncommon',dt:'phys',dmg:34,range:126,cd:420,short:'전방수색'},
   'K6 중기관총반':{t:'uncommon',dt:'phys',dmg:15,range:130,cd:210,short:'K6반'},
-  // ===== 특별 special (12) — 안흔함 3종 =====
+  // ===== 상병 special (12) — 일병 3종 =====
   'K200 APC':{t:'special',dt:'phys',dmg:56,range:120,cd:560,short:'K200'},
   'K808 백호':{t:'special',dt:'phys',dmg:68,range:128,cd:680,short:'K808'},
   'KH179 견인포':{t:'special',dt:'magic',dmg:110,range:150,cd:1100,short:'KH179'},
@@ -1658,7 +1658,7 @@ const U={
   '메티스-M 대전차':{t:'special',dt:'pierce',dmg:95,range:170,cd:1000,short:'메티스'},
   'UH-60 블랙호크':{t:'special',dt:'phys',dmg:52,range:150,cd:470,short:'UH-60'},
   'K136 구룡':{t:'special',dt:'magic',dmg:85,range:175,cd:760,short:'구룡'},
-  // ===== 희귀 rare (10) — 특별 3종 =====
+  // ===== 병장 rare (10) — 상병 3종 =====
   'K1A2 전차':{t:'rare',dt:'phys',dmg:185,range:124,cd:880,splash:30,bossBonus:1.3,armBrk:20,short:'K1A2',role:'방어력 깎기',roles:['보스']},
   'K21 보병전투차':{t:'rare',dt:'phys',dmg:78,range:122,cd:380,rampage:2,stun:250,stunP:0.1,short:'K21',role:'기절'},
   'K9 천둥':{t:'rare',dt:'magic',dmg:150,range:215,cd:1350,splash:70,short:'K9',role:'광역'},
@@ -1677,7 +1677,7 @@ const U={
   'K311A1 보급트럭':{t:'rare',dt:'phys',dmg:60,range:140,cd:500,supply:1,short:'K311',role:'경제'},
   'TICN 전술통신':{t:'rare',dt:'magic',dmg:70,range:160,cd:450,debuff:1.12,short:'TICN',role:'증폭'},
   'KTSSM':{t:'rare',dt:'magic',dmg:260,range:240,cd:1500,splash:72,dot:{dps:60,dur:2500},short:'KTSSM',role:'지속',roles:['광역']},
-  // ===== 전설 legend (10) — 희귀 3종 · 특수능력 보유 =====
+  // ===== 부사관 legend (10) — 병장 3종 · 특수능력 보유 =====
   'K2 흑표':{t:'legend',dt:'phys',dmg:420,range:132,cd:820,splash:48,bossBonus:1.3,armBrk:30,short:'K2흑표',role:'방어력 깎기',roles:['보스','광역']},
   '천무 다연장':{t:'legend',dt:'magic',dmg:230,range:232,cd:1550,splash:96,maxHpPct:0.03,mBrk:30,short:'천무',role:'광역',roles:['방어력 깎기','최대%']},
   'AH-64E 아파치':{t:'legend',dt:'magic',dmg:175,range:170,cd:480,splash:58,mBrk:35,curHpPct:0.01,short:'아파치',role:'현재%',roles:['방어력 깎기']},
@@ -1694,7 +1694,7 @@ const U={
   '대포병 탐지레이더-II':{t:'legend',dt:'phys',dmg:150,range:240,cd:400,debuff:1.2,buff:{dmg:1.1,as:1.1},short:'탐지레이더',role:'증폭',roles:['강화']},
   'KTSSM-II':{t:'legend',dt:'magic',dmg:600,range:260,cd:1800,splash:60,maxHpPct:0.035,bossBonus:1.3,short:'KTSSM2',role:'최대%'},
   'K1E1 전차':{t:'legend',dt:'pierce',dmg:380,range:230,cd:800,curHpPct:0.03,bossBonus:1.4,short:'K1E1',role:'현재%',roles:['보스']},
-  // ===== 신화 mythic (6) — 전설 3종 · 강력 특수능력 =====
+  // ===== 장교 mythic (6) — 부사관 3종 · 강력 특수능력 =====
   '현무-5':{t:'mythic',dt:'magic',dmg:2900,range:999,cd:3800,splash:140,bossBonus:1.5,maxHpPct:0.05,stun:600,short:'현무5',role:'최대%',roles:['기절','보스']},
   '천광 레이저포대':{t:'mythic',dt:'pierce',dmg:430,range:215,cd:340,splash:74,bossBonus:1.3,stun:350,dot:{dps:120,dur:2000},short:'천광',role:'지속',roles:['기절','광역']},
   '드론봇 전투단':{t:'mythic',dt:'phys',dmg:360,range:200,cd:210,splash:46,slow:0.75,stun:300,armBrk:25,short:'드론봇단',role:'감속',roles:['방어력 깎기','기절']},
@@ -1705,7 +1705,7 @@ const U={
   '아파치 공격헬기대대':{t:'mythic',dt:'pierce',dmg:700,range:260,cd:520,bossBonus:1.8,curHpPct:0.04,short:'아파치대대',role:'보스',roles:['현재%']},
   '군단 포병여단':{t:'mythic',dt:'magic',dmg:900,range:300,cd:900,splash:110,stun:450,mBrk:30,short:'포병여단',role:'광역',roles:['기절','방어력 깎기']},
   '육군 방공여단':{t:'mythic',dt:'magic',dmg:520,range:280,cd:600,curHpPct:0.05,slow:0.75,short:'방공여단',role:'현재%',roles:['감속']},
-  // ===== 최상위 조합 (4) — 신화 3종 조합의 정점 =====
+  // ===== 최상위 조합 (4) — 장교 3종 조합의 정점 =====
   '수도기계화사단':{t:'apex',dt:'phys',dmg:780,range:235,cd:560,splash:88,buff:{dmg:1.4,as:1.3},stun:400,armBrk:40,short:'수기사',role:'강화',roles:['방어력 깎기','기절']},
   '신속대응사단':{t:'apex',dt:'pierce',dmg:1800,range:150,cd:680,bossBonus:4,execute:0.15,stun:500,short:'신대사',role:'처형',roles:['보스','기절']},
   '군단 무인정찰대':{t:'apex',dt:'phys',dmg:1500,range:240,cd:170,splash:50,debuff:1.3,armBrk:45,short:'무인정찰',role:'증폭',roles:['방어력 깎기']},
@@ -1713,7 +1713,7 @@ const U={
   // ----- A3 새 유닛 (apex) -----
   '한미연합사령부':{t:'apex',dt:'phys',dmg:1300,range:250,cd:420,splash:70,buff:{dmg:1.3,as:1.25},armBrk:45,short:'연합사',role:'강화',roles:['방어력 깎기']},
   '전략사령부':{t:'apex',dt:'magic',dmg:2200,range:320,cd:1200,splash:120,maxHpPct:0.05,mBrk:45,stun:500,short:'전략사',role:'최대%',roles:['방어력 깎기','기절']},
-  // ===== 히든 hidden (3) — 비밀 조합, 첫 재료만 노출 =====
+  // ===== 특명 hidden (3) — 비밀 조합, 첫 재료만 노출 =====
   '섬광 돌격조':{t:'hidden',dt:'magic',rank:'uncommon',dmg:22,range:100,cd:800,splash:30,stun:350,short:'섬광조',role:'기절',roles:[]},
   '연막 차장반':{t:'hidden',dt:'magic',rank:'special',dmg:40,range:130,cd:700,splash:50,slow:0.7,dot:{dps:15,dur:2000},short:'연막반',role:'감속',roles:['지속']},
   '대전차 매복조':{t:'hidden',dt:'pierce',rank:'special',dmg:100,range:175,cd:1000,armBrk:20,short:'매복조',role:'방어력 깎기',roles:[]},
@@ -1723,7 +1723,7 @@ const U={
   '비밀정보부':{t:'hidden',dt:'pierce',dmg:4000,range:280,cd:700,bossBonus:5,execute:0.25,curHpPct:0.08,stun:600,short:'정보부',role:'현재%',roles:['처형','보스']},
   '현무-Ω':{t:'hidden',dt:'magic',dmg:9000,range:360,cd:1600,splash:120,bossBonus:3,maxHpPct:0.1,stun:1000,short:'현무Ω',role:'최대%',roles:['기절','보스']},
   '코드네임 유령':{t:'hidden',dt:'magic',dmg:4800,range:320,cd:1300,splash:80,mBrk:35,maxHpPct:0.05,stun:600,short:'유령',role:'방어력 깎기',roles:['최대%','광역']},
-  // ===== S34 비밀 secret (4) — 우라늄 연구소 비밀 도박에서만. 전설과 신화 사이 힘 =====
+  // ===== S34 원수 secret (4) — 우라늄 연구소 원수 도박에서만. 부사관과 장교 사이 힘 =====
   '특수정찰대':{t:'secret',dt:'phys',dmg:320,range:190,cd:360,debuff:1.2,armBrk:20,short:'특정대',role:'증폭',roles:['방어력 깎기']},
   '전자전 부대':{t:'secret',dt:'magic',dmg:380,range:200,cd:520,splash:64,slow:0.75,mBrk:30,short:'전자전',role:'방어력 깎기',roles:['감속']},
   '스텔스 저격조':{t:'secret',dt:'pierce',dmg:850,range:300,cd:1200,mode:'strong',bossBonus:2,maxHpPct:0.03,short:'스텔스',role:'최대%',roles:['보스']},
@@ -1731,7 +1731,7 @@ const U={
   // 도박 실패물: 공격 안 함 · 칸 차지 · 판매 0골드 · 보통 조합 재료 아님
   '핵폐기물':{t:'waste',dt:'pierce',dmg:0,range:0,cd:9999,junk:true,short:'폐기물'},
 };
-// ===== S31 등급 스킬: 희귀 1 · 전설 2 · 신화 3 · 초월 4 · 히든 5 =====
+// ===== S31 등급 스킬: 병장 1 · 부사관 2 · 장교 3 · 장군 4 · 특명 5 =====
 // on: 'hit'=공격할 때 p 확률 · 'count'=n번 공격마다 · 'time'=공격 중 sec초마다
 const SKILL_N={rare:1,legend:2,mythic:3,apex:4,hidden:5,secret:3};
 function SK(nm,on,v,fx,o){const s={nm,on,fx};if(on==='hit')s.p=v;else if(on==='count')s.n=v;else s.sec=v;return Object.assign(s,o||{});}
@@ -1765,7 +1765,7 @@ const SKD={
   '장갑 파쇄':['count',15,'shred',{r:70,v:30}],
   '장갑 파쇄Ⅱ':['count',12,'shred',{r:90,v:40}],
   '약점 폭로':['count',12,'shred',{r:80,v:45,m:1}],
-  // S34 방어력 깎기 스킬(m:1 = 맷집 약화) · 비밀·유령 전용
+  // S34 방어력 깎기 스킬(m:1 = 맷집 약화) · 원수·유령 전용
   '전자기 교란':['count',10,'shred',{r:90,v:40,m:1}],
   '전술핵 투하':['hit',0.10,'bomb',{r:150,k:4,nuke:1}],
   '방사능 낙진':['count',10,'poison',{r:110,k:0.18,dur:5000,n:3}], // 13차: 불 → 독구름
@@ -1842,7 +1842,7 @@ const SKD={
 };
 function SKn(nm){const d=SKD[nm];return SK(nm,d[0],d[1],d[2],d[3]);}
 const SKILLS_BY={
-  // 희귀 (1개)
+  // 병장 (1개)
   'K1A2 전차':['철갑탄 일제사격'],
   'K21 보병전투차':['하차 돌격'],
   'K9 천둥':['포병 집중사격'],
@@ -1855,7 +1855,7 @@ const SKILLS_BY={
   '비호복합':['철갑 연사'],
   '현무-2A':['관통 탄두'],
   'K30 비호Ⅱ':['철갑 연사'],
-  // 전설 (2개)
+  // 부사관 (2개)
   'K2 흑표':['전차포 일제사격','장갑 파쇄'],
   '천무 다연장':['다연장 로켓 세례','자탄 살포'],
   'AH-64E 아파치':['헬파이어 일제사격','약점 저격'],
@@ -1866,23 +1866,23 @@ const SKILLS_BY={
   '미사일여단':['미사일 일제사격','탄도탄 정밀타격'],
   'K808A 천산':['기동 돌파','천산 포격'],
   '현궁 대전차':['관통 탄두','정밀 유도 일격'],
-  // 신화 (3개)
+  // 장교 (3개)
   '현무-5':['관통 탄두Ⅱ','충격파 탄두Ⅱ','자탄 살포'],
   '천광 레이저포대':['레이저 소각','섬광 교란','레이저 섬멸망'],
   '드론봇 전투단':['자폭 드론 편대','전파 교란Ⅱ','드론 전술 연동'],
   'ATACMS':['집속탄 세례','약점 저격Ⅱ','충격파 탄두'],
   'LAH 편대':['공대지 로켓 세례','장갑 파쇄','철갑탄 일제사격'],
   '천검 무인편대':['표적 지정','편대 집중 폭격','연막 제압'],
-  // 초월 (4개)
+  // 장군 (4개)
   '수도기계화사단':['기갑 돌파','포병 일제사격','기갑 독려','장갑 파쇄Ⅱ'],
   '신속대응사단':['소탕 작전Ⅱ','저격 일격','강습 섬광탄','신속 전개'],
   '군단 무인정찰대':['표적 지정Ⅱ','정밀 폭격 유도','연막 제압','정찰 정보 공유'],
   '드론봇 군단':['전파 교란Ⅲ','자폭 드론 군집','드론 집중 폭격','드론 포위망'],
-  // 히든 (5개)
+  // 특명 (5개)
   '국군통수권':['전군 비상령','합동 화력 집중','다연장 로켓 세례','충격파 탄두Ⅲ','전군 표적 지정'],
   '비밀정보부':['암살 저격','제거 명령','섬광 교란Ⅱ','첩보 지원','표적 지정Ⅱ'],
   '코드네임 유령':['전술핵 투하','약점 폭로','그림자 저격','방사능 낙진','충격파 탄두Ⅲ'],
-  // 비밀 (3개)
+  // 원수 (3개)
   '특수정찰대':['침투 표적 지정','그림자 소탕','야간 정찰'],
   '전자전 부대':['전자기 교란','재밍 확산','통신 마비'],
   '스텔스 저격조':['은밀 저격','관통 탄두Ⅱ','탄도탄 정밀타격Ⅱ'],
@@ -1920,7 +1920,7 @@ function rpRoles(u){const s=[];if(u.stun)s.push('기절');if(u.slow)s.push('감�
     u.role=main;u.roles=[...new Set(rest.filter(x=>x!==main))].slice(0,3);}
   const ART={"섬광 돌격조":"척탄병","연막 차장반":"화생방병","대전차 매복조":"미사일반","전술 지휘소":"통신중대","81mm 박격포 소대":"박격포반"};for(const n in ART){A3_ART[n]=ART[n];A3_NEW.add(n);}
   if(miss.length&&typeof console!=='undefined')console.warn('역할안: 못 바꾼 기술',miss.join(', '));})();
-// ===== 역할안 v2 (2026-10-17) — 전설·신화·초월·히든·비밀: 지속효과 1개 + 공격 스킬 2개 =====
+// ===== 역할안 v2 (2026-10-17) — 부사관·장교·장군·특명·원수: 지속효과 1개 + 공격 스킬 2개 =====
 // 지운 효과·줄어든 스킬만큼 공격력을 올려 전체 힘은 그대로(정확한 값은 시뮬에서 다시 맞춤)
 const ROLE_PLAN_V2={"K2 흑표":{"p":"brk","v":50,"sk":["전차포 일제사격","정밀 유도 일격"]},"천무 다연장":{"p":"slow","v":{"mul":0.8,"dur":1500},"sk":["다연장 로켓 세례","관통 탄두"]},"AH-64E 아파치":{"p":"mbrk","v":65,"sk":["헬파이어 일제사격","연쇄 유도탄"]},"707특임대":{"p":"stun","v":{"every":3000,"ms":500},"sk":["저격 일격","소탕 작전"]},"현무-3":{"p":"boss","v":2,"sk":["탄도탄 정밀타격Ⅱ","포병 집중사격"]},"K10 탄약운반":{"p":"buff","v":{"dmg":1.3,"as":1.15},"sk":["전차포 일제사격","약점 저격"]},"드론봇중대":{"p":"slow","v":{"mul":0.6,"dur":1500},"sk":["자폭 드론 투하","드론 연쇄 돌입"]},"미사일여단":{"p":"maxpct","v":0.015,"sk":["미사일 일제사격","관통 탄두Ⅱ"]},"K808A 천산":{"p":"stun","v":{"every":3000,"ms":400},"sk":["천산 포격","정밀 유도 일격"]},"현궁 대전차":{"p":"brk","v":60,"sk":["약점 저격Ⅱ","파편 탄막"]},"K9A1 자주포":{"p":"mbrk","v":55,"sk":["포병 집중사격","자탄 살포"]},"120mm 자주박격포":{"p":"dot","v":{"dps":20,"dur":3500,"ps":1},"sk":["독가스 포탄","포병 일제사격"]},"대포병 탐지레이더-II":{"p":"buff","v":{"dmg":1,"as":1.3},"sk":["정밀 폭격 유도","약점 저격"]},"KTSSM-II":{"p":"dotAmp","v":0.25,"sk":["소이 로켓 세례","탄도탄 정밀타격"]},"K1E1 전차":{"p":"boss","v":1.8,"sk":["약점 저격Ⅱ","전차포 일제사격"]},"현무-5":{"p":"boss","v":2.2,"sk":["탄도탄 정밀타격Ⅱ","자탄 살포"]},"천광 레이저포대":{"p":"stun","v":{"every":3000,"ms":500},"sk":["연쇄 레이저","레이저 소각"]},"드론봇 전투단":{"p":"slow","v":{"mul":0.5,"dur":2000},"sk":["자폭 드론 편대","드론 연쇄 돌입"]},"ATACMS":{"p":"mbrk","v":70,"sk":["집속탄 세례","약점 저격Ⅱ"]},"LAH 편대":{"p":"brk","v":75,"sk":["공대지 로켓 세례","저격 일격"]},"천검 무인편대":{"p":"buff","v":{"dmg":1.1,"as":1.25},"sk":["연쇄 유도탄","편대 집중 폭격"]},"아파치 공격헬기대대":{"p":"exec","v":0.15,"sk":["암살 저격","헬파이어 일제사격"]},"군단 포병여단":{"p":"dot","v":{"dps":260,"dur":3000},"sk":["다연장 로켓 세례","포병 일제사격"]},"육군 방공여단":{"p":"amp","v":1.15,"sk":["파편 탄막","미사일 일제사격"]},"수도기계화사단":{"p":"brk","v":100,"sk":["집속탄 세례","정시 포격"]},"신속대응사단":{"p":"stun","v":{"every":2500,"ms":700},"sk":["소탕 작전Ⅱ","저격 일격"]},"군단 무인정찰대":{"p":"slow","v":{"mul":0.65,"dur":2000},"sk":["정밀 폭격 유도","드론 연쇄 돌입"]},"드론봇 군단":{"p":"mbrk","v":100,"sk":["자폭 드론 군집","드론 포위망"]},"한미연합사령부":{"p":"buff","v":{"dmg":1.45,"as":1.35},"sk":["합동 화력 집중","정시 집중타격"]},"전략사령부":{"p":"dotAmp","v":0.4,"sk":["궤도 소이탄","탄도탄 정밀타격Ⅲ"]},"국군통수권":{"p":"buff","v":{"dmg":1.25,"as":1.25},"sk":["다연장 로켓 세례","합동 화력 집중"]},"비밀정보부":{"p":"exec","v":0.2,"sk":["암살 저격","제거 명령"]},"현무-Ω":{"p":"stun","v":{"every":3000,"ms":1000},"sk":["현무 궤도 포격","탄도탄 정밀타격Ⅲ"]},"코드네임 유령":{"p":"dot","v":{"dps":240,"dur":5000,"ps":1},"sk":["전술핵 투하","방사능 낙진"]},"특수정찰대":{"p":"amp","v":1.2,"sk":["그림자 소탕","저격 일격"]},"전자전 부대":{"p":"slow","v":{"mul":0.75,"dur":1500},"sk":["전격 연쇄","전자기 펄스"]},"스텔스 저격조":{"p":"maxpct","v":0.03,"sk":["은밀 저격","관통 탄두Ⅱ"]},"자폭드론팀":{"p":"dotAmp","v":0.25,"sk":["자폭 드론 군집","열압력 폭격"]},"섬광 돌격조":{"p":"stun","keep":1},"연막 차장반":{"p":"slow","keep":1,"drop":["dot"]},"대전차 매복조":{"p":"brk","keep":1},"전술 지휘소":{"p":"buff","keep":1},"81mm 박격포 소대":{"p":"mbrk","keep":1}};
 const RP2_COMP={"w":{"stun":0.08,"slow":0.05,"armBrk":0.05,"mBrk":0.05,"buff":0.08,"debuff":0.06,"dot":0.05,"execute":0.05,"bossBonus":0.04,"maxHpPct":0.06,"curHpPct":0.05},"stunEvery":0.04,"perSkill":0.04,"cap":0.35};
@@ -1977,10 +1977,10 @@ function rpChain(t,u,s,target,dmg,transport,st){const hit=new Set();let cur=targ
   for(const k in SKD){const s=SKD[k];if(s&&s[2]==='shred'&&s[3]&&s[3].m){delete s[3].m;s[3].mWas=1;}}})();
 
 // ===== ROLE_PLAN_V3_CB (14차 전투·스킬) =====
-// 16차 등급별 스킬 수: 희귀 1 · 전설 2 · 특수 2(연구소) · 신화 2 · 히든 2(특수한 경우에 얻는 신화급) · 초월 3 · 비밀 4(최상위, 특성 1 + 스킬 4) (가성비 히든 5종은 스킬 없음 그대로)
+// 16차 등급별 스킬 수: 병장 1 · 부사관 2 · 특임 2(연구소) · 장교 2 · 특명 2(특수한 경우에 얻는 장교급) · 장군 3 · 원수 4(최상위, 특성 1 + 스킬 4) (가성비 특명 5종은 스킬 없음 그대로)
 Object.assign(SKILL_N,{rare:1,legend:2,lab:2,mythic:2,apex:3,hidden:2,secret:4});
-// 16차 새 등급 '특수'(lab) = 우라늄 연구소 특수 도박 전용 · 힘은 전설과 신화 사이 · 스킬 2 (비밀 분홍과 다른 우라늄 연두색)
-RARITY.lab={name:'특수',color:'#b8e62e',odds:0};
+// 16차 새 등급 '특임'(lab) = 우라늄 연구소 특임 도박 전용 · 힘은 부사관과 장교 사이 · 스킬 2 (원수 분홍과 다른 우라늄 연두색)
+RARITY.lab={name:'특임',color:'#b8e62e',odds:0};
 const CB_SPAWN=380; // 좀비 나오는 간격(0.38초, 13차 0.48초)
 const CB_EVO={max:5,hp:0.10,spd:0.04,arm:0.06}; // 한 바퀴마다 진화: 최대체력 +10% · 속도 +4% · 방어력 +6%(+1) · 보스는 절반 · 최대 5단계
 const CB_MINE_MAX=40,CB_ZONE_MAX=24;
@@ -1988,7 +1988,7 @@ const CB_MINE_MAX=40,CB_ZONE_MAX=24;
 const CB_PS={stack:0.1,boss:1.5},CB_FIRE={boss:0.7,spread:0.6,r:42,gen:2,per:2};
 const CB_DIFF_HP={'보통':3.0,'어려움':2.35,'지옥':2.3,'신':3.3}; // 16차 난이도별 좀비 체력 배수(15차 3.0/2.9/3.2/5.6, 가상 플레이 8판씩으로 정함)
 const CB_HELL={cnt:0.9,spd:0.9,cap:23}; // 16차: 지옥만 좀비 수 −10% · 이동 속도 −10%
-// 16차: 희귀 약화 — 스킬 배율 절반 · 발동 빈도 절반 · 효과(기절·감속·깎기·표식·처형선) 절반 · 기본 공격력 −10% → 전설보다 확실히 약하게
+// 16차: 병장 약화 — 스킬 배율 절반 · 발동 빈도 절반 · 효과(기절·감속·깎기·표식·처형선) 절반 · 기본 공격력 −10% → 부사관보다 확실히 약하게
 const CB_RARE={k:0.5,freq:0.5,eff:0.5,dmg:0.9};
 function cbRareNerf(){for(const n in U){const u=U[n];if(u.t!=='rare'||u.cbNerf)continue;u.cbNerf=1;u.dmg=Math.round(u.dmg*CB_RARE.dmg);
   for(const s of (SKILLS[n]||[])){const f=CB_RARE.freq,e=CB_RARE.eff;
@@ -2000,19 +2000,19 @@ function cbRareNerf(){for(const n in U){const u=U[n];if(u.t!=='rare'||u.cbNerf)c
     if(s.th)s.th=+(s.th*e).toFixed(3);
     if(s.mul)s.mul=+(1-(1-s.mul)*e).toFixed(2);
     if(s.dm)s.dm=+(1+(s.dm-1)*e).toFixed(2);}}}
-// 15차: 육군참모총장 초월로 올림 (버프형 · 고유 특성 = 사거리 안 아군 공격력 +40% · 공격속도 +35%, 초월 중 가장 넓은 사거리)
+// 15차: 육군참모총장 장군으로 올림 (버프형 · 고유 특성 = 사거리 안 아군 공격력 +40% · 공격속도 +35%, 장군 중 가장 넓은 사거리)
 U['육군참모총장']={t:'apex',dt:'magic',dmg:1700,range:270,cd:900,splash:100,buff:{dmg:1.4,as:1.35},rpKind:'buff',short:'참모총장',role:'강화',roles:['광역','기절']};
-// 15차: 히든(큰 4종) = 특수한 경우에 얻는 신화급 → 공격력·특성을 신화 수준으로 (초당 피해 약 1400~1500)
+// 15차: 특명(큰 4종) = 특수한 경우에 얻는 장교급 → 공격력·특성을 장교 수준으로 (초당 피해 약 1400~1500)
 Object.assign(U['국군통수권'],{dmg:2100,range:300,buff:{dmg:1.15,as:1.2}});
 Object.assign(U['비밀정보부'],{dmg:1050,range:260,execute:0.15});
 Object.assign(U['현무-Ω'],{dmg:2400,range:320,stun:600,stunEvery:3000});
 Object.assign(U['코드네임 유령'],{dmg:1900,dot:{dps:200,dur:5000,ps:1}});
-// 16차: 연구소 4종 = 새 등급 '특수'(lab) → 전설과 신화 사이 (초당 피해 약 700~1000) · 스킬 2
+// 16차: 연구소 4종 = 새 등급 '특임'(lab) → 부사관과 장교 사이 (초당 피해 약 700~1000) · 스킬 2
 Object.assign(U['특수정찰대'],{t:'lab',dmg:360,range:200,splash:0,debuff:1.2});
 Object.assign(U['전자전 부대'],{t:'lab',dmg:420,range:210,splash:64,slow:0.7,slowDur:1500});
 Object.assign(U['스텔스 저격조'],{t:'lab',dmg:900,range:300,maxHpPct:0.03});
 Object.assign(U['자폭드론팀'],{t:'lab',dmg:620,range:220,splash:90,dotAmp:0.25});
-// 16차: 새 비밀(최상위) 3종 — 초월 2기(또는 초월 + 큰 히든)를 합쳐서 · 특성 1 + 스킬 4 · 초당 피해 약 4700~6000 (초월보다 위) · 육군만
+// 16차: 새 원수(최상위) 3종 — 장군 2기(또는 장군 + 큰 특명)를 합쳐서 · 특성 1 + 스킬 4 · 초당 피해 약 4700~6000 (장군보다 위) · 육군만
 U['지상작전사령부']={t:'secret',dt:'phys',dmg:2400,range:280,cd:480,splash:90,buff:{dmg:1.5,as:1.4},rpKind:'buff',short:'지작사',role:'강화',roles:['광역','기절']};
 U['특수전사령부']={t:'secret',dt:'pierce',dmg:3600,range:200,cd:600,execute:0.22,rpKind:'exec',short:'특전사',role:'처형',roles:['보스','기절']};
 U['육군미사일전략사령부']={t:'secret',dt:'magic',dmg:4200,range:340,cd:900,splash:130,maxHpPct:0.08,rpKind:'maxpct',short:'미사일사',role:'최대%',roles:['광역','기절']};
@@ -2034,7 +2034,7 @@ Object.assign(SKD,{
   '정시 집중타격':['time',6,'snipe',{k:12,bp:true}],
   // 범위 폭발
   '전술핵 투하':['hit',0.08,'bomb',{r:150,k:3,nuke:1}],
-  // 17차: 코드네임 유령 전용 특별 스킬 — 50번 공격마다 큰 범위 핵투하 · 한 방 피해 게임 최상위(공격력 1900 × 32 = 60800, 비밀 부대 최강 한 방 54600보다 위)
+  // 17차: 코드네임 유령 전용 특별 스킬 — 50번 공격마다 큰 범위 핵투하 · 한 방 피해 게임 최상위(공격력 1900 × 32 = 60800, 원수 부대 최강 한 방 54600보다 위)
   '유령 핵투하':['count',50,'bomb',{r:200,k:32,nuke:1}],
   '전차포 일제사격':['count',10,'bomb',{r:55,k:1.6}],
   '포병 집중사격':['hit',0.1,'bomb',{r:80,k:1.8}],
@@ -2101,7 +2101,7 @@ Object.assign(SKD,{
   '광역 포탄 투하':['count',8,'bomb',{r:140,k:2.5,ms:1200}],
   '사기진작':['time',10,'rally',{r:200,mul:1.3,dm:1.25,dur:5000}],
   '총공격 명령':['time',20,'rally',{r:320,mul:1.4,dm:1.4,dur:6000}],
-  // 16차 비밀 3종 새 스킬 — 단일은 높게(10~14배) · 범위는 낮게(2~3배)
+  // 16차 원수 3종 새 스킬 — 단일은 높게(10~14배) · 범위는 낮게(2~3배)
   '기갑 돌파 사격':['count',8,'snipe',{k:10,bp:true}],
   '군단 포병 화망':['count',8,'bomb',{r:120,k:2,ms:600}],
   '기동 지뢰 살포':['count',8,'mine',{r:80,k:3,ms:1200,max:6,per:2,life:25000}],
@@ -2122,24 +2122,24 @@ Object.assign(SKILLS_BY,{
   '120mm 자주박격포':['독가스 살포','독가스 포탄'],
   '군단 포병여단':['백린탄','다연장 로켓 세례'],
   '육군참모총장':['광역 포탄 투하','사기진작','총공격 명령'],
-  // 초월 — 스킬 3개
+  // 장군 — 스킬 3개
   '수도기계화사단':['집속탄 세례','정시 포격','대전차 지뢰 지대'],
   '신속대응사단':['소탕 작전Ⅱ','저격 일격','섬광 충격탄'],
   '군단 무인정찰대':['정밀 폭격 유도','드론 연쇄 돌입','정찰 표적 지정'],
   '드론봇 군단':['자폭 드론 군집','드론 포위망','전자 교란'],
   '한미연합사령부':['합동 화력 집중','정시 집중타격','전군 비상령'],
   '전략사령부':['궤도 소이탄','탄도탄 정밀타격Ⅲ','백린탄 탄두'],
-  // 히든(신화급) — 스킬 2개
+  // 특명(장교급) — 스킬 2개
   '국군통수권':['합동 화력 집중','전군 비상령'],
   '비밀정보부':['암살 저격','교란 공작'],
-  '코드네임 유령':['방사능 낙진','독가스 살포Ⅱ','유령 핵투하'], // 17차: 특별 스킬 1개 추가(히든 중 유일하게 3개)
+  '코드네임 유령':['방사능 낙진','독가스 살포Ⅱ','유령 핵투하'], // 17차: 특별 스킬 1개 추가(특명 중 유일하게 3개)
   '현무-Ω':['현무 궤도 포격','충격파 탄두Ω'],
-  // 특수(우라늄 연구소) — 스킬 2개 (16차 4 → 2)
+  // 특임(우라늄 연구소) — 스킬 2개 (16차 4 → 2)
   '특수정찰대':['그림자 소탕','정찰 표적 지정'],
   '전자전 부대':['전격 연쇄','전자기 펄스'],
   '스텔스 저격조':['은밀 저격','관통 탄두Ⅱ'],
   '자폭드론팀':['자폭 드론 군집','열압력 폭격'],
-  // 비밀(최상위) — 특성 1 + 스킬 4개 (16차 새 3종)
+  // 원수(최상위) — 특성 1 + 스킬 4개 (16차 새 3종)
   '지상작전사령부':['기갑 돌파 사격','군단 포병 화망','기동 지뢰 살포','작전 지휘'],
   '특수전사령부':['참수 작전','특임 저격','야간 침투 소탕','섬광 강습'],
   '육군미사일전략사령부':['현무 정밀 타격','탄도탄 일제사격','고폭 관통 탄두','집속 자탄 비']
@@ -2147,7 +2147,7 @@ Object.assign(SKILLS_BY,{
 
 const SKILLS={};for(const n in SKILLS_BY)SKILLS[n]=SKILLS_BY[n].map(SKn);cbRareNerf(); // ROLE_PLAN_V3_CB 16차
 const RECIPE={
-  // 흔함 2 → 안흔함 (각 흔함 2~3회 고르게)
+  // 이병 2 → 일병 (각 이병 2~3회 고르게)
   '저격수':['경계병','K2소총수'],'지정사수':['경계병','K3기관총사수'],'K3기관총반':['K3기관총사수','K2소총수'],
   '박격포반':['척탄병','판처파우스트'],'발칸포반':['신궁사수','K3기관총사수'],'정찰드론':['신궁사수','통신병'],
   '화염방사병':['공병','척탄병'],'미사일반':['판처파우스트','신궁사수'],'정찰병':['군견병','경계병'],
@@ -2155,7 +2155,7 @@ const RECIPE={
   '통신중대':['통신병','수송병'],'수색대':['수송병','정비병'],
   // A3 새 조합식
   'K4 고속유탄기관총':['척탄병','K3기관총사수','수송병'],'90mm 무반동총':['판처파우스트','공병','경계병'],'전방 수색조':['군견병','신궁사수','통신병'],'K6 중기관총반':['K3기관총사수','정비병','의무병'],
-  // 안흔함 3 → 특별
+  // 일병 3 → 상병
   'K200 APC':['K3기관총반','정찰병','공병중대'],'K808 백호':['수색대','지정사수','K3기관총반'],
   'KH179 견인포':['박격포반','미사일반','통신중대'],'K105A1 자주포':['박격포반','정찰병','통신중대'],
   '비호':['발칸포반','정찰드론','저격수'],'천마':['미사일반','발칸포반','화생방병'],
@@ -2164,7 +2164,7 @@ const RECIPE={
   '특공대':['저격수','지정사수','수색대'],'수리온':['의무지원반','발칸포반','통신중대'],
   // A3 새 조합식
   'K242 박격포차':['박격포반','K4 고속유탄기관총','수색대'],'K263 자주발칸':['발칸포반','K6 중기관총반','정찰드론'],'메티스-M 대전차':['미사일반','90mm 무반동총','저격수'],'UH-60 블랙호크':['전방 수색조','의무지원반','통신중대'],'K136 구룡':['박격포반','화생방병','K4 고속유탄기관총'],
-  // 특별 3 → 희귀
+  // 상병 3 → 병장
   'K1A2 전차':['K200 APC','K808 백호','특공대'],'K21 보병전투차':['K200 APC','화룡 화염장갑차','K808 백호'],
   'K9 천둥':['KH179 견인포','K105A1 자주포','제독차'],'천호 방공복합':['비호','송골매','수리온'],
   'LAMD 요격체계':['천마','KH179 견인포','비호'],'AH-1S 코브라':['송골매','500MD','특공대'],
@@ -2173,7 +2173,7 @@ const RECIPE={
   '현무-2A':['K105A1 자주포','제독차','천마'],'K30 비호Ⅱ':['비호','수리온','500MD'],
   // A3 새 조합식
   'KM9ACE 전투공병차':['K200 APC','제독차','K263 자주발칸'],'스파이크 NLOS':['메티스-M 대전차','천마','송골매'],'K311A1 보급트럭':['UH-60 블랙호크','K200 APC','K808 백호'],'TICN 전술통신':['UH-60 블랙호크','송골매','수리온'],'KTSSM':['K242 박격포차','K136 구룡','K105A1 자주포'],
-  // 희귀 3 → 전설
+  // 병장 3 → 부사관
   'K2 흑표':['K1A2 전차','K21 보병전투차','K9 천둥'],'천무 다연장':['K9 천둥','현무-2','K21 보병전투차'],
   'AH-64E 아파치':['AH-1S 코브라','천호 방공복합','비호복합'],'707특임대':['특전여단','AH-1S 코브라','무인수색차'],
   '현무-3':['현무-2','LAMD 요격체계','천호 방공복합'],'K10 탄약운반':['K1A2 전차','무인수색차','LAMD 요격체계'],
@@ -2181,25 +2181,25 @@ const RECIPE={
   'K808A 천산':['K30 비호Ⅱ','무인수색차','비호복합'],'현궁 대전차':['특전여단','현무-2A','K1A2 전차'],
   // A3 새 조합식
   'K9A1 자주포':['LAMD 요격체계','TICN 전술통신','AH-1S 코브라'],'120mm 자주박격포':['KTSSM','AH-1S 코브라','KM9ACE 전투공병차'],'대포병 탐지레이더-II':['TICN 전술통신','K311A1 보급트럭','무인수색차'],'KTSSM-II':['현무-2A','KTSSM','현무-2'],'K1E1 전차':['스파이크 NLOS','LAMD 요격체계','천호 방공복합'],
-  // 전설 3 → 신화
+  // 부사관 3 → 장교
   '현무-5':['현무-3','천무 다연장','미사일여단'],'천광 레이저포대':['미사일여단','드론봇중대','AH-64E 아파치'],
   '드론봇 전투단':['드론봇중대','AH-64E 아파치','K10 탄약운반'],'ATACMS':['현무-3','천무 다연장','K2 흑표'],
   'LAH 편대':['AH-64E 아파치','드론봇중대','707특임대'],'천검 무인편대':['K808A 천산','현궁 대전차','드론봇중대'],
   // A3 새 조합식
   '아파치 공격헬기대대':['현궁 대전차','707특임대','TICN 전술통신'],'군단 포병여단':['천무 다연장','K10 탄약운반','K9 천둥'],'육군 방공여단':['대포병 탐지레이더-II','K2 흑표','천호 방공복합'],
-  // 신화 3 → 초월(apex)
+  // 장교 3 → 장군(apex)
   '수도기계화사단':['ATACMS','K2 흑표','K808A 천산'],'신속대응사단':['아파치 공격헬기대대','707특임대','드론봇중대'],
   '군단 무인정찰대':['천검 무인편대','드론봇중대','현궁 대전차'],'드론봇 군단':['드론봇 전투단','드론봇중대','K10 탄약운반'],
   // A3 새 조합식
   '한미연합사령부':['아파치 공격헬기대대','K2 흑표','707특임대'],'전략사령부':['군단 포병여단','현무-3','미사일여단'],
-  // 초월 3 → 히든 (비밀 조합)
+  // 장군 3 → 특명 (비밀 조합)
   '국군통수권':['수도기계화사단','신속대응사단','군단 무인정찰대'],
   '비밀정보부':['군단 무인정찰대','드론봇 군단','수도기계화사단'],
   '현무-Ω':['신속대응사단','드론봇 군단','군단 무인정찰대'],
-  // S34 숨은 비밀 조합: 전설 1 + 우라늄 도박 실패물 2
+  // S34 숨은 비밀 조합: 부사관 1 + 우라늄 도박 실패물 2
   '코드네임 유령':['미사일여단','핵폐기물','핵폐기물'],
 };
-// ===== 역할안 R1 — 가성비 히든 조합식 · 두 번째 길(RECIPE2) =====
+// ===== 역할안 R1 — 가성비 특명 조합식 · 두 번째 길(RECIPE2) =====
 Object.assign(RECIPE,{"섬광 돌격조":["척탄병","척탄병","척탄병"],"연막 차장반":["화생방병","화생방병","화염방사병"],"대전차 매복조":["미사일반","미사일반","90mm 무반동총"],"전술 지휘소":["통신중대","통신중대","통신중대"],"81mm 박격포 소대":["박격포반","박격포반","박격포반"]});
 RECIPE['육군참모총장']=['군단 포병여단','대포병 탐지레이더-II','K1E1 전차']; // ROLE_PLAN_V3_CB
 RECIPE['국군통수권']=['천검 무인편대','K10 탄약운반','K10 탄약운반'];RECIPE['비밀정보부']=['아파치 공격헬기대대','707특임대','707특임대'];RECIPE['현무-Ω']=['현무-5','현무-3','현무-3'];
@@ -2208,8 +2208,8 @@ const RECIPE2={"드론봇중대":["TICN 전술통신","KM9ACE 전투공병차","
 (function(){const T=TIER_ORDER,ti=n=>T.indexOf((U[n]&&(U[n].rank||U[n].t))||'');
   const ok=(r,m)=>U[r]&&m.length===3&&m.every(x=>U[x]&&ti(x)===ti(r)-1);
   for(const r in RECIPE2)if(!RECIPE[r]||!ok(r,RECIPE2[r])){if(typeof console!=='undefined')console.warn('두 번째 길 뺌',r);delete RECIPE2[r];}
-  for(const r of ["섬광 돌격조","연막 차장반","대전차 매복조","전술 지휘소","81mm 박격포 소대"])if(!ok(r,RECIPE[r])){if(typeof console!=='undefined')console.warn('가성비 히든 뺌',r);delete RECIPE[r];}})();
-function rankOf(n){const u=U[n];return u?(u.rank||u.t):'';}           // 가성비 히든은 겉은 히든, 힘·값은 rank 등급
+  for(const r of ["섬광 돌격조","연막 차장반","대전차 매복조","전술 지휘소","81mm 박격포 소대"])if(!ok(r,RECIPE[r])){if(typeof console!=='undefined')console.warn('가성비 특명 뺌',r);delete RECIPE[r];}})();
+function rankOf(n){const u=U[n];return u?(u.rank||u.t):'';}           // 가성비 특명은 겉은 특명, 힘·값은 rank 등급
 function haveRec(rc,inv){if(!rc)return false;inv=inv||inventory();return Object.entries(needCount(rc)).every(([n,c])=>(inv[n]||0)>=c);}
 function recipeFor(r,inv){const a=RECIPE[r],b=RECIPE2[r];if(b&&!haveRec(a,inv)&&haveRec(b,inv))return b;return a;} // 지금 만들 수 있는 길(기존 길 먼저)
 function recHas(r,n){return RECIPE[r].includes(n)||!!(RECIPE2[r]&&RECIPE2[r].includes(n));}
@@ -2284,13 +2284,13 @@ const DIFF={
   '신':{hp:10.8,late:0.9,reward:0.8,cap:18,arm:203,spd:1.2,spdW:0.022,lap:0.12,need:1.0}, // S32: 역할·시너지로 강해진 만큼 좀비 체력 보정(보통×1.2·어려움×1.35·지옥×1.7·신×1.25)
 };
 // S35 체력 재조정(방어력·속도·회복이 붙은 만큼): 보통 그대로 · 어려움 8.37→9 · 지옥 12.92→8.5 · 신 10.75→9.7 (모의 대전 기준)
-// S36 체력 재조정(흔함~특별 능력 제거 · 방어력 오름 늦춤): 보통 3.12→1.8 · 어려움 9→4.1(후반 2.2→1.5) · 지옥 8.5→4 · 신 9.7→5.85 (모의 대전 기준)
+// S36 체력 재조정(이병~상병 능력 제거 · 방어력 오름 늦춤): 보통 3.12→1.8 · 어려움 9→4.1(후반 2.2→1.5) · 지옥 8.5→4 · 신 9.7→5.85 (모의 대전 기준)
 // S35: arm = 그 난이도 30웨이브 "가장 단단한 종류"의 방어력(보스는 ×1.1 → 신 막판 보스 ≈ 223 = 풀깎)
 // 웨이브가 오를수록 방어력이 커짐(1웨이브는 거의 0 → 30웨이브 최고치). spd·spdW = 이동속도 배율·웨이브당 증가
 // lap = 좀비가 트랙 한 바퀴를 돌 때마다 최대체력의 몇 %를 회복하는지(빠를수록 자주 회복 → 감속·기절이 중요)
 // need = 이 난이도에서 필요한 깎기·CC 비율(풀깎 223 대비) — 화면 깎기 게이지의 "필요" 표시
 function zArmor(type,w,kind){const z=ZTYPE[type]||{},T=(G&&G.dcfg&&G.dcfg.arm)||0,p=kind==='m'?(z.mresP||0):(z.armP||0);
-  if(!(w>10))return 0; // S36: 1~10웨이브는 방어력·맷집 0 (능력 있는 희귀 유닛이 나오기 전)
+  if(!(w>10))return 0; // S36: 1~10웨이브는 방어력·맷집 0 (능력 있는 병장 유닛이 나오기 전)
   const k=Math.pow(Math.min(1,(w-10)/20),2.2); // 11웨이브부터 천천히 올라(20웨이브 약 22%) 30웨이브에 최대 — 막판 필요 방어력 깎기는 S35 그대로
   const f=z.boss?0.1+1.0*k:0.05+0.95*k; // 보스: 30웨이브에 ×1.1
   return Math.round(T*p*f);}
@@ -2319,7 +2319,7 @@ const DOCTRINE={
     m:{dmg:1.18,startGold:-10,waveReward:0.9}},
   '경제특화':{icon:'',color:'#f2cc60',good:'웨이브 보상 +35% · 처치 골드 +15%',bad:'전 유닛 공격력 −8%',
     m:{waveReward:1.35,killGold:1.15,dmg:0.92}},
-  '정예소수':{icon:'',color:'#bc8cff',good:'시작 지원이 <b>희귀</b> 1기 · 강화 비용 −25% (공격력 강화 버튼)',bad:'소환 15G',
+  '정예소수':{icon:'',color:'#bc8cff',good:'시작 지원이 <b>병장</b> 1기 · 강화 비용 −25% (공격력 강화 버튼)',bad:'소환 15G',
     m:{startTier:'rare',upgCost:0.75,summonCost:1.5}},
   '물량전':{icon:'',color:'#7ee787',good:'소환 6G · 시작 골드 +20 · 수용한계 +3',bad:'전 유닛 공격력 −12%',
     m:{summonCost:0.6,startGold:20,capAdd:3,dmg:0.88}},
@@ -2337,7 +2337,7 @@ const NAVCARDS=[
   {id:'trench',icon:'',name:'참호 구축', good:'수용 한계 +4',          bad:'웨이브 보상 −15%',    m:{capAdd:4,waveReward:0.85}},
   {id:'focus', icon:'',name:'화력 집중', good:'전 유닛 공격력 +10%',    bad:'소환 비용 +30%',      m:{dmg:1.1,summonCost:1.3}},
   {id:'fund',  icon:'',name:'군수 지원', good:'즉시 골드 +120',        bad:'이후 처치 골드 −10%', m:{killGold:0.9},now:'gold120'},
-  {id:'gift',  icon:'',name:'특별 보급', good:'즉시 <b>특별</b> 선택권 1장',bad:'이후 적 체력 +8%',   m:{enemyHp:1.08},now:'pickSpecial'},
+  {id:'gift',  icon:'',name:'특별 보급', good:'즉시 <b>상병</b> 선택권 1장',bad:'이후 적 체력 +8%',   m:{enemyHp:1.08},now:'pickSpecial'},
 ];
 
 function recalcMods(){
@@ -2554,7 +2554,7 @@ function strikeCdNow(){return STRIKE_CD*Math.max(0.5,1+metaVal('strikeCd'));}
 function deckDtOf(name){const d=(typeof DECKS!=='undefined')&&DECKS.find(x=>x.name===name);if(!d)return '';const c={};
   for(const n of d.core){const u=U[n];if(u)c[u.dt]=(c[u.dt]||0)+1;}
   let b='',bv=0;for(const k of ['phys','magic','pierce'])if((c[k]||0)>bv){bv=c[k];b=k;}return b;}
-// 주력 갈래: 필드에 놓인 부대의 흔함 환산 가치(cval)를 갈래별로 더해 가장 큰 쪽 (화면에는 표시 안 함)
+// 주력 갈래: 필드에 놓인 부대의 이병 환산 가치(cval)를 갈래별로 더해 가장 큰 쪽 (화면에는 표시 안 함)
 function mainDeckType(){const s={phys:0,magic:0,pierce:0},K=['phys','magic','pierce'];
   for(const sl of SLOTS){const t=sl.tower;if(!t||!U[t.name])continue;s[U[t.name].dt]=(s[U[t.name].dt]||0)+cval(t.name);}
   const mx=Math.max(s.phys,s.magic,s.pierce),dd=deckDtOf(G&&G.deck);
@@ -2760,7 +2760,7 @@ function newGame(diff){const d=DIFF[diff];return{diff,dcfg:d,gold:START_GOLD,wav
   t0:Date.now(),recId:null,seen:{},strikeGold:0,missionTries:0,autoClaimed:0,deck:'',lostBy:'',
   reserve:[],resSel:null,resTip:0,sellAsk:null};} // S30 대기소·안 쓰는 유닛 팔기 (저장 안 함) // S28 내 기록용 집계
 
-// 흔함 환산 가치
+// 이병 환산 가치
 function cval(n){if(!RECIPE[n])return 1;return RECIPE[n].reduce((a,x)=>a+cval(x),0);}
 
 function shortName(n){return U[n].short||n;}
@@ -2916,7 +2916,7 @@ function showOps(){
   const dc=DOCTRINE[chosenDoctrine];
   const rows=Object.keys(DOCTRINE).map((k,i)=>{const o=DOCTRINE[k];
     return `<button class="opRow${k===chosenDoctrine?' on':''}" style="--dc:${o.color}" onclick="pickDoctrine('${k}')"><span class="opIcon">${String(i+1).padStart(2,'0')}</span><span class="opName">${o.icon} ${k}</span><span class="opRadio"></span></button>`;}).join('');
-  const first=recCount()?'':`<div class="firstTip"><b>처음이라면</b>① 소환으로 흔함 병사를 뽑고 ② 같은 병사끼리 조합해 더 센 부대로 ③ 총격대·포격대·저격대를 섞어 쓰세요. 트랙이 꽉 차면 져요.</div>`;
+  const first=recCount()?'':`<div class="firstTip"><b>처음이라면</b>① 소환으로 이병 병사를 뽑고 ② 같은 병사끼리 조합해 더 센 부대로 ③ 총격대·포격대·저격대를 섞어 쓰세요. 트랙이 꽉 차면 져요.</div>`;
   ov.innerHTML=`<div class="lobby">
     <div id="head2"><div class="stencil">작전 · ${chosenDiff}</div><h1>작전 선택</h1><div class="sub2">매판 다른 전략 — 장점과 단점이 함께 붙어요</div></div>
     <div class="lobbyBody">
@@ -2941,7 +2941,7 @@ function startGame(){if(G&&G.started&&!G.over&&G.wave>=1)recSave('quit'); // S28
   document.getElementById('nav').classList.add('hidden');
   {const mt=document.getElementById('meta');if(mt)mt.classList.add('hidden');}
   document.getElementById('rewardPop').classList.add('hidden');
-  // 시작 보너스: 작전이 정한 등급 유닛 1개 지급 (기본 특별 / 정예소수는 희귀)
+  // 시작 보너스: 작전이 정한 등급 유닛 1개 지급 (기본 상병 / 정예소수는 병장)
   const gt=G.mod.startTier,sp=Object.keys(U).filter(n=>U[n].t===gt);
   const gift=sp[Math.floor(rnd()*sp.length)],gs=freeFor(gift)[0];
   gs.tower=mkTower(gift,gs);G.selected=gs;
@@ -2951,7 +2951,7 @@ function startGame(){if(G&&G.started&&!G.over&&G.wave>=1)recSave('quit'); // S28
   log(`게임 시작! [난이도: ${chosenDiff}] · 작전 <b style="color:${doc.color}">${doc.icon} ${G.doctrine}</b> · 판 #${G.seed}`,'#79c0ff');
   log(`시작 지원: <b style="color:${RARITY[gt].color}">[${RARITY[gt].name}] ${gift}</b>`,RARITY[gt].color);}
 
-// 셔플백: 흔함 12종을 가방에 넣고 섞어 뽑음 → 한 바퀴(12회)마다 모든 종류 정확히 1번씩 등장(가뭄 제거)
+// 셔플백: 이병 12종을 가방에 넣고 섞어 뽑음 → 한 바퀴(12회)마다 모든 종류 정확히 1번씩 등장(가뭄 제거)
 function drawCommon(){
   if(!G.bag||G.bag.length===0){
     G.bag=Object.keys(U).filter(n=>U[n].t==='common');
@@ -2995,7 +2995,7 @@ function toggleLock(){if(!G||!G.selected||!G.selected.tower)return;const t=G.sel
   log(t.locked?`<b>${t.name}</b> 잠금 — 조합 재료·판매에서 제외`:`<b>${t.name}</b> 잠금 해제`,'#79c0ff');
   G.invSig='';G._selSig='';updateUI();}
 
-// 선택흔함 (특성포인트로 원하는 흔함 확정 소환)
+// 선택이병 (특성포인트로 원하는 이병 확정 소환)
 function toggleWisp(){const m=document.getElementById('wispMenu');
   if(G&&G.tp<WISP_TP&&m&&m.classList.contains('hidden')){nope('wispBtn');return;}
   if(m.classList.contains('hidden'))renderWispMenu();m.classList.toggle('hidden');}
@@ -3010,7 +3010,7 @@ function chooseWisp(name){
   G.tp-=WISP_TP;
   if(!spots.length)resAdd(name); // S30: 칸이 꽉 차면 대기소로
   else{const slot=spots[0];slot.tower=mkTower(name,slot);}
-  log(`선택흔함: <b style="color:${RARITY.common.color}">${name}</b> (TP -${WISP_TP})`,'#d2a8ff');
+  log(`선택이병: <b style="color:${RARITY.common.color}">${name}</b> (TP -${WISP_TP})`,'#d2a8ff');
   document.getElementById('wispMenu').classList.add('hidden');G.invSig='';updateUI();}
 
 // ===== 공격타입 강화 =====
@@ -3116,16 +3116,16 @@ function updateS27Btns(){const rb=document.getElementById('rewardBtn'),kb=docume
     kb.disabled=!G.aiming&&(cd>0||!G.started);kb.classList.toggle('dim',!G.aiming&&cd<=0&&G.gold<strikeCost());}}
 
 // ===== 미션 (특수 보스 도전) =====
-// limit: 제한 웨이브 수 — 그 안에 못 잡으면 모든 난이도에서 패배(S36). 보상은 전설 선택권까지(신화·초월 없음)
+// limit: 제한 웨이브 수 — 그 안에 못 잡으면 모든 난이도에서 패배(S36). 보상은 부사관 선택권까지(장교·장군 없음)
 // trait: 보스마다 특성 1개 — 총격대+방어력 깎기 / 포격대+방어력 깎기 / 저격대+강화 덱 모두 잡을 수 있게 설계
 const MISSIONS=[
-  {name:'거대 골렘 좀비',color:RARITY.common.color,hpMul:7,  limit:3,reward:{type:'summon',n:3}, rw:'흔함 뽑기권 ×3',trait:'특성 없음 — 연습 상대'},
-  {name:'부패 거인',     color:RARITY.uncommon.color,hpMul:12, limit:3,reward:{type:'pick',tier:'uncommon'}, rw:'안흔함 선택권',trait:'감속이 절반만 먹힘',slowRes:0.5},
-  {name:'강철 골렘',     color:RARITY.special.color,hpMul:20, limit:3,reward:{type:'pick',tier:'special'},  rw:'특별 선택권',trait:'단단한 좀비 — 포격대·저격대가 유리',armX:1.2,mresX:0.4},
-  {name:'역병 군주',     color:RARITY.rare.color,hpMul:32, limit:4,reward:{type:'pick',tier:'rare'},     rw:'희귀 선택권',trait:'주변 좀비 체력 회복 → 주변 잡몹부터 정리',healAura:0.03},
-  {name:'파멸의 타이탄', color:RARITY.legend.color,hpMul:48, limit:5,reward:{type:'pick',tier:'legend'},   rw:'전설 선택권',trait:'기절 면역',stunImm:true},
-  {name:'심연의 군주',   color:RARITY.mythic.color,hpMul:70, limit:5,reward:{type:'pick',tier:'legend',gold:300},   rw:'전설 선택권 + 300골드',trait:'맷집 좋은 좀비 — 총격대·저격대가 유리',armX:0.4,mresX:1.2},
-  {name:'종말의 화신',   color:RARITY.apex.color,hpMul:84,limit:5,reward:{type:'pick',tier:'legend',n:2,gold:300},     rw:'전설 선택권 ×2 + 300골드',trait:'한 번 쓰러지면 체력 30%로 부활',revive:0.3},
+  {name:'거대 골렘 좀비',color:RARITY.common.color,hpMul:7,  limit:3,reward:{type:'summon',n:3}, rw:'이병 뽑기권 ×3',trait:'특성 없음 — 연습 상대'},
+  {name:'부패 거인',     color:RARITY.uncommon.color,hpMul:12, limit:3,reward:{type:'pick',tier:'uncommon'}, rw:'일병 선택권',trait:'감속이 절반만 먹힘',slowRes:0.5},
+  {name:'강철 골렘',     color:RARITY.special.color,hpMul:20, limit:3,reward:{type:'pick',tier:'special'},  rw:'상병 선택권',trait:'단단한 좀비 — 포격대·저격대가 유리',armX:1.2,mresX:0.4},
+  {name:'역병 군주',     color:RARITY.rare.color,hpMul:32, limit:4,reward:{type:'pick',tier:'rare'},     rw:'병장 선택권',trait:'주변 좀비 체력 회복 → 주변 잡몹부터 정리',healAura:0.03},
+  {name:'파멸의 타이탄', color:RARITY.legend.color,hpMul:48, limit:5,reward:{type:'pick',tier:'legend'},   rw:'부사관 선택권',trait:'기절 면역',stunImm:true},
+  {name:'심연의 군주',   color:RARITY.mythic.color,hpMul:70, limit:5,reward:{type:'pick',tier:'legend',gold:300},   rw:'부사관 선택권 + 300골드',trait:'맷집 좋은 좀비 — 총격대·저격대가 유리',armX:0.4,mresX:1.2},
+  {name:'종말의 화신',   color:RARITY.apex.color,hpMul:84,limit:5,reward:{type:'pick',tier:'legend',n:2,gold:300},     rw:'부사관 선택권 ×2 + 300골드',trait:'한 번 쓰러지면 체력 30%로 부활',revive:0.3},
 ];
 // S36 미션 보스 체력 배율(난이도별) — 옛 실패 벌칙표(MISSION_FAIL) 대신
 const MISSION_HP={'쉬움':1,'보통':1,'어려움':2,'지옥':2.3,'신':1.2};
@@ -3189,7 +3189,7 @@ function grantMissionReward(m){
   grantLoot(m); // S36b 전리품
   SFX.reward();
   if(m.reward.type==='summon'){G.freeSummons+=m.reward.n;
-    log(`미션 보상: <b style="color:#f2cc60">흔함 뽑기권 ×${m.reward.n}</b> 획득!`,'#f2cc60');}
+    log(`미션 보상: <b style="color:#f2cc60">이병 뽑기권 ×${m.reward.n}</b> 획득!`,'#f2cc60');}
   else{const n=m.reward.n||1;for(let k=0;k<n;k++)grantPick(m.reward.tier);const rc=RARITY[m.reward.tier];
     if(m.reward.gold)G.gold+=m.reward.gold;
     log(`미션 보상: <b style="color:${rc.color}">${rc.name} 선택권${n>1?' ×'+n:''}</b>${m.reward.gold?` + <b style="color:#f2cc60">${m.reward.gold}골드</b>`:''}!`,rc.color);renderReward();}
@@ -3219,8 +3219,8 @@ function canCraftDeep(target,want,pool){
   let use=Math.min(have,want);pool[target]=have-use;
   let remain=want-use;
   if(remain<=0)return true;
-  const r=RECIPE[target];if(!r)return false;            // 흔함인데 모자람 → 불가
-  if(U[target]&&U[target].t==='apex'){if(pool.__part==null)pool.__part=G.parts||0;if(pool.__part<APEX_PART*remain)return false;pool.__part-=APEX_PART*remain;} // 9차: 초월은 부품도 필요
+  const r=RECIPE[target];if(!r)return false;            // 이병인데 모자람 → 불가
+  if(U[target]&&U[target].t==='apex'){if(pool.__part==null)pool.__part=G.parts||0;if(pool.__part<APEX_PART*remain)return false;pool.__part-=APEX_PART*remain;} // 9차: 장군은 부품도 필요
   const need=needCount(r);
   for(let k=0;k<remain;k++){                              // 모자란 만큼 하나씩 만들어봄
     for(const [ing,c] of Object.entries(need)){if(!canCraftDeep(ing,c,pool))return false;}
@@ -3233,7 +3233,7 @@ function ensureN(target,count){
   let guard=0;
   while(fieldCount(target)<count){
     if(guard++>500)return false;
-    const r=RECIPE[target];if(!r)return false;           // 흔함인데 모자람 → 실패
+    const r=RECIPE[target];if(!r)return false;           // 이병인데 모자람 → 실패
     const need=needCount(r);
     for(const [ing,c] of Object.entries(need)){if(!ensureN(ing,c))return false;}
     if(!craftSilent(target))return false;
@@ -3243,7 +3243,7 @@ function ensureN(target,count){
 // 상위 유닛을 재귀로 "딱 1개" 만들기 (UI 버튼용)
 function craftDeep(target){
   const inv=inventory(),pool=Object.assign({},inv);delete pool[target]; // 새로 1개 만드는 데 드는 재료 계산
-  if(!canCraftDeep(target,1,pool)){if(apexPartShort(target))log(`초월 부품이 모자라요 (${G.parts||0}/${APEX_PART}) — <b>우라늄 연구소</b>에서 만들 수 있어요`,'#ff7b72');nope();return;}
+  if(!canCraftDeep(target,1,pool)){if(apexPartShort(target))log(`장군 부품이 모자라요 (${G.parts||0}/${APEX_PART}) — <b>우라늄 연구소</b>에서 만들 수 있어요`,'#ff7b72');nope();return;}
   const consumed={};for(const nm in inv){if(nm===target)continue;const d=inv[nm]-(pool[nm]||0);if(d>0)consumed[nm]=d;}
   if(!confirmCraft(consumed,target,()=>craftDeep(target)))return;
   G._newDiscovers=0;
@@ -3276,7 +3276,7 @@ function craftSilent(result){
   if(!(frees||roomFor(result)||resRoom()||usesRes))return null;
   for(const s of take)s.tower=null;
   for(const [n,r] of Object.entries(resNeed))resTake(n,r);
-  if(U[result].t==='apex')G.parts=Math.max(0,(G.parts||0)-APEX_PART); // 9차: 초월 부품 사용
+  if(U[result].t==='apex')G.parts=Math.max(0,(G.parts||0)-APEX_PART); // 9차: 장군 부품 사용
   let where=null;
   if(at&&(!cellTop(at)||cellName(at)===result))where=freeSub(at);
   if(!where)where=freeFor(result)[0]||null;
@@ -3288,14 +3288,14 @@ function craftSilent(result){
   if(result===GHOST){if(!ghostStored())log('<b style="color:#ffd23a">비밀 조합 발견!</b> 미사일여단이 핵폐기물을 삼켰다… 코드네임 유령 합류','#ffd23a');ghostSave();}
   G.crafts++;questProgress('craft',1);
   if(G.goals&&G.goals.includes(result)){G.goals=G.goals.filter(x=>x!==result);log(`목표 달성! <b>${result}</b> 완성`,'#d29922');}
-  // 전설급 이상 조합 = 축하 연출(화면 오버레이) + 팡파레
+  // 부사관급 이상 조합 = 축하 연출(화면 오버레이) + 팡파레
   if(tIdx(rankOf(result))>=4){
     G.celebrate={name:result,tier:RARITY[U[result].t].name,color:RARITY[U[result].t].color,t0:G.t};
     SFX.legend();}
   return where;
 }
 function craft(result){
-  if(apexPartShort(result)){log(`초월 부품이 모자라요 (${G.parts||0}/${APEX_PART}) — <b>우라늄 연구소</b>에서 만들 수 있어요`,'#ff7b72');nope();return;}
+  if(apexPartShort(result)){log(`장군 부품이 모자라요 (${G.parts||0}/${APEX_PART}) — <b>우라늄 연구소</b>에서 만들 수 있어요`,'#ff7b72');nope();return;}
   if(!canCraft(result)){nope();return;}
   if(!confirmCraft(needCount(recipeFor(result)),result,()=>craft(result)))return;
   G._newDiscovers=0;
@@ -3308,12 +3308,12 @@ function craft(result){
   if(slot)roleHint('craft');
   G.selected=(slot&&!slot.res)?slot:null;G.invSig='';updateUI();
 }
-// 히든·비밀 등급만 가림 대상 (그 외 등급은 항상 전체 공개)
+// 특명·원수 등급만 가림 대상 (그 외 등급은 항상 전체 공개)
 function isSecret(name){return U[name]&&U[name].t==='hidden';}
-// 조합식 표시: 비밀이 아니거나 해금됐으면 전체, 아니면 첫 재료만 + ???
+// 조합식 표시: 원수가 아니거나 해금됐으면 전체, 아니면 첫 재료만 + ???
 function recipeHint(result){
   const ing=RECIPE[result];if(!ing)return '';
-  if(!isSecret(result)||secretKnown(result))return ing.map(shortName).join(' + ')+(RECIPE2[result]?' / 또는 '+RECIPE2[result].map(shortName).join(' + '):'')+(U[result]&&U[result].t==='apex'?' + 초월 부품'+(APEX_PART>1?'×'+APEX_PART:''):'');
+  if(!isSecret(result)||secretKnown(result))return ing.map(shortName).join(' + ')+(RECIPE2[result]?' / 또는 '+RECIPE2[result].map(shortName).join(' + '):'')+(U[result]&&U[result].t==='apex'?' + 장군 부품'+(APEX_PART>1?'×'+APEX_PART:''):'');
   if(result===GHOST)return '??? — 비밀 조합';
   return shortName(ing[0])+' + ???' + (ing.length>2?' + ???':'');
 }
@@ -3335,7 +3335,7 @@ const LAB={rare:{cost:1,p:0.4},secret:{cost:2,p:0.3},part:{cost:3,p:1}},LAB_PITY
 function labPity(k){return Math.min(LAB_PITY_MAX,(G&&G.labPity&&G.labPity[k])||0);}
 function labP(k){const L=LAB[k];return L?Math.min(1,L.p+(k==='part'?0:labPity(k)*LAB_PITY)):0;}
 const SECRET_UNITS=['특수정찰대','전자전 부대','스텔스 저격조','자폭드론팀'];
-const WASTE='핵폐기물',GHOST='코드네임 유령',PART_NEED=2,GHOST_KEY='zld_secret_v1',APEX_PART=1; // 9차: 초월 조합 1번에 드는 초월 부품 수
+const WASTE='핵폐기물',GHOST='코드네임 유령',PART_NEED=2,GHOST_KEY='zld_secret_v1',APEX_PART=1; // 9차: 장군 조합 1번에 드는 장군 부품 수
 function apexPartShort(r){return !!(U[r]&&U[r].t==='apex'&&((G&&G.parts)||0)<APEX_PART);}
 function ghostStored(){try{return localStorage.getItem(GHOST_KEY)==='1';}catch(_){return false;}}
 function ghostSave(){try{localStorage.setItem(GHOST_KEY,'1');}catch(_){}}
@@ -3356,7 +3356,7 @@ function labBuy(kind){if(!G||G.over)return null;const L=LAB[kind];if(!L)return n
   if(kind!=='part'&&!labRoom()){log(RES_FULL_MSG,'#ff7b72');return null;}
   G.uran-=L.cost;G.labN=(G.labN||0)+1;let res;
   if(kind==='part'){G.parts=(G.parts||0)+1;
-    res={ok:true,txt:`초월 부품 ${G.parts}개 보유 — 초월 유닛 조합 재료 (1번에 ${APEX_PART}개)`};
+    res={ok:true,txt:`장군 부품 ${G.parts}개 보유 — 장군 유닛 조합 재료 (1번에 ${APEX_PART}개)`};
     try{SFX.reward();}catch(_){}}
   else if(rnd()<labP(kind)){G.labPity=G.labPity||{};G.labPity[kind]=0;const pool=kind==='rare'?Object.keys(U).filter(n=>U[n].t==='rare'):SECRET_UNITS;
     const nm=pool[Math.floor(rnd()*pool.length)],at=labPlace(nm);G.seen&&(G.seen[nm]=1);
@@ -3369,7 +3369,7 @@ function labBuy(kind){if(!G||G.over)return null;const L=LAB[kind];if(!L)return n
     if(at&&!at.res)G.floats.push({x:at.x,y:at.y-20,txt:'폐기물',life:900});
     try{SFX.boom();}catch(_){}}
   G.labLast={kind,ok:res.ok,nm:res.nm||null,txt:res.txt,n:G.labN};
-  log(`연구소 ${kind==='rare'?'희귀 도박':kind==='secret'?'특수 도박':'초월 부품'}: ${res.txt}`,res.ok?'#c6e04a':'#a39f86');
+  log(`연구소 ${kind==='rare'?'병장 도박':kind==='secret'?'특임 도박':'장군 부품'}: ${res.txt}`,res.ok?'#c6e04a':'#a39f86');
   G.invSig='';G._resSig='';updateUI();renderLab();return res;}
 function openLab(){if(!G)return;if(G.paused){log('기술 카드를 먼저 골라 주세요','#e0a526');return;}
   renderLab();const el=document.getElementById('lab');if(el)el.classList.remove('hidden');}
@@ -3381,9 +3381,9 @@ function renderLab(){const el=document.getElementById('labBody');if(!el||!G)retu
   const pity=k=>{const n=labPity(k);return n?` <b class="labPity">실패 보정 +${Math.round(n*LAB_PITY*100)}% 적용 중</b>`:'';};
   const last=G.labLast;
   el.innerHTML=`<div class="labHave">가진 우라늄 <b>${u}</b><span>보스 1마리마다 +1 · 한 판 최대 ${URAN_MAX}개 (지금까지 ${G.uranGot||0}개)</span></div>`
-    +row('rare','희귀 도박','성공하면 희귀 유닛 1기 · 실패하면 핵폐기물'+pity('rare'))
-    +row('secret','특수 도박','성공하면 <b style="color:'+RARITY.lab.color+'">특수 부대</b> 4종 중 1기 — 여기서만 나와요 · 실패하면 핵폐기물'+pity('secret'))
-    +row('part','초월 부품',`보유 ${G.parts||0}개 — 초월 유닛 조합 재료 (1번에 ${APEX_PART}개)`)
+    +row('rare','병장 도박','성공하면 병장 유닛 1기 · 실패하면 핵폐기물'+pity('rare'))
+    +row('secret','특임 도박','성공하면 <b style="color:'+RARITY.lab.color+'">특임 부대</b> 4종 중 1기 — 여기서만 나와요 · 실패하면 핵폐기물'+pity('secret'))
+    +row('part','장군 부품',`보유 ${G.parts||0}개 — 장군 유닛 조합 재료 (1번에 ${APEX_PART}개)`)
     +(last?`<div class="labRes ${last.ok?'win':'lose'}">${last.txt}</div>`:'')
     +(room?'':`<div class="labNote" style="color:#ff7b72">칸과 대기소가 꽉 차서 도박을 못 해요 — 먼저 비우세요</div>`)
     +`<div class="labNote">핵폐기물: 공격하지 않고 자리만 차지해요 · 팔면 0골드 · 보통 조합 재료로는 못 써요<br>실패 보정: 도박이 실패할 때마다 같은 도박의 다음 성공 확률 +10% (최대 +30%) · 성공하면 처음으로</div>`;}
@@ -3420,7 +3420,7 @@ function renderRes(){try{const box=document.getElementById('resCells');if(!box||
   if(!t){act.classList.add('hidden');act.innerHTML='';return;}
   const rc=RARITY[t.t],room=roomFor(t.name);
   act.classList.remove('hidden');
-  act.innerHTML=`<span class="nm"><b style="color:${rc.color}">${t.name}</b> · ${rc.name}${room?'':' <span style="color:#ec7a62">(빈 칸 없음)</span>'}</span>
+  act.innerHTML=`<span class="nm"><b style="color:${rc.color}">${t.name}</b> · ${rkI(rc)}${rc.name}${room?'':' <span style="color:#ec7a62">(빈 칸 없음)</span>'}</span>
     <button class="btn-summon" onclick="resPlace()">칸에 배치</button>
     <button class="btn-sell" style="width:auto;" onclick="resSell()">판매 +${sellPrice(t)}</button>`;}catch(_){}}
 // ===== 안 쓰는 유닛 한 번에 팔기(S30): 목표 조합 전체 트리에 필요한 수량만 남기고, 목표보다 낮은 등급의 남는 유닛만 판매 =====
@@ -4187,7 +4187,7 @@ function vHSL(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r
   if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h/=6;}return[h,s,l];}
 function vFromHSL(h,s,l){if(!s){const v=Math.round(l*255);return[v,v,v];}const q=l<.5?l*(1+s):l+s-l*s,p=2*l-q;
   const f=t=>{t=(t%1+1)%1;return t<1/6?p+(q-p)*6*t:t<.5?q:t<2/3?p+(q-p)*(2/3-t)*6:p;};return[Math.round(f(h+1/3)*255),Math.round(f(h)*255),Math.round(f(h-1/3)*255)];}
-// 신화↑ 그림에 구워진 옛 등급 테두리(반지름 52/128 바깥)를 새 등급색으로 다시 칠함. 실패(로컬 파일 보안 등)하면 원본 그대로
+// 장교↑ 그림에 구워진 옛 등급 테두리(반지름 52/128 바깥)를 새 등급색으로 다시 칠함. 실패(로컬 파일 보안 등)하면 원본 그대로
 function skinPrep(im,name){try{
   const u=U[name]||{},ti=TIER_ORDER.indexOf(u.t),tint=SKIN_TINT[name];
   if(ti<5&&!tint)return im;
@@ -4501,7 +4501,7 @@ function draw(){
   if(drag&&drag.moved&&drag.from.tower){ctx.globalAlpha=0.75;ctx.save();ctx.translate(drag.x,drag.y);ctx.scale(1/A3XS,1);
     const t=drag.from.tower;ctx.rotate(t.angle==null?-1.5708:t.angle);drawUnit(spOf(t.name),RARITY[U[t.name].t].color,false,t.name);ctx.restore();ctx.globalAlpha=1;}
   ctx.restore();
-  // 전설급 조합 축하 연출 (빛줄기 + 띠 + 유닛명)
+  // 부사관급 조합 축하 연출 (빛줄기 + 띠 + 유닛명)
   if(G.celebrate){const el2=G.t-G.celebrate.t0;
     if(el2>1500||el2<0)G.celebrate=null;
     else{const k=el2/1500,a=Math.max(0,Math.min(1,k<0.12?k/0.12:1-(k-0.12)/0.88)),col=vHex(G.celebrate.color),cy=H/2-30;
@@ -4914,7 +4914,7 @@ function vRotor(g,x,y,R,a){vBlit(g,VS.disc,x,y,R/20);g.strokeStyle='rgba(22,24,2
   g.fillStyle='#1a1b17';g.beginPath();g.arc(x,y,1.4,0,TAU);g.fill();}
 function vOct(g,x,y,r){g.beginPath();for(let i=0;i<8;i++){const a=Math.PI/8+i*TAU/8;g.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);}g.closePath();}
 // S33 받침대: 등급마다 모양·크기·밝기가 다름(색을 못 구분해도 모양으로 구분)
-// 흔함=원 · 안흔함=네모 · 특별=팔각 · 희귀=육각 · 전설=팔각+이중테+리벳 · 신화=톱니8 · 초월=햇살12+삼중테 · 히든=검은 마름모+금테
+// 이병=원 · 일병=네모 · 상병=팔각 · 병장=육각 · 부사관=팔각+이중테+리벳 · 장교=톱니8 · 장군=햇살12+삼중테 · 특명=검은 마름모+금테
 const VBASE={},VINS={},VROLE={};
 function vPoly(g,n,r,rot){g.beginPath();for(let i=0;i<n;i++){const a=rot+i*TAU/n;g.lineTo(Math.cos(a)*r,Math.sin(a)*r);}g.closePath();}
 function vSpike(g,n,ro,ri,rot){g.beginPath();for(let i=0;i<n*2;i++){const a=rot+i*Math.PI/n,r=i%2?ri:ro;g.lineTo(Math.cos(a)*r,Math.sin(a)*r);}g.closePath();}
@@ -4926,7 +4926,7 @@ function vTierShape(g,ti,r){ // 등급별 외곽선 경로
   else if(ti===3)vPoly(g,6,r,-Math.PI/2);
   else if(ti===5)vSpike(g,8,r,r*.84,-Math.PI/2);
   else if(ti===6)vSpike(g,12,r,r*.86,-Math.PI/2);
-  else if(ti===8)vPoly(g,5,r*1.05,-Math.PI/2); // S34 비밀: 오각형
+  else if(ti===8)vPoly(g,5,r*1.05,-Math.PI/2); // S34 원수: 오각형
   else vPoly(g,4,r*1.08,-Math.PI/2);}
 function vBase(tier){if(VBASE[tier])return VBASE[tier];const ti=tier==='secret'?8:Math.max(0,TIER_ORDER.indexOf(tier)),c=vHex(RARITY[tier]&&RARITY[tier].color);
   const r=[14,14.6,15.2,15.8,16.4,18.2,19,17.4,17][ti]||15;
@@ -4960,7 +4960,7 @@ function vWaste(){if(VWASTE)return VWASTE;VWASTE=vSprite(40,g=>{
   for(let i=0;i<3;i++){const a=-Math.PI/2+i*TAU/3;g.beginPath();g.moveTo(0,0);g.arc(0,0,4,a-.5,a+.5);g.closePath();g.fill();}
   g.fillStyle='#17140a';g.beginPath();g.arc(0,0,1,0,TAU);g.fill();
   g.fillStyle='#7fd13b';g.beginPath();g.moveTo(4,-9);g.quadraticCurveTo(6,-2,4.6,6);g.lineTo(3.2,6);g.quadraticCurveTo(4.4,-2,3,-9);g.closePath();g.fill();});return VWASTE;}
-// 비밀 계급장: 작은 방사능 표시
+// 원수 계급장: 작은 방사능 표시
 function vSecretMark(g,c){g.fillStyle='#0d0e0a';g.beginPath();g.arc(0,17,4.4,0,TAU);g.fill();g.fillStyle=c;
   for(let i=0;i<3;i++){const a=-Math.PI/2+i*TAU/3;g.beginPath();g.moveTo(0,17);g.arc(0,17,3.6,a-.5,a+.5);g.closePath();g.fill();}}
 // S33 역할 휘장(오른쪽 아래 작은 원): 13역할마다 다른 그림 — 비슷한 병사끼리도 무슨 일 하는지 바로 보이게
@@ -4983,7 +4983,7 @@ function vRoleBadge(role){if(VROLE[role])return VROLE[role];const R=(typeof ROLE
       case '지속':g.beginPath();g.moveTo(0,-4.6);g.bezierCurveTo(3.8,-1,3.4,4,0,4.2);g.bezierCurveTo(-3.4,4,-3.8,-.4,-1,-1.6);g.bezierCurveTo(-.6,-.4,.2,-2.6,0,-4.6);g.closePath();g.fill();break;
       default:g.beginPath();g.arc(0,0,2,0,TAU);g.fill();}
   });return VROLE[role];}
-// 계급장: 좌상=공격 속성 마름모 / 아래=등급 표시(갈매기 1~3 → 별 1~3 → 비밀 마름모)
+// 계급장: 좌상=공격 속성 마름모 / 아래=등급 표시(갈매기 1~3 → 별 1~3 → 원수 마름모)
 function vIns(tier,dt){const k=tier+'|'+dt;if(VINS[k])return VINS[k];const ti=TIER_ORDER.indexOf(tier),c=vHex(RARITY[tier]&&RARITY[tier].color);
   VINS[k]=vSprite(44,g=>{
     g.lineCap='round';g.lineJoin='round';
@@ -5029,7 +5029,7 @@ function drawTower0(s){const t=s.tower,u=U[t.name];if(!u)return;vInitFx();const 
   const ti=u.t==='secret'?7:u.t==='lab'?5:TIER_ORDER.indexOf(u.t),now=vNow(),x=t.x,y=t.y;
   if(u.junk){vBlit(ctx,vWaste(),x,y); // S34 핵폐기물: 드럼통만(공격·휘장 없음)
     if(sel){ctx.save();ctx.strokeStyle='#e8d9a0';ctx.lineWidth=2;vBrk(ctx,x,y,(19+Math.sin(now*.008))*1.25/A3SC*Math.min(PAD_H+1,PAD_Y+1)/28,6*1.25/A3SC);ctx.restore();}return;}
-  // 전설↑ 은은한 광채(미리 그린 빛 그림을 겹쳐 그림 — 매 프레임 흐림효과 없음)
+  // 부사관↑ 은은한 광채(미리 그린 빛 그림을 겹쳐 그림 — 매 프레임 흐림효과 없음)
   if(ti>=4){const gl=vGlow(u.t);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=(ti>=6?.5:.34)+.14*Math.sin(now*.004+x);vBlit(ctx,gl,x,y,ti>=6?.62:.52);ctx.restore();}
   vBlit(ctx,vBase(u.t),x,y);
   if(ti>=5&&!vCalm()){ctx.save();ctx.strokeStyle=c;ctx.lineWidth=1.6;ctx.globalAlpha=.8;const a=now*.0018;
@@ -5252,10 +5252,10 @@ function drawZombieBody(e){vInitFx();vBlit(ctx,vZSpr(e,0).b,0,0);}
 
 // ===== UI =====
 function renderOdds(){const el=document.getElementById('odds');if(!el)return;
-  // S25: 확률표가 아니라 실제 소환 규칙 안내 — 기본 소환은 흔함 12종이 12회마다 한 번씩 골고루
-  el.innerHTML=`<div class="row"><span><span class="dot" style="background:${RARITY.common.color}"></span>기본 소환</span><span>흔함 12종 골고루</span></div>`
-    +`<div class="row"><span><span class="dot" style="background:${RARITY.rare.color}"></span>안흔함~전설</span><span>조합·퀘스트·미션</span></div>`
-    +`<div class="row"><span><span class="dot" style="background:${RARITY.mythic.color}"></span>신화~히든</span><span>조합 전용</span></div>`;}
+  // S25: 확률표가 아니라 실제 소환 규칙 안내 — 기본 소환은 이병 12종이 12회마다 한 번씩 골고루
+  el.innerHTML=`<div class="row"><span><span class="dot" style="background:${RARITY.common.color}"></span>기본 소환</span><span>이병 12종 골고루</span></div>`
+    +`<div class="row"><span><span class="dot" style="background:${RARITY.rare.color}"></span>일병~부사관</span><span>조합·퀘스트·미션</span></div>`
+    +`<div class="row"><span><span class="dot" style="background:${RARITY.mythic.color}"></span>장교~특명</span><span>조합 전용</span></div>`;}
 function updateUI(){
   if(!G)return;
   hudTick(); // S37 판 위 덧칠(초상·웨이브 고리·자원 알약)
@@ -5342,12 +5342,12 @@ function renderSelected(){
   }
   const tierIdx=TIER_ORDER.indexOf(u.t);
   sel.innerHTML=`<div class="name" style="color:${rc.color}">${t.name}</div>
-    <span class="tag" style="background:${rc.color}">${rc.name}</span>
+    <span class="tag" style="background:${rc.color}">${rkI(rc,1)}${rc.name}</span>
     <span class="dtag ${dtc}">${DT_NAME[u.dt]}</span>${roleTags(t.name)}${upTxt}
-    <span style="font-size:11px;color:#aeb6bf">· 흔함 ${cval(t.name)}개 가치</span>
-    ${u.role&&ROLES[u.role]?`<div style="margin-top:4px;font-size:11px;color:${ROLES[u.role].c};">역할: <b>${u.role}</b> — ${ROLES[u.role].d}</div>`:isBasicTier(u)?`<div style="margin-top:4px;font-size:11px;color:#8b949e;">특수능력 없음 — 기본 공격만 (능력은 희귀 등급부터)</div>`:''}
+    <span style="font-size:11px;color:#aeb6bf">· 이병 ${cval(t.name)}개 가치</span>
+    ${u.role&&ROLES[u.role]?`<div style="margin-top:4px;font-size:11px;color:${ROLES[u.role].c};">역할: <b>${u.role}</b> — ${ROLES[u.role].d}</div>`:isBasicTier(u)?`<div style="margin-top:4px;font-size:11px;color:#8b949e;">특수능력 없음 — 기본 공격만 (능력은 병장 등급부터)</div>`:''}
     ${u.junk?`<div style="margin-top:4px;font-size:11px;color:#c6e04a;">공격하지 않고 자리만 차지해요 · 팔면 0골드 · 보통 조합 재료로는 못 써요</div>`:''}
-    ${u.t==='lab'?`<div style="margin-top:4px;font-size:11px;color:${RARITY.lab.color};">특수 부대 — 우라늄 연구소 특수 도박에서만 나와요</div>`:u.t==='secret'?`<div style="margin-top:4px;font-size:11px;color:${RARITY.secret.color};">비밀(최상위) — 초월 부대를 합쳐서 만들어요 · 특성 1 + 스킬 4</div>`:''}
+    ${u.t==='lab'?`<div style="margin-top:4px;font-size:11px;color:${RARITY.lab.color};">특임 부대 — 우라늄 연구소 특임 도박에서만 나와요</div>`:u.t==='secret'?`<div style="margin-top:4px;font-size:11px;color:${RARITY.secret.color};">원수(최상위) — 장군 부대를 합쳐서 만들어요 · 특성 1 + 스킬 4</div>`:''}
     <div style="margin-top:6px;">공격력 ${dmgTxt} · 사거리 ${u.range}<br>
     ${asTxt}${fx.length?' · '+fx.join('·'):''}</div>${skillListHtml(t.name)}${recipeHtml}`;
   btns.innerHTML=`<div class="btn-row"><button class="btn-sell" onclick="sellSelected()" ${t.locked?'disabled':''} style="flex:1;">판매 (+${sellPrice(t)})</button>
@@ -5400,7 +5400,7 @@ function craftLossItems(consumed,result){ // 사라지는 "마지막 역할" 목
   return out;
 }
 function craftLoss(consumed,result){return craftLossItems(consumed,result).map(x=>x.msg);} // 목표 패널용: 전부 표시
-// S27 경고 줄이기: 확인창은 "지금 정말 중요한 역할"만. 판당 1번·안흔함 이상·시기 맞을 때만
+// S27 경고 줄이기: 확인창은 "지금 정말 중요한 역할"만. 판당 1번·일병 이상·시기 맞을 때만
 function warnWorthy(it){
   if(it.k==='supply'||it.k==='debuff')return false; // 보급·표적지정은 목표 패널에만 표시
   if(G.warnMute[it.k]||G.warned[it.k]||it.tier<1)return false;
@@ -5432,9 +5432,9 @@ function craftAnyway(){const c=G.craftConfirm;if(!c||!c.r)return;G.craftConfirm=
 function craftMute(){const c=G.craftConfirm;if(!c||!c.r)return;for(const k of c.keys||[])G.warnMute[k]=1;
   log('이번 판에는 이 역할 경고를 다시 띄우지 않습니다.','#aeb6bf');craftAnyway();}
 function cancelCraft(){G.craftConfirm=null;renderWarn();}
-// ===== 목표 조합 추적(S26): 최대 3개 등록 → 더 모을 흔함·공유 재료·완성 시 사라질 역할을 계속 표시 =====
+// ===== 목표 조합 추적(S26): 최대 3개 등록 → 더 모을 이병·공유 재료·완성 시 사라질 역할을 계속 표시 =====
 const GOAL_MAX=3;
-// target 1개를 만들 때 지금 보유분으로 못 채우는 흔함 목록(보유 중간 재료는 인정). pool은 소모돼서 돌아옴
+// target 1개를 만들 때 지금 보유분으로 못 채우는 이병 목록(보유 중간 재료는 인정). pool은 소모돼서 돌아옴
 function missingFor(target,pool){pool=pool||Object.assign({},inventory());const miss={};
   (function req(nm,c){for(let k=0;k<c;k++){if((pool[nm]||0)>0){pool[nm]--;continue;}
     if(!RECIPE[nm]){miss[nm]=(miss[nm]||0)+1;continue;}
@@ -5450,7 +5450,7 @@ function setDeckGoals(i){const d=DECKS[i];if(!d||!G)return;G.goals=d.core.slice(
   log(`추천 덱 <b style="color:${d.color}">${d.name}</b>을 목표로 등록`,'#d29922');renderGoals();renderBook();}
 function renderGoals(){const el=document.getElementById('goalBox');if(!el||!G)return;
   if(!G.goals.length){el.innerHTML='조합식에서 유닛 옆 를 누르면 모을 재료와 사라질 역할을 여기서 계속 알려줘요.';return;}
-  // 공유 재료: 두 목표 이상이 함께 쓰는 흔함
+  // 공유 재료: 두 목표 이상이 함께 쓰는 이병
   const useBy={};for(const g of G.goals)for(const cn of Object.keys(commonCost(g)))useBy[cn]=(useBy[cn]||0)+1;
   const shared=Object.keys(useBy).filter(cn=>useBy[cn]>=2);
   let html='';
@@ -5504,7 +5504,7 @@ const ROLE_ORDER=Object.keys(ROLES);
 const ROLE_RULE='같은 효과는 겹치지 않아요 — 역할을 섞으세요';
 const ROLE_SYN_TXT=`기절한 적 +${Math.round((SYN.stun-1)*100)}% 피해 · 느려진 적에게 광역·지속 +${Math.round((SYN.slowAoe-1)*100)}% · 방어력이 깎인 적은 처형 기준 +${Math.round(SYN.brkExec*100)}% · 불붙은 적에게 현재체력 피해 ${SYN.burnCur}배`;
 function roleTag(r,sub){const x=ROLES[r];return x?`<span class="rtag${sub?' sub':''}" style="color:${x.c}" title="${x.d}">${r}</span>`:'';}
-function roleTags(n,max){const u=U[n];if(u&&!u.role&&isBasicTier(u))return '<span class="rtag sub" style="color:#8b949e" title="특수능력 없음 — 능력은 희귀부터">기본</span>';if(!u||!u.role)return '';let h=roleTag(u.role);
+function roleTags(n,max){const u=U[n];if(u&&!u.role&&isBasicTier(u))return '<span class="rtag sub" style="color:#8b949e" title="특수능력 없음 — 능력은 병장부터">기본</span>';if(!u||!u.role)return '';let h=roleTag(u.role);
   for(const r of (u.roles||[]).filter(r=>r!==u.role).slice(0,max==null?3:max))h+=roleTag(r,1);return h;}
 function unitHasRole(n,r){const u=U[n];return !!(u&&(u.role===r||(u.roles||[]).includes(r)));}
 // 우리 편(지도+대기소) 역할 한 줄 — 없는 역할은 흐리게
@@ -5576,7 +5576,7 @@ function unitTags(u){const fx=[];if(u.splash)fx.push('광역');if(u.slow)fx.push
   if(u.bossBonus)fx.push('보스특화');if(u.buff)fx.push('버프');if(u.debuff)fx.push('표적지정');
   if(u.execute)fx.push('처형');if(u.rampage)fx.push('성장');if(u.supply)fx.push('보급');if(u.gold)fx.push('골드');
   if(u.stun)fx.push(u.stunP?`기절${Math.round(u.stunP*100)}%확률`:'스턴');if(u.armBrk)fx.push(`방어력 깎기−${u.armBrk}`);if(u.maxHpPct)fx.push('최대체력딜');if(u.curHpPct)fx.push('현재체력딜');if(!fx.length&&isBasicTier(u))fx.push('기본 공격만');return fx;}
-// S36: 흔함·안흔함·특별은 특수능력 없음 — 능력은 희귀부터
+// S36: 이병·일병·상병은 특수능력 없음 — 능력은 병장부터
 function isBasicTier(u){return !!u&&(u.t==='common'||u.t==='uncommon'||u.t==='special');}
 function renderCraft(){
   const el=document.getElementById('craftList');
@@ -5623,17 +5623,17 @@ function craftablesUsing(name){
 }
 
 // ===== 조합식 도감 =====
-// 한 유닛을 1개 만드는 데 필요한 "흔함 종류별 총 개수" 계산 (재귀)
+// 한 유닛을 1개 만드는 데 필요한 "이병 종류별 총 개수" 계산 (재귀)
 function commonCost(name,acc){
   acc=acc||{};
-  if(!RECIPE[name]){acc[name]=(acc[name]||0)+1;return acc;} // 흔함이면 그대로 1개
+  if(!RECIPE[name]){acc[name]=(acc[name]||0)+1;return acc;} // 이병이면 그대로 1개
   for(const ing of RECIPE[name])commonCost(ing,acc);
   return acc;
 }
-// 조합 트리 HTML: target의 재료를 단계별로 들여쓰기해서 보여줌 (흔함이면 보유수 표시)
+// 조합 트리 HTML: target의 재료를 단계별로 들여쓰기해서 보여줌 (이병이면 보유수 표시)
 function bookTreeHtml(target,inv,depth){
   const r=RECIPE[target];
-  if(!r){ // 흔함 — 보유/표시
+  if(!r){ // 이병 — 보유/표시
     const have=inv[target]||0;
     return `<div style="margin-left:${depth*14}px;font-size:11px;color:${have>0?'#7ee787':'#ffb3ad'};">• ${shortName(target)} <span style="color:#9aa5b1">(보유 ${have})</span></div>`;
   }
@@ -5646,7 +5646,7 @@ function bookTreeHtml(target,inv,depth){
     html+=`<div style="margin-left:${depth*14}px;font-size:11px;margin-top:2px;">`
       +`<span style="color:${irc.color};">${depth>0?'└ ':''}${shortName(ig)}${c>1?' ×'+c:''}</span>`
       +` <span style="color:#9aa5b1;">(보유 ${have})</span></div>`;
-    // 흔함이 아니면 한 단계 더 펼침 (재귀)
+    // 이병이 아니면 한 단계 더 펼침 (재귀)
     if(!isCommon)html+=bookTreeHtml(ig,inv,depth+1);
   }
   return html;
@@ -5766,7 +5766,7 @@ function a3UcMore(){const t=G&&G.selected&&G.selected.tower;A3UCM=(A3UCM===t)?nu
 function a3UnitSig(){try{const t=G&&G.selected&&G.selected.tower;if(!t)return '';const inv=inventory(),ms={};
   for(const r of upgradesFrom(t.name))for(const m of recFor(r,t.name))ms[m]=inv[m]||0;
   return t.name+'|'+t.locked+'|'+(G.upg[U[t.name].dt]||0)+'|'+JSON.stringify(ms)+'|'+upgradesFrom(t.name).map(r=>canCraft(r)?2:canCraftDeepTop(r)?1:0).join('');}catch(_){return '';}}
-function a3PartNeed(r){return (typeof APEX_PART!=='undefined'&&APEX_PART>0&&U[r]&&U[r].t==='apex')?APEX_PART:0;} // 10차: 초월 조합에 드는 초월 부품 수(0=필요 없음)
+function a3PartNeed(r){return (typeof APEX_PART!=='undefined'&&APEX_PART>0&&U[r]&&U[r].t==='apex')?APEX_PART:0;} // 10차: 장군 조합에 드는 장군 부품 수(0=필요 없음)
 function unitCardFill(){try{const el=document.getElementById('unitCard');if(!el)return;const t=G&&G.selected&&G.selected.tower;
   if(!t||!G.started||G.over){el.innerHTML='';A3UC='';if(el.classList)el.classList.add('hidden');return;}
   A3UC=a3UnitSig();
@@ -5776,12 +5776,12 @@ function unitCardFill(){try{const el=document.getElementById('unitCard');if(!el)
     .sort((a,b)=>((b.ok?1:0)-(a.ok?1:0))||((b.deep?1:0)-(a.deep?1:0))||(TO.indexOf(U[a.r].t)-TO.indexOf(U[b.r].t))||(a.r<b.r?-1:1));
   const line=o=>{const need=needCount(recFor(o.r,t.name)),c=(RARITY[U[o.r].t]||{}).color||'#fff',go=o.ok?"craft('"+o.r+"')":o.deep?"craftDeep('"+o.r+"')":'';
     const ms=Object.keys(need).map(m=>{const hv=inv[m]||0,k=need[m],cl=hv>=k?'h':hv>0?'p':'n';return '<span class="'+cl+'">'+shortName(m)+(k>1?' <small>'+Math.min(hv,k)+'/'+k+'</small>':'')+'</span>';}).join('<i>+</i>')
-      +(a3PartNeed(o.r)?(()=>{const k=a3PartNeed(o.r),hv=G.parts||0;return '<i>+</i><span class="'+(hv>=k?'h':hv>0?'p':'n')+'">초월 부품 <small>'+Math.min(hv,k)+'/'+k+'</small></span>';})():'');
+      +(a3PartNeed(o.r)?(()=>{const k=a3PartNeed(o.r),hv=G.parts||0;return '<i>+</i><span class="'+(hv>=k?'h':hv>0?'p':'n')+'">장군 부품 <small>'+Math.min(hv,k)+'/'+k+'</small></span>';})():'');
     return '<button type="button" class="ucRow'+(o.ok?' ok':o.deep?' dp':'')+'" style="--uc:'+c+'" '+(go?'onclick="'+go+'"':'disabled')+'>'
       +'<b>'+shortName(o.r)+'</b><i>:</i>'+ms+(go?'<em>'+(o.ok?'조합':'한 번에')+'</em>':'')+'</button>';};
   const cut=rs.length>5&&a3IsPhone()&&A3UCM!==t,mb=rs.length>5&&a3IsPhone()?'<button type="button" class="ucMore" onclick="a3UcMore()">'+(cut?'더보기 <b>+'+(rs.length-4)+'</b>':'접기')+'</button>':'';
   const nN=t.slot&&t.slot.ci!=null?cellN(CELLS[t.slot.ci]):1,skOn=A3UCS===t;
-  el.innerHTML='<div class="ucL" style="--rc:'+rc.color+'"><div class="ucHd">'+a3Img(t.name,'ucPic')+'<div class="ucNm"><b>'+t.name+'</b><span>'+rc.name+' · '+DT_NAME[u.dt]+(up>0?' · 강화 '+up:'')+(nN>1?' · 이 칸 '+nN+'마리':'')+'</span>'+a3TyTag(t.name)+'</div></div>'
+  el.innerHTML='<div class="ucL" style="--rc:'+rc.color+'"><div class="ucHd">'+a3Img(t.name,'ucPic')+'<div class="ucNm"><b>'+t.name+'</b><span>'+rkI(rc)+rc.name+' · '+DT_NAME[u.dt]+(up>0?' · 강화 '+up:'')+(nN>1?' · 이 칸 '+nN+'마리':'')+'</span>'+a3TyTag(t.name)+'</div></div>'
     +'<div class="ucSt"><span><small>공격력</small><b>'+dmg+'</b></span><span><small>공속/초</small><b>'+as+'</b></span><span><small>사거리</small><b>'+u.range+'</b></span></div>'+a3ExHtml(t.name,'ucEx')
     +'<div class="ucAc"><button type="button" class="ucSell" onclick="a3SellAsk()" '+(t.locked?'disabled':'')+'>판매 <b>+'+sellPrice(t)+'</b></button>'
     +'<button type="button" class="ucSkB'+(skOn?' on':'')+'" onclick="a3UcSkill()" aria-pressed="'+skOn+'">스킬</button>'
@@ -5805,7 +5805,7 @@ function a3UsedHtml(cur,inv,TN){const TO=TIER_ORDER;
   let h='<div class="bkH">쓰이는 곳 <small>'+(rs.length?'이 유닛이 재료로 들어가는 조합 · 누르면 그 유닛으로 가요':'')+'</small></div>';
   if(!rs.length)return h+'<p class="bkNote">'+(hid?'아직 발견하지 못한 비밀 조합에만 쓰여요.':'이 유닛으로 더 올릴 조합이 없어요.')+'</p>';
   h+='<div class="bkMs bkUsed">'+rs.map(r=>{const ru=U[r]||{},rc=(RARITY[ru.t]||{}).color||'#c8d0c2',need=needCount(RECIPE[r]),ok=G&&G.started&&!G.over&&canCraft(r);
-    const ms=Object.keys(need).map(m=>shortName(m)+(need[m]>1?'×'+need[m]:'')).join(' + ')+(a3PartNeed(r)?' + 초월 부품':'');
+    const ms=Object.keys(need).map(m=>shortName(m)+(need[m]>1?'×'+need[m]:'')).join(' + ')+(a3PartNeed(r)?' + 장군 부품':'');
     return '<button type="button" class="bkM'+(ok?' h':'')+'" style="--rc:'+rc+'" onclick="bookGo(\''+r+'\')">'+a3Img(r,'bkMp')
       +'<span><b>'+shortName(r)+'</b><small>'+(TN[ru.t]||'')+' · '+ms+'</small></span><em>›</em></button>';}).join('')+'</div>';
   if(hid)h+='<p class="bkNote">아직 발견하지 못한 비밀 조합 '+hid+'개는 숨겨 두었어요.</p>';
@@ -5818,14 +5818,14 @@ function bookGo(n){if(n==null)bookPath=[];else{const i=bookPath.indexOf(n);if(i>
 function bookBack(){bookPath.pop();renderBook();}
 function bookMake(n,deep){if(!G)return;if(deep)craftDeep(n);else craft(n);renderBook();}
 function renderBook(){const body=document.getElementById('bookBody');if(!body)return;let html='';const inv=G?inventory():{};
-  const TN={common:'흔함',uncommon:'안흔함',special:'특별',rare:'희귀',legend:'전설',mythic:'신화',apex:'초월',hidden:'히든',lab:'특수',secret:'비밀'};
+  const TN={common:'이병',uncommon:'일병',special:'상병',rare:'병장',legend:'부사관',mythic:'장교',apex:'장군',hidden:'특명',lab:'특임',secret:'원수'};
   const hidden=n=>isSecret(n)&&!secretKnown(n);
   const cur=bookPath[bookPath.length-1];
   if(cur&&U[cur]){const u=U[cur],rc=RARITY[u.t]||{color:'#c8d0c2'};
     html+='<div class="bkNav"><button type="button" class="bkBack" onclick="bookBack()">‹ 뒤로</button><span class="bkPath"><button type="button" onclick="bookGo(null)">전체</button>'
       +bookPath.map((p,i)=>'<i>›</i>'+(i<bookPath.length-1?'<button type="button" onclick="bookGo(\''+p+'\')">'+(hidden(p)?'???':shortName(p))+'</button>':'<b>'+(hidden(p)?'???':shortName(p))+'</b>')).join('')+'</span></div>';
     if(hidden(cur)){html+=rp3HidDetail(cur,inv,TN);body.innerHTML=html;return;}
-    html+='<div class="bkHero" style="--rc:'+rc.color+'">'+a3Img(cur,'bkPic')+'<div><b>'+cur+'</b><span>'+(TN[u.t]||rc.name||'')+(u.rank?' ('+(TN[u.rank]||'')+'급 힘)':'')+' · '+DT_NAME[u.dt]+'</span>'+a3TyTag(cur)+'</div></div>';
+    html+='<div class="bkHero" style="--rc:'+rc.color+'">'+a3Img(cur,'bkPic')+'<div><b>'+cur+'</b><span>'+rkI(u.t)+(TN[u.t]||rc.name||'')+(u.rank?' ('+(TN[u.rank]||'')+'급 힘)':'')+' · '+DT_NAME[u.dt]+'</span>'+a3TyTag(cur)+'</div></div>';
     html+=a3ExHtml(cur,'bkEx');
     html+=skillListHtml(cur)||'';
     const R=recipeFor(cur,inv);if(RECIPE2[cur])html+='<p class="bkNote">만드는 길 2개 — '+RECIPE[cur].map(shortName).join(' + ')+' / 또는 '+RECIPE2[cur].map(shortName).join(' + ')+'</p>';
@@ -5834,13 +5834,13 @@ function renderBook(){const body=document.getElementById('bookBody');if(!body)re
         +Object.keys(need).map(m=>{const hv=inv[m]||0,k=need[m],cl=hv>=k?'h':hv>0?'p':'n',mu=U[m]||{},mc=(RARITY[mu.t]||{}).color||'#c8d0c2',deep=!!RECIPE[m];
           return '<button type="button" class="bkM '+cl+'" style="--rc:'+mc+'" '+'onclick="bookGo(\''+m+'\')"'+'>'+a3Img(m,'bkMp')
             +'<span><b>'+shortName(m)+'</b><small>'+(TN[mu.t]||'')+(deep?' · 조합식 보기 ›':' · 뽑기로 나와요 · 쓰이는 곳 ›')+'</small></span><em>'+hv+'<i>/'+k+'</i></em></button>';}).join('')
-        +(a3PartNeed(cur)?(()=>{const k=a3PartNeed(cur),hv=(G&&G.parts)||0;return '<button type="button" class="bkM '+(hv>=k?'h':hv>0?'p':'n')+'" style="--rc:#ffd166" disabled><i class="bkMp a3NoImg"></i><span><b>초월 부품</b><small>우라늄 연구소에서 만들어요</small></span><em>'+hv+'<i>/'+k+'</i></em></button>';})():'')+'</div>';
+        +(a3PartNeed(cur)?(()=>{const k=a3PartNeed(cur),hv=(G&&G.parts)||0;return '<button type="button" class="bkM '+(hv>=k?'h':hv>0?'p':'n')+'" style="--rc:#ffd166" disabled><i class="bkMp a3NoImg"></i><span><b>장군 부품</b><small>우라늄 연구소에서 만들어요</small></span><em>'+hv+'<i>/'+k+'</i></em></button>';})():'')+'</div>';
       const ok=G&&canCraft(cur),dp=G&&!ok&&canCraftDeepTop(cur);
       html+='<div class="bkGo">'+(ok?'<button type="button" class="bkMake" onclick="bookMake(\''+cur+'\',false)">지금 조합하기</button>'
         :dp?'<button type="button" class="bkMake" onclick="bookMake(\''+cur+'\',true)">아래 단계부터 한 번에 조합</button>'
-        :'<span class="bkNo">'+(a3PartNeed(cur)&&((G&&G.parts)||0)<a3PartNeed(cur)&&Object.keys(need).every(m=>(inv[m]||0)>=need[m])?'초월 부품이 모자라요 — 우라늄 연구소에서 만들어요':'재료가 모자라요')+'</span>')+'</div>';}
-    else if(SECRET_UNITS.includes(cur))html+='<p class="bkNote">조합으로는 못 만들어요. 우라늄 연구소 특수 도박(2개, 성공 30%)에서만 나와요.</p>';
-    else html+='<p class="bkNote">흔함 유닛이에요. 소환(뽑기)으로 나와요.</p>';
+        :'<span class="bkNo">'+(a3PartNeed(cur)&&((G&&G.parts)||0)<a3PartNeed(cur)&&Object.keys(need).every(m=>(inv[m]||0)>=need[m])?'장군 부품이 모자라요 — 우라늄 연구소에서 만들어요':'재료가 모자라요')+'</span>')+'</div>';}
+    else if(SECRET_UNITS.includes(cur))html+='<p class="bkNote">조합으로는 못 만들어요. 우라늄 연구소 특임 도박(2개, 성공 30%)에서만 나와요.</p>';
+    else html+='<p class="bkNote">이병 유닛이에요. 소환(뽑기)으로 나와요.</p>';
     html+=a3UsedHtml(cur,inv,TN);
     body.innerHTML=html;return;}
   bookPath=[];
@@ -5853,10 +5853,10 @@ function renderBook(){const body=document.getElementById('bookBody');if(!body)re
     return '<button type="button" class="bkU'+(ok?' ok':'')+'" style="--rc:'+rc.color+'" onclick="bookGo(\''+n+'\')">'+(hd?'<i class="bkUp a3NoImg"></i>':a3Img(n,'bkUp'))+(hd?rp3HidChip(n):'<b>'+shortName(n)+'</b>')+'</button>';};
   for(const tier of tiers){const items=(tier==='lab'?SECRET_UNITS.filter(n=>U[n]):Object.keys(RECIPE)).filter(n=>U[n].t===tier&&(!bookRole||(unitHasRole(n,bookRole)&&!hidden(n))));
     if(!items.length)continue;const rc=RARITY[tier];
-    html+='<div class="bkT" style="--rc:'+rc.color+'">'+(TN[tier]||tier)+cbTierNote(tier)+'</div>'+(tier==='hidden'?rp3HidGuide():'')+'<div class="bkG">'+items.map(n=>chip(n,rc)).join('')+'</div>';}
+    html+='<div class="bkT" style="--rc:'+rc.color+'">'+rkI(tier)+(TN[tier]||tier)+cbTierNote(tier)+'</div>'+(tier==='hidden'?rp3HidGuide():'')+'<div class="bkG">'+items.map(n=>chip(n,rc)).join('')+'</div>';}
   {const sc=[]; // ROLE_PLAN_V3_CB 16차
 
-    if(sc.length){const rc=RARITY.secret||{color:'#c8d0c2'};html+='<div class="bkT" style="--rc:'+rc.color+'">비밀 <small>우라늄 연구소 비밀 도박에서만</small></div><div class="bkG">'+sc.map(n=>chip(n,rc)).join('')+'</div>';}}
+    if(sc.length){const rc=RARITY.secret||{color:'#c8d0c2'};html+='<div class="bkT" style="--rc:'+rc.color+'">원수 <small>우라늄 연구소 원수 도박에서만</small></div><div class="bkG">'+sc.map(n=>chip(n,rc)).join('')+'</div>';}}
   body.innerHTML=html;}
 
 // ===== 9차 (화면만 — 수치·전투 계산·판매 금액은 그대로) =====
@@ -5936,7 +5936,7 @@ function a3WinFill(force){try{const x=document.getElementById('a3WinX');if(!x||!
       `<button type="button" onclick="a3Win(null);openRecords()"><b>내 기록</b><small>지난 판들</small></button>`+
       `<button type="button" onclick="toggleSfx();a3WinFill(true)"><b>소리</b><small>${sfxOn?'켜짐 — 누르면 끔':'꺼짐 — 누르면 켬'}</small></button></div>`;}
   else if(A3W==='ticket'){sig+=pendingCount();
-    h='<p class="a3Note">지금 받을 선택권이 없어요. 미션 보스를 잡으면 원하는 유닛을 고르는 선택권이 생겨요. 아래 특성포인트로 흔함 유닛을 골라 뽑을 수도 있어요.</p>';}
+    h='<p class="a3Note">지금 받을 선택권이 없어요. 미션 보스를 잡으면 원하는 유닛을 고르는 선택권이 생겨요. 아래 특성포인트로 이병 유닛을 골라 뽑을 수도 있어요.</p>';}
   if(!force&&sig===A3WS)return;A3WS=sig;x.innerHTML=h;}catch(_){}}
 function a3BarSync(){try{const $=id=>document.getElementById(id),put=(id,v)=>{const e=$(id);if(e&&e._t!==v){e._t=v;e.textContent=v;}};
   put('a3Gold',String(Math.floor(G.gold)));const hp=$('hp');if(hp)put('a3Zc',hp.textContent);
@@ -6255,7 +6255,7 @@ body:has(#unitCard:not(.hidden)) #bdHud{visibility:hidden;}
 #rp3Cq .cqB button{flex:1;min-height:40px;border:0;font:800 14px/1 "SUIT Variable",SUIT,sans-serif;color:#fff;cursor:pointer;}
 #rp3Cq .cqGo{background:#c9322f;} #rp3Cq .cqNo{background:#30363d;}
 #rp3Cq .cqM{display:block;width:100%;margin-top:8px;background:none;border:0;border-bottom:1px dashed #6e7681;color:#aeb6bf;font:600 11.5px/1.3 "Pretendard Variable",Pretendard,sans-serif;padding:4px 0;cursor:pointer;}
-/* ⑤ 도감 히든 */
+/* ⑤ 도감 특명 */
 #bookBody .rp3Hg{margin:2px 0 6px;padding:2px 0 2px 8px;border-left:2px solid var(--rc,#c792ea);font:500 11.5px/1.45 "Pretendard Variable",Pretendard,sans-serif;color:#cdd3c8;word-break:keep-all;}
 #bookBody .rp3Hg b{color:#fff;font-weight:800;}
 #bookBody .rp3Hc{display:flex;flex-direction:column;min-width:0;gap:1px;}
@@ -6336,13 +6336,13 @@ function rp3CqDo(k){try{if(k===1)craftAnyway();else if(k===2)craftMute();else ca
   try{const bk=document.getElementById('book');if(bk&&!bk.classList.contains('hidden'))renderBook();}catch(_){}}
 {const f=renderWarn;renderWarn=function(){const r=f.apply(this,arguments);rp3Cq();return r;};}
 
-// --- ⑤ 도감 히든 힌트 ---
+// --- ⑤ 도감 특명 힌트 ---
 function rp3HidIng(n){const ing=(RECIPE[n]||[]).slice();return {first:ing[0],rest:Math.max(0,ing.length-1)};}
 function rp3HidChip(n){const h=rp3HidIng(n),ok=G&&canCraft(n);
   return '<span class="rp3Hc"><b>???</b><small'+(ok?' class="ok"':'')+'>'+(h.first?'<u>'+shortName(h.first)+'</u>':'?')+' + ?'.repeat(h.rest)+(ok?' · 재료 다 모음':'')+'</small></span>';}
 function rp3HidGuide(){return '<p class="rp3Hg" style="--rc:'+((RARITY.hidden||{}).color||'#c792ea')+'">재료 <b>1개만</b> 알려 드려요. 나머지 <b>?</b> 재료까지 판·대기소에 모으면 오른쪽 메뉴 <b>[조합]</b> 창에 <b>???</b>로 뜨고, <b>[조합하기]</b>를 누르면 정체가 밝혀져요.</p>';}
 function rp3HidDetail(cur,inv,TN){const h=rp3HidIng(cur),m=h.first,mu=U[m]||{},mc=(RARITY[mu.t]||{}).color||'#c8d0c2',hv=(inv&&inv[m])||0,rc=(RARITY.hidden||{}).color||'#c792ea';
-  let s='<div class="rp3Hd" style="--rc:'+rc+'"><div class="rp3HdT"><b>???</b><span>히든 조합 · 재료 '+(h.rest+1)+'개</span></div>'
+  let s='<div class="rp3Hd" style="--rc:'+rc+'"><div class="rp3HdT"><b>???</b><span>특명 조합 · 재료 '+(h.rest+1)+'개</span></div>'
     +'<div class="bkH">힌트 재료 <small>하나만 알려 드려요 · 누르면 그 재료 조합식</small></div><div class="bkMs">'
     +(m?'<button type="button" class="bkM '+(hv>0?'h':'n')+'" style="--rc:'+mc+'" onclick="bookGo(\''+m+'\')">'+a3Img(m,'bkMp')
       +'<span><b>'+shortName(m)+'</b><small>'+((TN&&TN[mu.t])||'')+(RECIPE[m]?' · 조합식 보기 ›':' · 뽑기로 나와요')+'</small></span><em>'+hv+'<i>개 있음</i></em></button>':'')
@@ -6410,7 +6410,7 @@ function cbFireSpread(dt){G._fireT=(G._fireT||0)-dt;if(G._fireT>0)return;G._fire
   for(const e of G.enemies){if(!(e.fireT>0))continue;e.fireT-=500;if(!(e.dotT>300)||(e.fireGen||0)>=CB_FIRE.gen)continue;let n=0;
     for(const o of G.enemies){if(n>=CB_FIRE.per)break;if(o===e||o.dotT>0||Math.hypot(o.x-e.x,o.y-e.y)>CB_FIRE.r)continue;
       applyDot(o,e.dotDps/dm*CB_FIRE.spread*(o.boss?CB_FIRE.boss:1),Math.min(e.dotT,1500));o.fireT=Math.min(e.dotT,1500);o.fireGen=(e.fireGen||0)+1;n++;}}}
-function cbTierNote(t){const m={lab:'우라늄 연구소 특수 도박에서만 · 전설과 신화 사이 · 스킬 2',mythic:'스킬 2',hidden:'특수 조합 · 큰 히든 4종은 신화급 · 스킬 2',apex:'특성 1 + 스킬 3',secret:'최상위 · 초월 + 초월(또는 큰 히든) · 특성 1 + 스킬 4'};return m[t]?' <small>'+m[t]+'</small>':'';}
+function cbTierNote(t){const m={lab:'우라늄 연구소 특임 도박에서만 · 부사관과 장교 사이 · 스킬 2',mythic:'스킬 2',hidden:'특수 조합 · 큰 특명 4종은 장교급 · 스킬 2',apex:'특성 1 + 스킬 3',secret:'최상위 · 장군 + 장군(또는 큰 특명) · 특성 1 + 스킬 4'};return m[t]?' <small>'+m[t]+'</small>':'';}
 function cbStar(g,x,y,r,col){g.fillStyle=col;g.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*0.42:r;g.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr);}g.closePath();g.fill();}
 function cbBeret(g){ // 위에서 본 베레모: 한쪽으로 기운 검은 베레 + 금색 별 계급장 + 어깨 별
   g.fillStyle='#16181a';g.beginPath();g.ellipse(0.2,-0.8,5.4,5.0,-0.35,0,TAU);g.fill();
@@ -6425,11 +6425,11 @@ try{UVAR['육군참모총장']=['cos',1,'shell'];SOLO.cos={w:'rifle',u:'#3b4227'
 try{const H={'보통':2.15,'어려움':2.9,'지옥':4.8,'신':10.8};const CBH=(typeof CB_DIFF_HP!=='undefined')?CB_DIFF_HP:{};for(const k in H)if(DIFF[k]&&CBH[k])DIFF[k].hp=CBH[k];}catch(_){}
 // 16차: 지옥만 좀비 수 −10% · 이동 속도 −10%
 try{if(DIFF['지옥']&&!DIFF['지옥'].cnt){DIFF['지옥'].cnt=CB_HELL.cnt;DIFF['지옥'].spd=+(DIFF['지옥'].spd*CB_HELL.spd).toFixed(3);if(CB_HELL.cap)DIFF['지옥'].cap=CB_HELL.cap;}}catch(_){}
-// 16차 비밀 3종 그림·아이콘(기존 그림 종류 재사용) · 공격 종류 표
+// 16차 원수 3종 그림·아이콘(기존 그림 종류 재사용) · 공격 종류 표
 try{SP['지상작전사령부']='tank';SP['특수전사령부']='soldier';SP['육군미사일전략사령부']='arty';}catch(_){}
 try{UVAR['지상작전사령부']=['k2',3,'shell0'];UVAR['특수전사령부']=['spec707',3,'bul'];UVAR['육군미사일전략사령부']=['tel5',2,'bal'];}catch(_){}
 try{A3TYP['지상작전사령부']='관통형';A3TYP['특수전사령부']='관통형';A3TYP['육군미사일전략사령부']='진동형';}catch(_){}
-// 16차 등급 휘장: 특수 = 예전 비밀 모양(오각형 + 방사능 표시)을 연두색으로 · 비밀 = 초월 모양 + 별 4개(대장)
+// 16차 등급 휘장: 특임 = 예전 원수 모양(오각형 + 방사능 표시)을 연두색으로 · 원수 = 장군 모양 + 별 4개(대장)
 function cbLook(orig,cache,k,ka,tier,as,args){if(cache[k])return cache[k];const sv=cache[ka],rc=RARITY[as];delete cache[ka];RARITY[as]=RARITY[tier];let r;
   try{r=orig.apply(null,[as].concat(args));}finally{RARITY[as]=rc;if(sv)cache[ka]=sv;else delete cache[ka];}cache[k]=r;return r;}
 try{const _vB=vBase;vBase=function(tier){const a=[].slice.call(arguments,1);
@@ -6442,4 +6442,27 @@ try{const _vI=vIns;vIns=function(tier,dt){
   return _vI.apply(null,arguments);};}catch(_){}
 </script>
 <script>/*ROLE_PLAN_V3_BOOKLINK*/(function(){function chk(){var h='';try{h=decodeURIComponent(location.hash||'');}catch(e){h=location.hash||'';}if(h==='#도감'||h==='#book'){try{openBook();var bk=document.getElementById('book');bk.style.setProperty('z-index','100','important');var cb=window.closeBook;if(cb&&!cb._lk){window.closeBook=function(){bk.style.removeProperty('z-index');return cb.apply(this,arguments);};window.closeBook._lk=1;}}catch(e){}}}window.addEventListener('load',function(){setTimeout(chk,400);});window.addEventListener('hashchange',chk);})();</script></body>
+<script>/*ROLE_PLAN_V3_GRADE 18차 계급장*/
+const RANK_D=(function(){const P=(cx,cy,R)=>{let d='';for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,r=i%2?R*.42:R;d+=(i?'L':'M')+(cx+Math.cos(a)*r).toFixed(1)+' '+(cy+Math.sin(a)*r).toFixed(1);}return d+'Z';};
+  const st=n=>{let d='';for(let i=0;i<n;i++){const y=20-(n*7-3)/2+i*7;d+='M9 '+y+'h22v4h-22Z';}return {w:40,d};};
+  const eye=(x,y,r)=>'M'+(x-r)+' '+y+'a'+r+' '+r+' 0 1 0 '+(2*r)+' 0a'+r+' '+r+' 0 1 0 '+(-2*r)+' 0';
+  let s5='';for(let i=0;i<5;i++)s5+=P(10+i*20,20,10);
+  return {common:st(1),uncommon:st(2),special:st(3),rare:st(4),
+    legend:{w:40,s:1,d:'M8 13L20 21L32 13M8 22L20 30L32 22'},
+    lab:{w:40,d:'M16 5h8v10l9 17a3 3 0 0 1-3 4h-20a3 3 0 0 1-3-4l9-17Z',h:'M11 26h18v3h-18Z'},
+    mythic:{w:40,d:'M20 6L31 20L20 34L9 20Z'},
+    hidden:{w:40,d:'M20 5C30 5 33 14 33 22L33 35L28 31L24 35L20 31L16 35L12 31L7 35L7 22C7 14 10 5 20 5Z',h:eye(15,19,2.6)+eye(25,19,2.6)},
+    apex:{w:40,d:P(20,21,16)},secret:{w:100,d:s5}};})();
+function rkKey(r){return typeof r==='string'?r:Object.keys(RARITY).find(k=>RARITY[k]===r);}
+// 글자 옆 계급장 (dark=1: 색 배경 위라 어두운 색으로)
+function rkI(r,dark){const k=rkKey(r),R=RANK_D[k];if(!R||!RARITY[k])return '';const c=dark?'#14160f':RARITY[k].color,hc=dark?RARITY[k].color:'#14160f';
+  return '<svg class="rkI" viewBox="0 0 '+R.w+' 40" aria-hidden="true" style="display:inline-block;height:1.05em;width:'+(1.05*R.w/40).toFixed(2)+'em;vertical-align:-.18em;margin-right:.25em;color:'+c+'"><path d="'+R.d+'" '+(R.s?'fill="none" stroke="currentColor" stroke-width="4.5" stroke-linejoin="round"':'fill="currentColor"')+'/>'+(R.h?'<path d="'+R.h+'" fill="'+hc+'"/>':'')+'</svg>';}
+// 지도 위 부대 아래 등급 표시도 같은 계급장으로
+try{const _vI2=vIns;vIns=function(tier,dt){const R=RANK_D[tier];if(!R||typeof Path2D==='undefined')return _vI2.apply(null,arguments);
+  const k='rk|'+tier+'|'+dt;if(VINS[k])return VINS[k];const c=vHex(RARITY[tier].color),sc=tier==='secret'?.3:.3,p=new Path2D(R.d);
+  VINS[k]=vSprite(44,g=>{g.save();g.translate(-R.w*sc/2,17-20*sc);g.scale(sc,sc);g.lineCap='round';g.lineJoin='round';g.strokeStyle='#0d0e0a';
+    if(R.s){g.lineWidth=9;g.stroke(p);g.strokeStyle=c;g.lineWidth=4.5;g.stroke(p);}
+    else{g.lineWidth=5;g.stroke(p);g.fillStyle=c;g.fill(p);if(R.h){g.fillStyle='#0d0e0a';g.fill(new Path2D(R.h));}}
+    g.restore();});return VINS[k];};}catch(_){}
+</script>
 </html>
