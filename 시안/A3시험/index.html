@@ -3499,7 +3499,7 @@ function fieldFx(){const M=(G&&G.mod)||{},r={brk:0,brkSk:0,mbrk:0,mbrkSk:0,amp:0
     const o={label,val,dup:1};m[id]=o;(r.src[key]||(r.src[key]=[])).push(o);return true;};
   const pc=v=>Math.round((v-1)*100);
   try{for(const sl of SLOTS){const t=sl.tower;if(!t)continue;const n=t.name,u=U[n];if(!u||u.junk)continue;const sn=shortName(n);
-    if(u.buff&&add('buff',n,sn,`공 +${pc(u.buff.dmg)}% 속 +${pc(u.buff.as)}%`)){r.bdm*=u.buff.dmg;r.bas*=u.buff.as;}   /* buffMult와 같은 규칙 */
+    if(u.buff&&n!==GEN.cmd&&add('buff',n,sn,`공 +${pc(u.buff.dmg)}% 속 +${pc(u.buff.as)}%`)){r.bdm*=u.buff.dmg;r.bas*=u.buff.as;}   /* buffMult와 같은 규칙 */
     if(u.debuff&&add('amp',n,sn,`+${pc(u.debuff)}%`))r.amp+=u.debuff-1;                                              /* ampOf와 같은 규칙 */
     if(t.rallyUntil>G.t){if(!r.rally)r.rally={n:0,mul:1,left:0};r.rally.n++;r.rally.mul=Math.max(r.rally.mul,t.rallyMul||1);r.rally.left=Math.max(r.rally.left,t.rallyUntil-G.t);}
     if(u.cd>=9999)continue; /* 공격하지 않는 부대는 맞힐 때 거는 효과가 없음 */
@@ -3645,14 +3645,14 @@ function toggleSpeed(){if(!G)return;const i=SPEEDS.indexOf(G.speed);G.speed=SPEE
 const BUFF_CAP=1.8; // 버프 중첩 상한 — 통신병 도배 스노볼 방지
 function buffMult(t){let dm=1,as=1;const seen={};
   for(const s of SLOTS){const b=s.tower;if(!b||b===t||seen[b.name])continue;const bu=U[b.name].buff;
-    if(bu&&Math.hypot(b.x-t.x,b.y-t.y)<=U[b.name].range*((G&&G.mod&&G.mod.buffRange)||1)){seen[b.name]=1;dm*=bu.dmg;as*=bu.as;}} // S35 같은 유닛 이름은 안 겹침
-  return buffCap(dm,as,buffAmpOf(t,(G&&G.mod)||{}));}
+    if(bu&&b.name!==GEN.cmd&&Math.hypot(b.x-t.x,b.y-t.y)<=U[b.name].range*((G&&G.mod&&G.mod.buffRange)||1)){seen[b.name]=1;dm*=bu.dmg;as*=bu.as;}} // S35 같은 유닛 이름은 안 겹침
+  dm*=(t._cmdM||1);return buffCap(dm,as,buffAmpOf(t,(G&&G.mod)||{}));}
 // S35b 버프 배율 → 상한 적용 (전투·버프 패널 공용)
 function buffCap(dm,as,amp){const cap=Math.min(BUFF_HARD,1+(BUFF_CAP-1)*amp);return{dm:Math.min(1+(dm-1)*amp,cap),as:Math.min(1+(as-1)*amp,cap)};}
 // S35 저격대 유닛은 강화(버프) 효과를 더 크게 받음 — 저격대 덱의 짝은 '강화'
 function buffAmpOf(t,M){M=M||(G&&G.mod)||{};const u=t&&U[t.name];return (M.buffAmp||1)*(u&&u.dt==='pierce'?(M.pierceBuff||1)+(M.pierceBuffAdd||0):1);}
 function update(dt){
-  G.t+=dt;pasTick();
+  G.t+=dt;pasTick();genTick();
   // 자동 웨이브 카운트다운
   if(!G.over&&(G.wave<MAX_WAVE||G.endless)){G.nextWaveT-=dt;if(G.nextWaveT<=0)nextWave();}
   else if(!G.over&&G.activeMission&&G.enemies.some(e=>e.mission)){G.nextWaveT-=dt;if(G.nextWaveT<=0&&G.wave>=G.activeMission.deadlineWave){missionFail();return;}} // 30웨이브: 마지막 웨이브 시간이 끝나면 판정
@@ -3662,7 +3662,7 @@ function update(dt){
   G._auraT=(G._auraT||0)-dt;
   if(G._auraT<=0){G._auraT=500;
     for(const a of G.enemies){
-      if(a.healAura){for(const e of G.enemies){if(e!==a&&e.hp<e.maxhp&&Math.hypot(e.x-a.x,e.y-a.y)<(a.healR||70))e.hp=Math.min(e.maxhp,e.hp+e.maxhp*a.healAura);}}
+      if(a.healAura&&!(a._ewT>G.t)){for(const e of G.enemies){if(e!==a&&e.hp<e.maxhp&&Math.hypot(e.x-a.x,e.y-a.y)<(a.healR||70))e.hp=Math.min(e.maxhp,e.hp+e.maxhp*a.healAura);}}
     }
   }
   for(let i=G.enemies.length-1;i>=0;i--){const e=G.enemies[i];
@@ -3678,7 +3678,7 @@ function update(dt){
             spawnZombie('normal',{hpMul:0.5,seg:e.seg,p:e.p,x:e.x+(Math.random()*20-10),y:e.y+(Math.random()*20-10)});}}
     }
     // S36 괴성꾼: 기절 중이 아니면 주기적으로 괴성 → 주변 좀비 광분(자신 제외)
-    if(e.scream&&!(e.stunT>0)){e.scrT-=dt;if(e.scrT<=0){e.scrT=SCREAM_EVERY;screamAt(e);}}
+    if(e.scream&&!(e.stunT>0)&&!(e._ewT>G.t)){e.scrT-=dt;if(e.scrT<=0){e.scrT=SCREAM_EVERY;screamAt(e);}}
     moveEnemy(e,dt); // 순환 — 빠져나가지 않음
   }
   // 수용 한계 초과 = 패배 (제때 처리 못하면 좀비가 트랙에 쌓임)
@@ -3821,7 +3821,7 @@ function dealDamage(e,s){
   if(e.boss&&G.mod)dmg*=G.mod.bossDmg||1; // S36b 보스 피해
   const brk=brkOf(e),mbrk=mbrkOf(e);
   const amp=ampOf(e);if(amp)dmg*=1+amp;          // 받는 피해 증가 (합계 상한)
-  if(e.stunT>0)dmg*=SYN.stun;dmg=kcHit(e,s,dmg);                    // 시너지① 기절한 적
+  if(e.stunT>0)dmg*=SYN.stun;dmg=kcHit(e,s,dmg);dmg=genHit(e,s,dmg);                    // 시너지① 기절한 적
   if(s.splash&&e.slowT>0)dmg*=SYN.slowAoe;       // 시너지② 느려진 적 + 광역
   let pct=0;
   if(s.maxHpPct)pct+=e.maxhp*s.maxHpPct;         // 최대체력 비례 추가딜
@@ -4491,7 +4491,7 @@ function draw(){
   cbDrawGround();
   vDrawCorpses();
   for(const e of G.enemies){ctx.save();a3X(e.x,e.y);drawZombie(e);ctx.restore();}
-  cbDrawZTop();kcDraw();
+  cbDrawZTop();kcDraw();genDraw();
   vFlushAir();
   for(const s of G.shots)drawShot(s);
   for(const f of G.fx)drawFx(f);
@@ -4527,6 +4527,7 @@ function draw(){
 }
 // S27 지정 포격 표시: 조준 원(마우스 위치) + 탄착 예정 원(좁아지는 링). 그림 담당이 모양을 바꿔도 됨
 function drawS27Fx(c){if(!G)return;
+  genDrawZones();
   for(const s of G.strikes){const k=Math.max(0,s.t/s.max);
     c.save();c.strokeStyle='#f0883e';c.lineWidth=2;c.setLineDash([6,5]);
     c.beginPath();c.arc(s.x,s.y,s.r,0,7);c.stroke();c.setLineDash([]);
@@ -6494,8 +6495,7 @@ function kcDraw(){if(!G)return;const c=ctx,now=G.t;
 const PAS={'TICN 전술통신':{s:0.92},'드론봇중대':{s:0.90},'육군 방공여단':{s:0.88},'드론봇 군단':{s:0.85},'연막 차장반':{s:0.88},'전자전 부대':{s:0.85},
   'KM9ACE 전투공병차':{b:5},'무인수색차':{b:5},'현궁 대전차':{b:8},'LAH 편대':{b:10},'수도기계화사단':{b:12},'대전차 매복조':{b:8},'특수정찰대':{b:10}};
 for(const n in PAS){const u=U[n];if(!u)continue;if(PAS[n].s)u.pSlow=PAS[n].s;if(PAS[n].b)u.pBrk=PAS[n].b;}
-let _pasT=-1e9;
-function pasTick(){if(!G||G.t-_pasT<100)return;_pasT=G.t;
+function pasTick(){if(!G||G.t-(G._pasT==null?-1e9:G._pasT)<100)return;G._pasT=G.t;
   for(const sl of SLOTS){const t=sl.tower;if(!t)continue;const u=U[t.name];if(!u||!(u.pSlow||u.pBrk))continue;const key='P:'+t.name;
     for(const e of G.enemies){if(Math.hypot(t.x-e.x,t.y-e.y)>u.range)continue;
       if(u.pSlow)applySlow(e,u.pSlow,260,key);if(u.pBrk)applyBrk(e,key,u.pBrk,260);}}}
@@ -6503,4 +6503,90 @@ function pasText(u){if(!u)return '';const a=[];if(u.pSlow)a.push(Math.round((1-u
   return a.length?'상시: 사거리 안 모든 좀비 '+a.join(' · '):'';}
 {const _pt=rpPassiveText;rpPassiveText=function(n){const a=_pt(n),b=pasText(U[n]);return a&&b?a+' / '+b:(a||b);};}
 {const _ut=unitTags;unitTags=function(u){const fx=_ut(u);if(u&&u.pSlow)fx.unshift('상시둔화'+Math.round((1-u.pSlow)*100)+'%');if(u&&u.pBrk)fx.unshift('상시방깍'+u.pBrk);return fx;};}
+</script><script>/*ROLE_PLAN_V3_GEN 21차 장군 특색*/
+const GEN={cmd:'육군참모총장',ally:'한미연합사령부',mech:'수도기계화사단',ew:'드론봇 군단',strat:'전략사령부',
+  cmdPer:0.05,cmdSelf:0.6,cmdTiers:['common','uncommon','special','rare','legend','lab','mythic'],
+  allyWin:3000,allyAmp:0.2,allyDur:4000,allyBoost:1.3,
+  mechTypes:{tank:1,armored:1,shielded:1},mechDm:1.6,mechBoss:0.8,
+  ewSelf:0.6,ewEvery:8000,ewStun:1000,
+  stratCd:0.7,stratZone:8000,stratDot:0.1,stratBoth:1.5,stratIdle:60000,stratIdleDm:0.5};
+const GEN_ALLY_BASE=U[GEN.ally]&&U[GEN.ally].buff?{...U[GEN.ally].buff}:null;
+function genHas(n){for(const s of SLOTS)if(s.tower&&s.tower.name===n)return true;return false;}
+function genRC(s){return s&&s.ci!=null?{r:Math.floor(s.ci/10),c:s.ci%10}:null;}
+// 지휘 계통: 참모총장 칸 기준 가로·세로 2칸 안(5×5)의 서로 다른 계급 수
+function genCmdInfo(s){const o=genRC(s);if(!o)return{n:0,list:[]};const seen={};
+  for(const sl of SLOTS){const t=sl.tower;if(!t)continue;const q=genRC(sl);if(Math.abs(q.r-o.r)>2||Math.abs(q.c-o.c)>2)continue;
+    const tr=U[t.name]&&U[t.name].t;if(GEN.cmdTiers.includes(tr))seen[tr]=1;}
+  const list=GEN.cmdTiers.filter(k=>seen[k]);return{n:list.length,list};}
+function genTick(){if(!G)return;if(G.t-(G._genT==null?-1e9:G._genT)<250)return;G._genT=G.t;
+  // ① 지휘 계통 배율을 부대마다 계산해 둠
+  const cmds=[];for(const s of SLOTS)if(s.tower)s.tower._cmdM=1;
+  for(const s of SLOTS){if(s.tower&&s.tower.name===GEN.cmd){const i=genCmdInfo(s);s.tower._cmdN=i.n;cmds.push({rc:genRC(s),m:1+GEN.cmdPer*i.n});}}
+  if(cmds.length)for(const s of SLOTS){const t=s.tower;if(!t)continue;const q=genRC(s);
+    for(const c of cmds)if(Math.abs(q.r-c.rc.r)<=2&&Math.abs(q.c-c.rc.c)<=2)t._cmdM=Math.max(t._cmdM,c.m);}
+  // ② 연합 작전: 한미연합 사거리 안에 총격·포격·저격이 다 있으면 강화 ×1.3
+  if(GEN_ALLY_BASE){let full=false;
+    for(const s of SLOTS){const t=s.tower;if(!t||t.name!==GEN.ally)continue;const r=U[GEN.ally].range,dts={};
+      for(const s2 of SLOTS){const b=s2.tower;if(!b||b===t)continue;if(Math.hypot(b.x-t.x,b.y-t.y)<=r)dts[U[b.name].dt]=1;}
+      if(dts.phys&&dts.magic&&dts.pierce){full=true;t._allyFull=1;}else t._allyFull=0;}
+    const k=full?GEN.allyBoost:1;U[GEN.ally].buff={dmg:1+(GEN_ALLY_BASE.dmg-1)*k,as:1+(GEN_ALLY_BASE.as-1)*k};}
+  // ④ 전자전: 사거리 안 괴성꾼·치유체 봉쇄 + 8초마다 1초 기절
+  for(const s of SLOTS){const t=s.tower;if(!t||t.name!==GEN.ew)continue;const r=U[GEN.ew].range;
+    if(t._ewN==null||t._ewN>G.t+GEN.ewEvery)t._ewN=G.t+GEN.ewEvery;
+    const burst=G.t>=t._ewN;if(burst)t._ewN=G.t+GEN.ewEvery;let hit=0;
+    for(const e of G.enemies){if(Math.hypot(e.x-t.x,e.y-t.y)>r)continue;
+      if(e.scream||e.healAura)e._ewT=G.t+400;if(burst){applyStun(e,GEN.ewStun);hit++;}}
+    if(burst&&hit){(G._ewRing||(G._ewRing=[])).push({x:t.x,y:t.y,r,t0:G.t});
+      if(G.floats&&G.floats.length<60)G.floats.push({x:t.x,y:t.y-30,txt:'전자전 교란',col:'#3ff0e6',life:900});}}
+  // ⑤ 화력 지대: 포격 자리 불바다
+  const Z=G._genZones;if(Z&&Z.length){for(let i=Z.length-1;i>=0;i--){const z=Z[i];if(G.t>z.until){Z.splice(i,1);continue;}if(G.t<z.at)continue;
+    for(const e of G.enemies)if(Math.hypot(e.x-z.x,e.y-z.y)<=z.r)applyDot(e,z.dps,600);}}
+}
+function genHit(e,s,dmg){const t=s&&s.owner,n=t&&t.name;if(!n)return dmg;
+  // ② 연합 작전 기록: 3초 안에 총격·포격·저격을 다 맞으면 합동 타격
+  if(GEN_ALLY_BASE&&s.dt&&G._allyOn!==false){const j=e._jt||(e._jt={});j[s.dt]=G.t;
+    if(j.phys>G.t-GEN.allyWin&&j.magic>G.t-GEN.allyWin&&j.pierce>G.t-GEN.allyWin&&genAllyOn()){
+      const fresh=!(e.mk&&e.mk['합동']&&e.mk['합동'].until>G.t);applyMark(e,'합동',GEN.allyAmp,GEN.allyDur);
+      if(fresh){G.allyN=(G.allyN||0)+1;if(G.floats&&G.floats.length<60)G.floats.push({x:e.x,y:e.y-30,txt:'합동 타격',col:'#3ff0e6',big:16,life:900});}}}
+  if(n===GEN.cmd)dmg*=GEN.cmdSelf;
+  else if(n===GEN.ew)dmg*=GEN.ewSelf;
+  else if(n===GEN.mech){if(e.boss)dmg*=GEN.mechBoss;else if(GEN.mechTypes[e.type])dmg*=GEN.mechDm;
+    if(e.shield>0){const ab=Math.min(e.shield,dmg);e.shield-=ab;}}
+  else if(n===GEN.strat){if(e.dotT>0&&e.psT>0)dmg*=GEN.stratBoth;if(genStratIdle())dmg*=GEN.stratIdleDm;}
+  return dmg;}
+function genAllyOn(){if(!G)return false;if(G._allyC&&G.t-G._allyC.t<500)return G._allyC.v;const v=genHas(GEN.ally);G._allyC={t:G.t,v};return v;}
+function genStratIdle(){return !(G._lastStrike!=null&&G.t-G._lastStrike<=GEN.stratIdle);}
+{const _cd=strikeCdNow;strikeCdNow=function(){return _cd()*(G&&genHas(GEN.strat)?GEN.stratCd:1);};}
+{const _fs=fireStrike;fireStrike=function(x,y){const ok=_fs(x,y);if(ok&&G){G._lastStrike=G.t;
+  if(genHas(GEN.strat)){const at=G.t+STRIKE_DELAY;(G._genZones||(G._genZones=[])).push({x,y,r:STRIKE_R,at,until:at+GEN.stratZone,dps:strikeDmg()*GEN.stratDot});}}return ok;};}
+function genDrawZones(){if(!G||!G._genZones)return;const c=ctx;
+  for(const z of G._genZones){if(G.t<z.at)continue;const left=Math.max(0,(z.until-G.t)/GEN.stratZone),fl=0.75+0.25*Math.sin(G.t/90);
+    c.save();a3X(z.x,z.y);const g=c.createRadialGradient(z.x,z.y,4,z.x,z.y,z.r);
+    g.addColorStop(0,'rgba(255,120,30,'+(0.42*left*fl+0.08)+')');g.addColorStop(1,'rgba(255,60,20,0)');
+    c.fillStyle=g;c.beginPath();c.arc(z.x,z.y,z.r,0,7);c.fill();c.restore();}}
+function genDraw(){if(!G)return;const c=ctx;
+  // ④ 전자전 교란 고리
+  if(G._ewRing)for(let i=G._ewRing.length-1;i>=0;i--){const o=G._ewRing[i],k=(G.t-o.t0)/700;if(k>1||k<0){G._ewRing.splice(i,1);continue;}
+    c.save();a3X(o.x,o.y);c.strokeStyle='rgba(63,240,230,'+(0.8*(1-k))+')';c.lineWidth=3;c.beginPath();c.arc(o.x,o.y,o.r*(0.3+0.7*k),0,7);c.stroke();c.restore();}
+  // 봉쇄된 괴성꾼·치유체 위에 X
+  for(const e of G.enemies){if(!(e._ewT>G.t))continue;const y=e.y-(e.r||10)-8;c.save();c.strokeStyle='#3ff0e6';c.lineWidth=2;
+    c.beginPath();c.moveTo(e.x-4,y-4);c.lineTo(e.x+4,y+4);c.moveTo(e.x+4,y-4);c.lineTo(e.x-4,y+4);c.stroke();c.restore();}
+  // ① 참모총장을 누르면 주변 2칸이 밝아지고 계급 수가 보임
+  const sel=G.selected;if(sel&&sel.tower&&sel.tower.name===GEN.cmd&&sel.ci!=null){const o=genRC(sel),i=genCmdInfo(sel);
+    const r0=Math.max(0,o.r-2),r1=Math.min(6,o.r+2),c0=Math.max(0,o.c-2),c1=Math.min(9,o.c+2);
+    const A=CELLS[r0*10+c0],B=CELLS[r1*10+c1],x0=A.x-24,y0=A.y-25,x1=B.x+24,y1=B.y+25;
+    c.save();c.fillStyle='rgba(63,240,230,.12)';c.fillRect(x0,y0,x1-x0,y1-y0);c.strokeStyle='rgba(63,240,230,.9)';c.lineWidth=2;c.setLineDash([7,5]);c.strokeRect(x0,y0,x1-x0,y1-y0);c.setLineDash([]);
+    const txt='계급 '+i.n+'/7 · 공격력 +'+Math.round(GEN.cmdPer*i.n*100)+'%';c.font='900 13px '+FNT_HEAD;c.textAlign='center';const w=c.measureText(txt).width+14,ty=Math.max(14,y0-6);
+    c.fillStyle='#0d1a12';c.fillRect(sel.x-w/2,ty-15,w,19);c.fillStyle='#3ff0e6';c.fillText(txt,sel.x,ty-1);c.restore();}}
+function genText(n){
+  if(n===GEN.cmd){let a='지휘 계통: 주변 2칸 안에 서 있는 서로 다른 계급(이병~장교, 최대 7종) 1종당 그 안 부대 공격력 +5% · 본체 피해 −40%';
+    try{if(G)for(const s of SLOTS)if(s.tower&&s.tower.name===n){a+=' (지금 '+genCmdInfo(s).n+'/7)';break;}}catch(_){}return a;}
+  if(n===GEN.ally)return '연합 작전: 같은 좀비가 3초 안에 총격·포격·저격을 다 맞으면 합동 타격 — 받는 피해 +20% · 사거리 안에 세 갈래가 다 있으면 강화 1.3배';
+  if(n===GEN.mech)return '기갑 돌파: 강시·철갑귀·방패병에게 피해 +60% · 방패를 2배 빨리 벗김 · 보스에게 −20%';
+  if(n===GEN.ew)return '전자전: 사거리 안 괴성꾼은 괴성을 못 지르고 치유체는 회복을 못 함 · 8초마다 사거리 안 좀비 1초 기절 · 본체 피해 −40%';
+  if(n===GEN.strat)return '화력 지대: 사장님 포격 대기 30초→21초 · 포격 자리에 8초 불바다 · 불과 독이 함께 걸린 좀비에게 1.5배 · 60초 넘게 포격을 안 쓰면 피해 절반';
+  return '';}
+{const _pt=rpPassiveText;rpPassiveText=function(n){if(n===GEN.cmd)return genText(n);const a=_pt(n),b=genText(n);return a&&b?a+' / '+b:(a||b);};}
+{const TAG={[GEN.cmd]:'지휘 계통',[GEN.ally]:'연합 작전',[GEN.mech]:'기갑 돌파',[GEN.ew]:'전자전',[GEN.strat]:'화력 지대'};
+ const _ut=unitTags;unitTags=function(u){const fx=_ut(u);try{for(const k in TAG)if(U[k]===u){fx.unshift(TAG[k]);break;}}catch(_){}return fx;};}
 </script></html>
