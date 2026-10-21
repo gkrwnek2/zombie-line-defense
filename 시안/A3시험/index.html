@@ -3694,8 +3694,8 @@ function update(dt){
       if(u.mode==='strong'){if(e.hp>best){best=e.hp;target=e;}}
       else{if(d<best){best=d;target=e;}}
     }
-    if(target){const up=G.upg[u.dt]||0,upDmg=1+up*UPG_DMG,upAs=1+up*UPG_AS;
-      t.cool=u.cd/Math.min(AS_CAP,bm.as*upAs*(G.mod.as||1)*(u.dt==='pierce'?(G.mod.asPierce||1):1)*(t.rallyUntil>G.t?(t.rallyMul||1):1));let dmg=(u.dmg+t.bonus)*bm.dm*upDmg*G.mod.dmg*techDtDmg(u.dt)*(t.rallyUntil>G.t?(t.rallyDm||1):1);
+    if(target&&t.name===KC_SPOT)target=kcPick(t,u,target);if(target){const up=G.upg[u.dt]||0,upDmg=1+up*UPG_DMG,upAs=1+up*UPG_AS;
+      t.cool=u.cd/Math.min(AS_CAP,bm.as*upAs*(G.mod.as||1)*(u.dt==='pierce'?(G.mod.asPierce||1):1)*(t.rallyUntil>G.t?(t.rallyMul||1):1)*kcRush(t));let dmg=(u.dmg+t.bonus)*bm.dm*upDmg*G.mod.dmg*techDtDmg(u.dt)*(t.rallyUntil>G.t?(t.rallyDm||1):1);
       t.angle=Math.atan2(target.y-t.y,target.x-t.x);t.flash=G.t;
       const dotUp=u.dot?{dps:u.dot.dps*upDmg,dur:u.dot.dur,ps:u.dot.ps}:null; // 지속피해도 강화 반영
       G.shots.push({x:t.x,y:t.y,tx:target.x,ty:target.y,target,owner:t,dmg,dt:u.dt,
@@ -3821,7 +3821,7 @@ function dealDamage(e,s){
   if(e.boss&&G.mod)dmg*=G.mod.bossDmg||1; // S36b 보스 피해
   const brk=brkOf(e),mbrk=mbrkOf(e);
   const amp=ampOf(e);if(amp)dmg*=1+amp;          // 받는 피해 증가 (합계 상한)
-  if(e.stunT>0)dmg*=SYN.stun;                    // 시너지① 기절한 적
+  if(e.stunT>0)dmg*=SYN.stun;dmg=kcHit(e,s,dmg);                    // 시너지① 기절한 적
   if(s.splash&&e.slowT>0)dmg*=SYN.slowAoe;       // 시너지② 느려진 적 + 광역
   let pct=0;
   if(s.maxHpPct)pct+=e.maxhp*s.maxHpPct;         // 최대체력 비례 추가딜
@@ -4491,7 +4491,7 @@ function draw(){
   cbDrawGround();
   vDrawCorpses();
   for(const e of G.enemies){ctx.save();a3X(e.x,e.y);drawZombie(e);ctx.restore();}
-  cbDrawZTop();
+  cbDrawZTop();kcDraw();
   vFlushAir();
   for(const s of G.shots)drawShot(s);
   for(const f of G.fx)drawFx(f);
@@ -4568,7 +4568,7 @@ function vDrawFloats(){const F=G.floats;if(!F||!F.length)return;a3FloatTop();con
       col=f.crit?'#ff9a2e':f.boss?'#ffd54a':n>=1000?'#ffe07a':'#ffffff';
       const sz=(f.crit?19:f.boss?15:n>=1000?14:12.5)*pop;ctx.font=`900 ${Math.round(sz)}px ${FNT_NUM}`;lw=f.crit?5:3.5;
       if(f.crit)txt+='!';}
-    else{col=f.col||(f.sk?'#e3ec8c':f.boss?'#ffd54a':'#fbf6e4');ctx.font=f.col?`900 ${Math.round(14*pop)}px ${FNT_HEAD}`:`800 ${Math.round(12.5*pop)}px ${FNT_BODY}`;}
+    else{col=f.col||(f.sk?'#e3ec8c':f.boss?'#ffd54a':'#fbf6e4');ctx.font=f.col?`900 ${Math.round((f.big||14)*pop)}px ${FNT_HEAD}`:`800 ${Math.round(12.5*pop)}px ${FNT_BODY}`;}
     let fy=Math.max(f.y,A3FY+11),fx=f.x;if(A3PC){const m=/([0-9.]+)px/.exec(ctx.font),fs=m?Math.max(9,Math.round(+m[1]*.87)):12;ctx.font=ctx.font.replace(/[0-9.]+px/,fs+'px');lw*=.87;const B=a3CellBox();if(B){const hh=fs/2+lw/2+1;if(f.y<B.t)fy=Math.min(fy,B.t-hh-2);}}ctx.save();a3X(fx,fy);ctx.lineWidth=lw;ctx.strokeStyle='rgba(8,9,5,.92)';ctx.strokeText(txt,fx,fy+1.5);ctx.strokeText(txt,fx,fy);ctx.fillStyle=col;ctx.fillText(txt,fx,fy);ctx.restore();}
   ctx.restore();}
 // ----- 배치칸 (바닥 받침은 지도 레이어에 미리 그려짐 — 여기선 끌어다 놓기 강조만) -----
@@ -6470,4 +6470,23 @@ const RK_PROMO={common:'이병 입대',uncommon:'일병 진급!',special:'상병
 function rkPromo(name){const t=U[name]&&U[name].t;return RK_PROMO[t]||'+';}
 function rkPromoT(tn){const k=Object.keys(RARITY).find(k=>RARITY[k].name===tn);return RK_PROMO[k]||('['+tn+'] 합류');}
 </script>
-</html>
+<script>/*ROLE_PLAN_V3_KC 20차 킬체인*/
+const KC_SPOT='군단 무인정찰대',KC_HIT='신속대응사단',KC={mark:5000,max:6,spotDm:0.7,hitDm:1.7,rushAt:0.7,rushAs:1.6};
+function kcOn(e){return e&&e.kcT>G.t;}
+function kcHit(e,s,dmg){const n=s&&s.owner&&s.owner.name;if(!n)return dmg;
+  if(n===KC_SPOT){dmg*=KC.spotDm;if(kcOn(e))e.kcT=G.t+KC.mark;else{let c=0;for(const z of G.enemies)if(kcOn(z))c++;if(c<KC.max)e.kcT=G.t+KC.mark;}}
+  else if(n===KC_HIT&&kcOn(e)){dmg*=KC.hitDm;G.kcN=(G.kcN||0)+1;
+    if(!(e._kcF>G.t)&&G.floats&&G.floats.length<60){e._kcF=G.t+700;G.floats.push({x:e.x,y:e.y-30,txt:'타격!',col:'#ff3d3d',big:19,life:900});}}
+  return dmg;}
+function kcRush(t){return t.name===KC_HIT&&G.enemies.length>=capNow()*KC.rushAt?KC.rushAs:1;}
+// 표적 고르기: 사거리 안에서 표적 없는 좀비 중 진화 단계 높은 것 → 같으면 원래 고른 것
+function kcPick(t,u,def){let b=def,bv=(def.evo||0)*10+(kcOn(def)?0:5);
+  for(const e of G.enemies){if(Math.hypot(e.x-t.x,e.y-t.y)>u.range)continue;const v=(e.evo||0)*10+(kcOn(e)?0:5);if(v>bv){bv=v;b=e;}}return b;}
+function kcDraw(){if(!G)return;const c=ctx,now=G.t;
+  for(const e of G.enemies){if(!kcOn(e))continue;const r=(e.r||10)+7,sp=(now/600)%(Math.PI*2);c.save();a3X(e.x,e.y);
+    c.strokeStyle='rgba(255,210,58,.95)';c.lineWidth=1.6;c.beginPath();c.arc(e.x,e.y,r,0,Math.PI*2);c.stroke();
+    c.beginPath();for(let j=0;j<4;j++){const a=sp+j*Math.PI/2;c.moveTo(e.x+Math.cos(a)*(r-4),e.y+Math.sin(a)*(r-4));c.lineTo(e.x+Math.cos(a)*(r+5),e.y+Math.sin(a)*(r+5));}c.stroke();c.restore();}
+  for(const s of SLOTS){const t=s.tower;if(!t||t.name!==KC_HIT||kcRush(t)===1)continue;c.save();
+    c.font='900 10px '+FNT_HEAD;c.textAlign='center';const w=c.measureText('긴급 투입').width+8;
+    c.fillStyle='#ff3d3d';c.fillRect(t.x-w/2,t.y-34,w,13);c.fillStyle='#fff';c.fillText('긴급 투입',t.x,t.y-24);c.restore();}}
+</script></html>
