@@ -3464,7 +3464,7 @@ function nextWave(){
   // 다음 웨이브를 미리 생성 → 미리보기 카드에 표시
   if(G.wave<MAX_WAVE||G.endless){G.nextQueueW=G.wave+1;G.nextQueue=buildWave(G.wave+1);}
   else{G.nextQueue=null;}
-  const boss=(G.wave%5===0||G.wave===MAX_WAVE);
+  const boss=(G.wave%5===0||G.wave===MAX_WAVE);if(boss)marBossWave();
   if(boss)SFX.boss();else SFX.wave();
   log(boss?`${G.wave}웨이브 — ${G.wave===MAX_WAVE?'최종 보스':'보스'} 등장! `:`${G.wave}웨이브 시작`,boss?'#f2cc60':'#79c0ff');
   questProgress('wave',G.wave);
@@ -3652,7 +3652,7 @@ function buffCap(dm,as,amp){const cap=Math.min(BUFF_HARD,1+(BUFF_CAP-1)*amp);ret
 // S35 저격대 유닛은 강화(버프) 효과를 더 크게 받음 — 저격대 덱의 짝은 '강화'
 function buffAmpOf(t,M){M=M||(G&&G.mod)||{};const u=t&&U[t.name];return (M.buffAmp||1)*(u&&u.dt==='pierce'?(M.pierceBuff||1)+(M.pierceBuffAdd||0):1);}
 function update(dt){
-  G.t+=dt;pasTick();genTick();
+  G.t+=dt;pasTick();genTick();marTick();
   // 자동 웨이브 카운트다운
   if(!G.over&&(G.wave<MAX_WAVE||G.endless)){G.nextWaveT-=dt;if(G.nextWaveT<=0)nextWave();}
   else if(!G.over&&G.activeMission&&G.enemies.some(e=>e.mission)){G.nextWaveT-=dt;if(G.nextWaveT<=0&&G.wave>=G.activeMission.deadlineWave){missionFail();return;}} // 30웨이브: 마지막 웨이브 시간이 끝나면 판정
@@ -3694,8 +3694,8 @@ function update(dt){
       if(u.mode==='strong'){if(e.hp>best){best=e.hp;target=e;}}
       else{if(d<best){best=d;target=e;}}
     }
-    if(target&&t.name===KC_SPOT)target=kcPick(t,u,target);if(target){const up=G.upg[u.dt]||0,upDmg=1+up*UPG_DMG,upAs=1+up*UPG_AS;
-      t.cool=u.cd/Math.min(AS_CAP,bm.as*upAs*(G.mod.as||1)*(u.dt==='pierce'?(G.mod.asPierce||1):1)*(t.rallyUntil>G.t?(t.rallyMul||1):1)*kcRush(t));let dmg=(u.dmg+t.bonus)*bm.dm*upDmg*G.mod.dmg*techDtDmg(u.dt)*(t.rallyUntil>G.t?(t.rallyDm||1):1);
+    if(target&&t.name===KC_SPOT)target=kcPick(t,u,target);if(target&&t.name===MAR.dec)target=marPick(t,u,target);if(target){const up=G.upg[u.dt]||0,upDmg=1+up*UPG_DMG,upAs=1+up*UPG_AS;
+      t.cool=u.cd/Math.min(AS_CAP,bm.as*upAs*(G.mod.as||1)*(u.dt==='pierce'?(G.mod.asPierce||1):1)*(t.rallyUntil>G.t?(t.rallyMul||1):1)*kcRush(t)*marRush());let dmg=(u.dmg+t.bonus)*bm.dm*upDmg*G.mod.dmg*techDtDmg(u.dt)*(t.rallyUntil>G.t?(t.rallyDm||1):1);
       t.angle=Math.atan2(target.y-t.y,target.x-t.x);t.flash=G.t;
       const dotUp=u.dot?{dps:u.dot.dps*upDmg,dur:u.dot.dur,ps:u.dot.ps}:null; // 지속피해도 강화 반영
       G.shots.push({x:t.x,y:t.y,tx:target.x,ty:target.y,target,owner:t,dmg,dt:u.dt,
@@ -3821,7 +3821,7 @@ function dealDamage(e,s){
   if(e.boss&&G.mod)dmg*=G.mod.bossDmg||1; // S36b 보스 피해
   const brk=brkOf(e),mbrk=mbrkOf(e);
   const amp=ampOf(e);if(amp)dmg*=1+amp;          // 받는 피해 증가 (합계 상한)
-  if(e.stunT>0)dmg*=SYN.stun;dmg=kcHit(e,s,dmg);dmg=genHit(e,s,dmg);                    // 시너지① 기절한 적
+  if(e.stunT>0)dmg*=SYN.stun;dmg=kcHit(e,s,dmg);dmg=genHit(e,s,dmg);dmg=marHit(e,s,dmg);                    // 시너지① 기절한 적
   if(s.splash&&e.slowT>0)dmg*=SYN.slowAoe;       // 시너지② 느려진 적 + 광역
   let pct=0;
   if(s.maxHpPct)pct+=e.maxhp*s.maxHpPct;         // 최대체력 비례 추가딜
@@ -4491,7 +4491,7 @@ function draw(){
   cbDrawGround();
   vDrawCorpses();
   for(const e of G.enemies){ctx.save();a3X(e.x,e.y);drawZombie(e);ctx.restore();}
-  cbDrawZTop();kcDraw();genDraw();
+  cbDrawZTop();kcDraw();genDraw();marDraw();
   vFlushAir();
   for(const s of G.shots)drawShot(s);
   for(const f of G.fx)drawFx(f);
@@ -6588,5 +6588,52 @@ function genText(n){
   return '';}
 {const _pt=rpPassiveText;rpPassiveText=function(n){if(n===GEN.cmd)return genText(n);const a=_pt(n),b=genText(n);return a&&b?a+' / '+b:(a||b);};}
 {const TAG={[GEN.cmd]:'지휘 계통',[GEN.ally]:'연합 작전',[GEN.mech]:'기갑 돌파',[GEN.ew]:'전자전',[GEN.strat]:'화력 지대'};
+ const _ut=unitTags;unitTags=function(u){const fx=_ut(u);try{for(const k in TAG)if(U[k]===u){fx.unshift(TAG[k]);break;}}catch(_){}return fx;};}
+</script><script>/*ROLE_PLAN_V3_MAR 22차 원수 특색*/
+const MAR={cntr:'지상작전사령부',dec:'특수전사령부',mis:'육군미사일전략사령부',
+  cntrNeed:100,cntrDur:10000,cntrAs:1.4,
+  decDm:2,decExec:0.15,
+  wasteName:'핵폐기물',wastePer:0.12,wasteMax:6,misDelay:4000,misMul:2,misPct:0.05};
+function marHas(n){for(const s of SLOTS)if(s.tower&&s.tower.name===n)return s.tower;return null;}
+function marVip(e){return !!(e&&(e.boss||e.scream||e.healAura||e.type==='final'));}
+function marWaste(){let n=0;try{n=inventory()[MAR.wasteName]||0;}catch(_){}return Math.min(MAR.wasteMax,n);}
+function marRush(){return G&&G._cntrUntil>G.t?MAR.cntrAs:1;}
+// ① 총반격 명령: 킬체인 '타격!'·합동 타격 1번 = 반격 점수 1점, 100점마다 전 부대 10초 공격 속도 +40%
+function marTick(){if(!G)return;
+  const kc=G.kcN||0,al=G.allyN||0;const d=Math.max(0,kc-(G._mKc||0))+Math.max(0,al-(G._mAl||0));G._mKc=kc;G._mAl=al;
+  const t=marHas(MAR.cntr);
+  if(t&&d){G.cntrPts=(G.cntrPts||0)+d;
+    if(G.cntrPts>=MAR.cntrNeed){G.cntrPts-=MAR.cntrNeed;G._cntrUntil=G.t+MAR.cntrDur;G.cntrN=(G.cntrN||0)+1;
+      if(G.floats)G.floats.push({x:t.x,y:t.y-34,txt:'총반격!',col:'#ffd23f',big:20,life:1400,boss:true});}}
+  // ③ 대량 응징 미사일(보스 웨이브 시작 4초 뒤 — 보스가 길에 들어온 다음)
+  if(G._misAt&&G.t>=G._misAt){G._misAt=0;const m=marHas(MAR.mis);if(m)marFire(m);}}
+// ② 참수 작전: 보스·괴성꾼·치유체·변종 군주를 먼저 노림
+function marPick(t,u,def){let b=null,bh=-1;for(const e of G.enemies){if(!(e.hp>0)||!marVip(e))continue;if(Math.hypot(e.x-t.x,e.y-t.y)>u.range)continue;if(e.hp>bh){bh=e.hp;b=e;}}return b||def;}
+function marHit(e,s,dmg){const n=s&&s.owner&&s.owner.name;if(!n)return dmg;
+  if(n===MAR.dec&&marVip(e)){dmg*=MAR.decDm;
+    if(e.boss&&e.hp-dmg<=e.maxhp*MAR.decExec&&e.hp>0){G.decN=(G.decN||0)+1;
+      if(G.floats&&G.floats.length<60)G.floats.push({x:e.x,y:e.y-34,txt:'참수',col:'#ff5a5a',big:20,life:1200,boss:true});return e.hp+1;}}
+  if(n===MAR.mis)dmg*=1+MAR.wastePer*marWaste();
+  return dmg;}
+// ③ 대량 응징: 보스 웨이브가 시작되면 길 위 모든 좀비에게 미사일 1번
+function marBossWave(){if(G&&marHas(MAR.mis))G._misAt=G.t+MAR.misDelay;}
+function marFire(t){const u=U[t.name];const dm=u.dmg*MAR.misMul*(1+MAR.wastePer*marWaste());let n=0;
+  for(const e of G.enemies.slice()){if(!(e.hp>0))continue;n++;
+    dealDamage(e,{dmg:dm,dt:'magic',owner:t,maxHpPct:MAR.misPct,target:e,life:1});}
+  for(let i=G.enemies.length-1;i>=0;i--){const e=G.enemies[i];if(e.hp<=0&&typeof killEnemy==='function')killEnemy(e,i);}
+  G.misN=(G.misN||0)+1;G._misFx={at:G.t,pts:G.enemies.map(e=>({x:e.x,y:e.y}))};
+  if(G.floats)G.floats.push({x:380,y:150,txt:'대량 응징!',col:'#ff8a3d',big:24,life:1600,boss:true});}
+function marDraw(){if(!G)return;const c=ctx;
+  if(G._cntrUntil>G.t){c.save();const a=0.45+0.25*Math.sin(G.t/120);c.strokeStyle='rgba(255,210,63,'+a+')';c.lineWidth=2;
+    for(const s of SLOTS)if(s.tower){c.beginPath();c.arc(s.x,s.y,23,0,Math.PI*2);c.stroke();}c.restore();}
+  const f=G._misFx;if(f&&G.t-f.at<900){const k=1-(G.t-f.at)/900;c.save();c.strokeStyle='rgba(255,138,61,'+k+')';c.lineWidth=3;
+    for(const p of f.pts){c.beginPath();c.moveTo(p.x+40*k,p.y-120*k);c.lineTo(p.x,p.y);c.stroke();c.fillStyle='rgba(255,90,40,'+0.5*k+')';c.beginPath();c.arc(p.x,p.y,16*(1.4-k),0,Math.PI*2);c.fill();}c.restore();}}
+function marText(n){
+  if(n===MAR.cntr){let a='총반격 명령: 킬체인 타격!·합동 타격이 날 때마다 반격 점수 +1 · 100점마다 전 부대 10초간 공격 속도 +40%';try{if(G&&marHas(n))a+=' (지금 '+(G.cntrPts||0)+'/100)';}catch(_){}return a;}
+  if(n===MAR.dec)return '참수 작전: 보스·괴성꾼·치유체·변종 군주를 먼저 노림 · 이들에게 피해 2배 · 보스 체력 15% 이하면 바로 처치';
+  if(n===MAR.mis){let a='대량 응징: 가진 핵폐기물 1개당 피해 +12%(최대 6개 +72%) · 보스 웨이브가 시작되면 길 위 모든 좀비에게 미사일 1번';try{if(G&&marHas(n))a+=' (지금 핵폐기물 '+marWaste()+'개)';}catch(_){}return a;}
+  return '';}
+{const _pt=rpPassiveText;rpPassiveText=function(n){const a=_pt(n),b=marText(n);return a&&b?a+' / '+b:(a||b);};}
+{const TAG={[MAR.cntr]:'총반격 명령',[MAR.dec]:'참수 작전',[MAR.mis]:'대량 응징'};
  const _ut=unitTags;unitTags=function(u){const fx=_ut(u);try{for(const k in TAG)if(U[k]===u){fx.unshift(TAG[k]);break;}}catch(_){}return fx;};}
 </script></html>
