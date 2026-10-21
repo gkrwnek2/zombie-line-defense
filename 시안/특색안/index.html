@@ -1,0 +1,114 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>장군·원수 특색안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT@2.0.5/fonts/static/woff2/SUIT.css">
+<style>
+:root{--bg:#14160f;--ink:#e9ecdf;--mut:#9aa08a;--line:#2f3326;--ap:#3ff0e6;--sc:#ff4fa3;--hd:#ffd23a;--my:#ff3d3d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,sans-serif;padding:28px 16px 56px;line-height:1.6}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font-family:SUIT,sans-serif;font-weight:900;font-size:36px;margin:0 0 6px;letter-spacing:-.6px}
+h2{font-family:SUIT,sans-serif;font-weight:900;font-size:23px;margin:44px 0 12px;padding-bottom:6px;border-bottom:3px solid var(--ink);display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+h2 i{font-style:normal;color:var(--hd);font-size:15px}
+.lead{color:var(--mut);margin:0;font-size:15.5px}.lead b{color:var(--ink)}
+.learn{display:grid;grid-template-columns:1fr 1fr;gap:0 34px}
+.learn div{padding:11px 0;border-bottom:1px dashed var(--line)}
+.learn b{display:block;font-size:16px}
+.learn span{color:var(--mut);font-size:14px}
+.learn em{font-style:normal;color:var(--hd)}
+.svgw{overflow-x:auto}svg{width:100%;min-width:640px;height:auto;display:block}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+thead th{font-size:13px;color:var(--mut);font-weight:600;border-bottom:2px solid var(--ink)}
+td.u{font-weight:800;font-size:15.5px;white-space:nowrap;border-left:4px solid;padding-left:10px}
+td.u small{display:block;font-weight:500;color:var(--mut);font-size:12px}
+td.k b{font-family:SUIT,sans-serif;font-weight:900;font-size:16px;display:block}
+td.w{color:#ffb3a6;font-size:13.5px}
+td.p{color:var(--mut);font-size:13.5px}
+.grp td{background:#1a1d14;font-family:SUIT,sans-serif;font-weight:900;font-size:14px;letter-spacing:.3px}
+.flow{margin:0;padding:0;list-style:none}
+.flow li{padding:10px 0 10px 54px;position:relative;border-bottom:1px solid var(--line)}
+.flow li span{position:absolute;left:0;top:12px;font-family:SUIT,sans-serif;font-weight:900;font-size:12px;color:var(--bg);background:var(--ap);padding:1px 6px}
+.avoid p{margin:8px 0;padding-left:14px;border-left:3px solid var(--my)}
+.note{margin-top:30px;color:var(--mut);font-size:12.5px;border-top:1px solid var(--line);padding-top:12px}
+@media(max-width:700px){.learn{grid-template-columns:1fr}h1{font-size:28px}table{font-size:13.5px}thead{display:none}tr{display:block;border-bottom:1px solid var(--line);padding:8px 0}td{display:block;border:0;padding:3px 10px}td.u{white-space:normal}.grp td{padding:8px 10px}}
+</style></head><body><div class="wrap">
+<h1>장군·원수 특색안</h1>
+<p class="lead">지금 장군 이상 부대는 "센 숫자"만 다르고 성격이 비슷합니다. 원랜디 상위 유닛처럼 <b>부대마다 조건 하나</b>를 줘서, "이 부대는 ○○된 적에게 세다 → 그럼 ○○을 걸어줄 짝이 필요하다"가 자연스럽게 생기게 만드는 방향입니다.</p>
+
+<h2>원랜디에서 배운 것 <i>→ 우리 게임엔 이렇게</i></h2>
+<div class="learn">
+<div><b>혼자선 부족, 짝이 있어야 완성</b><span>아오키지는 스턴만, 쵸파는 버프만. → <em>장군마다 약점 하나를 일부러 둠</em></span></div>
+<div><b>조건이 곧 덱 이름</b><span>가프=버프덱, 야마토=감속덱, 바질=디버프덱. → <em>우리 덱 5갈래(아래 그림)</em></span></div>
+<div><b>역할 나누기</b><span>묶는 패 · 깎는 패 · 버프 패 · 끝딜 패. → <em>장교급이 깔고 장군이 마무리</em></span></div>
+<div><b>오래 키운 판이 보상받음</b><span>루치·코비는 판이 길수록 강해짐. → <em>원수 1종을 누적형으로</em></span></div>
+<div><b>약점이 다른 패를 부름</b><span>루피는 보스에 약해서 보스 전용 패를 따로 둠. → <em>라인형 장군은 보스에 약하게</em></span></div>
+<div><b>재료를 두고 고민</b><span>같은 재료를 여러 상위패가 원함. → <em>지금 조합식 그대로 두면 이미 생김</em></span></div>
+</div>
+
+<h2>덱 5갈래 <i>깔아주는 장교·특명 → 마무리 장군</i></h2>
+<div class="svgw">
+<svg viewBox="0 0 1000 400" role="img" aria-label="덱 5갈래 그림">
+<style>.t{font-family:SUIT,sans-serif;font-weight:900;fill:#e9ecdf}.s{font-family:Pretendard,sans-serif;font-size:13px;fill:#9aa08a}.a{font-family:Pretendard,sans-serif;font-size:14px;font-weight:700}</style>
+<g font-size="20">
+<text class="t" x="100" y="34" text-anchor="middle">기절덱</text><text class="t" x="300" y="34" text-anchor="middle">감속덱</text><text class="t" x="500" y="34" text-anchor="middle">불·독덱</text><text class="t" x="700" y="34" text-anchor="middle">깎기덱</text><text class="t" x="900" y="34" text-anchor="middle">버프덱</text></g>
+<g stroke="#2f3326" stroke-width="1"><line x1="200" y1="14" x2="200" y2="270"/><line x1="400" y1="14" x2="400" y2="270"/><line x1="600" y1="14" x2="600" y2="270"/><line x1="800" y1="14" x2="800" y2="270"/></g>
+<g class="s" text-anchor="middle">
+<text x="100" y="58">적을 멈춘다</text><text x="300" y="58">적을 느리게</text><text x="500" y="58">계속 타는 피해</text><text x="700" y="58">방어력을 벗긴다</text><text x="900" y="58">아군을 세게</text></g>
+<g class="a" fill="#ff3d3d" text-anchor="middle">
+<text x="100" y="100">현무-Ω · 천광</text><text x="300" y="100">드론봇 전투단</text><text x="500" y="100">군단 포병여단</text><text x="700" y="100">ATACMS · LAH</text><text x="900" y="100">천검 무인편대</text>
+<text x="300" y="122" fill="#3ff0e6">+드론봇 군단 교란</text><text x="500" y="122" fill="#ffd23a">+코드네임 유령</text><text x="900" y="122" fill="#ffd23a">+국군통수권</text></g>
+<g fill="#9aa08a"><path d="M93 140h14l-7 14z"/><path d="M293 140h14l-7 14z"/><path d="M493 140h14l-7 14z"/><path d="M693 140h14l-7 14z"/><path d="M893 140h14l-7 14z"/></g>
+<g class="a" fill="#3ff0e6" text-anchor="middle" font-size="16">
+<text x="100" y="186">신속대응사단</text><text x="300" y="186">군단 무인정찰대</text><text x="500" y="186">전략사령부</text><text x="700" y="186">수도기계화사단</text><text x="900" y="186">한미연합사령부</text></g>
+<g class="s" text-anchor="middle">
+<text x="100" y="206">기절한 적 +80%</text><text x="300" y="206">감속 꽉 찬 적 +100%</text><text x="500" y="206">불+독 둘 다면 ×2</text><text x="700" y="206">깎인 만큼 +피해</text><text x="900" y="206">버프 1개당 +15%</text></g>
+<g class="a" text-anchor="middle"><text x="900" y="238" fill="#3ff0e6">육군참모총장</text><text class="s" x="900" y="256">버프를 2개로 쳐줌</text>
+<text x="100" y="238" fill="#3ff0e6">드론봇 군단</text><text class="s" x="100" y="256">전체 기절 확정(딜 약함)</text></g>
+<rect x="10" y="286" width="980" height="2" fill="#ff4fa3"/>
+<text class="t" x="20" y="316" font-size="17" style="fill:#ff4fa3">원수 — 어느 덱에나 붙는 마무리</text>
+<text class="s" x="20" y="342">지상작전사령부: 적에게 걸린 나쁜 효과 1개당 +20%  ·  특수전사령부: 보스 체력 30% 아래면 ×3(끝딜)  ·  미사일전략사령부: 웨이브 넘길수록 영구 강화</text>
+<text class="s" x="20" y="384">※ 한 판에 "덱 2갈래 + 원수 1개"를 섞는 것이 정답이 되도록 맞춤 — 한 갈래만 몰면 보통은 깨지만 지옥 이상에서 막힘</text>
+</svg></div>
+
+<h2>부대별 특색 <i>조건 → 효과 · 혼자일 때 약점 · 짝</i></h2>
+<table>
+<thead><tr><th>부대</th><th>특색 (조건 → 효과)</th><th>혼자일 때 약점</th><th>짝을 이루면 좋은 부대</th></tr></thead>
+<tbody>
+<tr class="grp"><td colspan="4" style="color:var(--ap)">장군 7</td></tr>
+<tr><td class="u" style="border-color:var(--ap)">한미연합사령부<small>원랜디 가프형</small></td><td class="k"><b>연합 화력</b>이 부대에게 걸린 버프 1개당 피해 +15% (최대 8개, +120%)</td><td class="w">버프 없으면 장군 중 피해 가장 낮음</td><td class="p">천검 무인편대 · 국군통수권 · 육군참모총장</td></tr>
+<tr><td class="u" style="border-color:var(--ap)">육군참모총장<small>원랜디 쵸파형</small></td><td class="k"><b>총지휘</b>사거리 안 장군·원수가 받는 버프를 2개로 쳐줌 + 공격력 +25%</td><td class="w">자기 피해 -40% — 혼자선 판을 못 깸</td><td class="p">한미연합사령부(버프 개수 2배) · 원수 아무나</td></tr>
+<tr><td class="u" style="border-color:var(--ap)">신속대응사단</td><td class="k"><b>기절 사냥</b>기절한 적에게 피해 +80%, 기절 중 처치하면 섬광충격탄 대기 1초 단축</td><td class="w">기절 없으면 평범한 저격</td><td class="p">현무-Ω · 천광 레이저포대 · 드론봇 군단</td></tr>
+<tr><td class="u" style="border-color:var(--ap)">드론봇 군단<small>원랜디 아오키지형</small></td><td class="k"><b>전자 마비</b>8초마다 화면 전체 기절 1초 (보스 0.5초) — 확정으로 걸림</td><td class="w">본체 피해 -40%</td><td class="p">신속대응사단(기절 사냥) · 주딜 아무나</td></tr>
+<tr><td class="u" style="border-color:var(--ap)">군단 무인정찰대<small>원랜디 야마토형</small></td><td class="k"><b>추격 표적</b>감속이 꽉 찬 적(60%, 우리 게임 최대치)에게 피해 +100%</td><td class="w">혼자선 감속을 꽉 못 채움(35%)</td><td class="p">드론봇 전투단(50%) · 드론봇 군단 전자교란(55%)</td></tr>
+<tr><td class="u" style="border-color:var(--ap)">전략사령부</td><td class="k"><b>소각 지대</b>불 또는 독 걸린 적 ×1.4, 둘 다 걸리면 ×2</td><td class="w">불·독 없으면 피해 보통 이하</td><td class="p">군단 포병여단(불) · 코드네임 유령(독)</td></tr>
+<tr><td class="u" style="border-color:var(--ap)">수도기계화사단</td><td class="k"><b>철갑 돌파</b>방어력 깎인 적에게 깎인 양 10당 +4% (최대 +60%)</td><td class="w">보스에게 피해 -20% (라인 정리형)</td><td class="p">ATACMS · LAH 편대 · 보스 잡는 원수</td></tr>
+<tr class="grp"><td colspan="4" style="color:var(--sc)">원수 3</td></tr>
+<tr><td class="u" style="border-color:var(--sc)">지상작전사령부<small>원랜디 바질형</small></td><td class="k"><b>총반격</b>적에게 걸린 나쁜 효과(기절·감속·불·독·깎기·표식) 1개당 +20% (최대 +120%)</td><td class="w">따로 없음 — 대신 덱을 넓게 섞을수록 셈</td><td class="p">덱 2갈래를 섞을수록 강함</td></tr>
+<tr><td class="u" style="border-color:var(--sc)">특수전사령부<small>원랜디 끝딜형</small></td><td class="k"><b>참수</b>보스 체력 30% 아래면 피해 ×3, 처형 기준 22→30%</td><td class="w">잡몹 정리 약함</td><td class="p">라인 정리 장군(수도기계화·정찰대)</td></tr>
+<tr><td class="u" style="border-color:var(--sc)">육군미사일전략사령부<small>원랜디 루치형</small></td><td class="k"><b>전략 비축</b>배치된 뒤 웨이브를 넘길 때마다 영구 +3% (최대 +90%)</td><td class="w">늦게 만들면 덜 셈</td><td class="p">초반을 잘 버티는 덱</td></tr>
+<tr class="grp"><td colspan="4" style="color:var(--hd)">특명 (그대로)</td></tr>
+<tr><td class="u" style="border-color:var(--hd)">코드네임 유령</td><td class="k"><b>유령 핵투하</b>50번째 공격마다 핵 — 지금 그대로. 독은 전략사령부의 짝 재료가 됨</td><td class="w">—</td><td class="p">전략사령부</td></tr>
+</tbody></table>
+
+<h2>화면에서 바로 보이게</h2>
+<ul class="flow">
+<li><span>표시1</span><b>조건이 맞는 순간</b> 그 부대 아래 계급장이 반짝 — "지금 특색 켜짐"을 바로 앎</li>
+<li><span>표시2</span><b>부대 정보 카드</b> 맨 위에 특색 한 줄 (예: 연합 화력 · 지금 버프 5개 → +75%), 숫자가 실시간으로 바뀜</li>
+<li><span>표시3</span><b>도감</b>에 "짝을 이루면 좋은 부대" 줄 추가 — 누르면 그 부대로 이동</li>
+</ul>
+
+<h2>원랜디 불만은 피한다</h2>
+<div class="avoid">
+<p><b>한 덱만 독주</b> → 덱마다 장군 2개 이상을 두고, 원수가 섞인 덱이 더 세게. 덱별로 난이도 시험(보통 90~95% · 지옥 47~53% · 신 22~28%)을 돌려 확인</p>
+<p><b>패치마다 평가가 뒤집힘</b> → 숫자는 한 번에 크게 안 바꾸고, 바꾸면 패치노트에 "왜"를 적음</p>
+<p><b>운에 너무 좌우</b> → 특색 조건은 확률 말고 "걸려 있으면 무조건"으로만</p>
+</div>
+
+<h2>만드는 순서</h2>
+<ul class="flow">
+<li><span>20차</span>장군 7종 특색 + 부대 카드 특색 한 줄</li>
+<li><span>21차</span>원수 3종 특색 + 계급장 반짝 + 도감 "짝" 줄</li>
+<li><span>22차</span>덱 5갈래 × 난이도 3종 자동 시험으로 숫자 맞추기</li>
+</ul>
+
+<p class="note">원랜디 자료 출처: 나무위키 "원피스 랜덤 디펜스", EXYSOFT 원랜디 조합도우미 능력표(약 3년 전 판). 원랜디 수치는 구조만 참고했고, 위 % 숫자는 우리 게임용 첫 제안값입니다 — 22차 시험 뒤 바뀔 수 있습니다. 작성 2026-10-21.</p>
+</div></body></html>
